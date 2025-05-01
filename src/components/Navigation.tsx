@@ -18,7 +18,7 @@ const Navigation = () => {
         <>
             {/* Sidebar for larger screens */}
             <div className='fixed top-0 left-0 h-full w-16 bg-gray-900 text-white flex-col items-center py-4 gap-6 hidden md:flex'>
-                <Link to={'/app/main'}>
+                <Link to={'/'}>
                     <img src={logo} className='w-8' alt='...' />
                 </Link>
                 <hr className='w-[80%] border-2' />

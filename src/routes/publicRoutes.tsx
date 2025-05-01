@@ -4,7 +4,7 @@ import { routes } from './routes';
 
 // Lazy load your page
 const LoginPage = lazy(() => import('../pages/auth/Login'));
-const RegisterPage = lazy(() => import('../pages/auth/Register'));
+const RegisterPage = lazy(() => import('../pages/auth/SignUp'));
 
 export const publicRoutes = [
     {

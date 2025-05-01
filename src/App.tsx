@@ -16,7 +16,7 @@ function App() {
           </Route>
           {publicRoutes.map(({ path, component: Component }) => (
             <Route key={path} path={path} element={<Component />} />
-          ))}
+          ))} 
         </Routes>
       </Suspense>
     </div>
