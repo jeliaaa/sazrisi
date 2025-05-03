@@ -6,3 +6,12 @@
     --color-primary-color: #1a202c1;
     --color-texts-color: #fafcff 
 }
+@font-face {
+    font-family: "NinoMtavruli";
+    src: url(fonts/bpg_nino_mtavruli_bold.ttf);
+}
+
+*{
+    font-family: "NinoMtavruli", sans-serif;
+    font-weight: 500;
+}

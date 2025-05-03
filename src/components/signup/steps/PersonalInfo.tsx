@@ -9,29 +9,29 @@ const PersonalInfo = () => {
         <div className="flex flex-col gap-4">
             <ControlledInput<SignUpFormData>
                 name="firstName"
-                label="First Name"
+                label="სახელი"
                 control={control}
             />
             <ControlledInput<SignUpFormData>
                 name="lastName"
-                label="Last Name"
+                label="გვარი"
                 control={control}
             />
             <ControlledInput<SignUpFormData>
                 name="email"
-                label="Email"
+                label="ელ.ფოსტა"
                 type="email"
                 control={control}
             />
             <ControlledInput<SignUpFormData>
                 name="password"
-                label="password"
+                label="პაროლი"
                 type="password"
                 control={control}
             />
             <ControlledInput<SignUpFormData>
                 name="rePassword"
-                label="rePassword"
+                label="გაიმეორეთ პაროლი"
                 type="password"
                 control={control}
             />

@@ -18,9 +18,9 @@ export enum steps {
     success
 }
 export const stepLabels: Record<steps, string> = {
-    [steps.info]: "Personal Information",
-    [steps.preferences]: "User Preferences",
-    [steps.profile]: "Profile Picture",
-    [steps.success]: "You are successfully registered!"
+    [steps.info]: "პირადი ინფორმაცია",
+    [steps.preferences]: "პერსონალიზაცია",
+    [steps.profile]: "პროფილის სურათი",
+    [steps.success]: "იქნა!"
 };
 

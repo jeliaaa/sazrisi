@@ -8,14 +8,13 @@ const RegisterPage = lazy(() => import('../pages/auth/SignUp'));
 
 export const publicRoutes = [
     {
-        title: "Login",
+        title: "login",
         path: routes.login,
         component: LoginPage,
     },
     {
-        title: "Register",
+        title: "register",
         path: routes.register,
         component: RegisterPage,
     },
-
 ];

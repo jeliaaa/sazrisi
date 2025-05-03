@@ -3,9 +3,11 @@ import Navigation from "./Navigation"
 
 function CustomOutlet() {
     return (
-        <div className='w-full min-h-dvh items-center justify-center flex flex-col relative bg-gray-100'>
+        <div className='w-full min-h-dvh items-center justify-center flex relative bg-gray-100'>
             <Navigation />
-            <Outlet />
+            <div className="w-[95dvw]">
+                <Outlet />
+            </div>
         </div>
     )
 }
