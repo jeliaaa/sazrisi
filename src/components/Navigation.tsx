@@ -25,9 +25,9 @@ const Navigation = () => {
                 </Link>
                 <hr className='w-[80%] border-2' />
                 {navigationList.map(({ Icon, name, to }) => (
-                    <Link key={to} to={to} className='relative group'>
+                    <Link key={to} to={to} className='relative group w-fit'>
                         <Icon className={`w-8 h-8 ${isActive(to) ? 'fill-main-color' : 'fill-texts-color'}`} />
-                        <span className='absolute left-12 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity'>{name}</span>
+                        <span className='hidden absolute left-12 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white text-xs px-2 py-1 rounded z-10 group-hover:block transition-opacity'>{name}</span>
                     </Link>
                 ))}
                 <div className='flex flex-col gap-y-5 absolute bottom-5 items-center'>

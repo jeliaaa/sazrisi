@@ -72,12 +72,12 @@ const Tests = () => {
                 key={category}
                 onClick={() => !isLocked && setSelectedCategory(category)}
                 disabled={isLocked}
-                className={`relative text-sm px-4 py-2 rounded cursor-pointer font-medium transition flex items-center gap-2
+                className={`relative text-sm px-4 py-2 rounded font-medium transition flex items-center gap-2
                   ${selectedCategory === category && !isLocked
                     ? "bg-main-color text-texts-color"
                     : isLocked
                       ? "bg-gray-100 text-gray-500 cursor-not-allowed"
-                      : "hover:bg-gray-200 text-dark-color"
+                      : "hover:bg-gray-200 text-dark-color cursor-pointer"
                   }`}
               >
                 {category}

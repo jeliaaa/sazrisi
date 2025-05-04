@@ -7,6 +7,7 @@ export const PublicRoutes = {
 export const privateRoutes = {
     tests: "/tests",
     testsSingle: "/tests/:category/:questionId",
+    leaderboard: "/leaderboard",
 };
 
 

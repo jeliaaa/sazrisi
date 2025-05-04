@@ -36,15 +36,15 @@ const TestSingle: React.FC = () => {
     if (questionId === '0') {
         return (
             <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-6">
-                <h1 className="text-2xl font-bold text-dark-color mb-2">Welcome to the Quiz</h1>
+                <h1 className="text-2xl font-bold text-dark-color mb-2">მოგესალმებით</h1>
                 <p className="text-gray-700 text-center mb-6 max-w-xl">
-                    This quiz will test your knowledge on various topics. Click the button below to start!
+                    ეს ტესტი შეამოწმებს თქვენს ცოდნას სხვადასხვა თემებზე. გთხოვთ, ყურადღებით წაიკითხოთ შეკითხვები და აირჩიოთ სწორი პასუხი.
                 </p>
                 <button
                     onClick={handleStart}
-                    className="bg-main-color text-texts-color font-semibold px-6 py-3 rounded hover:opacity-90 transition"
+                    className="bg-main-color cursor-pointer text-texts-color font-semibold px-6 py-3 rounded hover:opacity-90 transition"
                 >
-                    Start Quiz
+                    ტესტის დაწყება
                 </button>
             </div>
         );
@@ -55,7 +55,7 @@ const TestSingle: React.FC = () => {
     if (!currentQuestion) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-100">
-                <p className="text-red-600 font-medium">Question not found.</p>
+                <p className="text-red-600 font-medium">შეკითხვა ვერ მოიძებნა.</p>
             </div>
         );
     }
@@ -63,7 +63,7 @@ const TestSingle: React.FC = () => {
     return (
         <div className="min-h-screen bg-gray-100 p-6 flex flex-col gap-8">
             <div className="bg-white p-4 rounded-lg shadow">
-                <h2 className="text-lg font-bold text-dark-color mb-2">Navigate Questions</h2>
+                <h2 className="text-lg font-bold text-dark-color mb-2">ნავიგაცია</h2>
                 <div className="flex gap-3 flex-wrap">
                     {questions.map((q) => (
                         <button
@@ -81,7 +81,7 @@ const TestSingle: React.FC = () => {
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md">
                 <h1 className="text-xl font-bold text-dark-color mb-4">
-                    Question {currentQuestion.id}
+                    შეკითხვა {currentQuestion.id}
                 </h1>
                 <p className="text-gray-800 mb-4">{currentQuestion.text}</p>
                 {currentQuestion.image && (
