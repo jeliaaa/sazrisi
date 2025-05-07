@@ -3,10 +3,12 @@ import LeaderboardIcon from '../icons/leaderboard.svg?react';
 import TestsIcon from '../icons/tests.svg?react';
 import SettingsIcon from '../icons/settings.svg?react';
 import LeaveIcon from '../icons/leave.svg?react';
-import logo from "../assets/logo.png"
+import logo from "../assets/logo.png";
+import { useUser } from '../context/UserContext';
 
 const Navigation = () => {
     const { pathname } = useLocation();
+    const { profileImage } = useUser();
 
     const navigationList = [
         { to: "tests", name: "ტესტები", Icon: TestsIcon },
@@ -14,7 +16,7 @@ const Navigation = () => {
         { to: "settings", name: "პარამეტრები", Icon: SettingsIcon },
     ];
 
-    const isActive = (to : string) => pathname.startsWith(`/${to}`);
+    const isActive = (to: string) => pathname.startsWith(`/${to}`);
 
     return (
         <>
@@ -32,7 +34,7 @@ const Navigation = () => {
                 ))}
                 <div className='flex flex-col gap-y-5 absolute bottom-5 items-center'>
                     <Link to='profile'>
-                        <img src='https://picsum.photos/100' className="w-10 h-10 rounded-full" alt='Profile' />
+                        <img src={profileImage} className="w-10 h-10 rounded-full" alt='Profile' />
                     </Link>
                     <Link to='/' className='group'>
                         <LeaveIcon className="w-8 h-8 fill-texts-color" />
@@ -50,7 +52,7 @@ const Navigation = () => {
                     </Link>
                 ))}
                 <Link to='profile'>
-                    <img src='https://picsum.photos/100' className="w-8 h-8 rounded-full" alt='Profile' />
+                    <img src={profileImage} className="w-8 h-8 rounded-full" alt='Profile' />
                 </Link>
             </div>
         </>
