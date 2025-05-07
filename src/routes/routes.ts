@@ -8,8 +8,8 @@ export const privateRoutes = {
     tests: "/tests",
     testsSingle: "/tests/:category/:questionId",
     leaderboard: "/leaderboard",
+    settings: "/settings", 
 };
-
 
 export const routes = {
     ...PublicRoutes,

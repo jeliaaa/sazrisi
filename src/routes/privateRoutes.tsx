@@ -1,13 +1,10 @@
-// src/routes/publicRoutes.tsx
 import { lazy } from 'react';
 import { routes } from './routes';
+
 const TestsPage = lazy(() => import('../pages/Tests'));
 const TestsSinglePage = lazy(() => import('../pages/TestSingle'));
 const LeaderboardPage = lazy(() => import('../pages/Leaderboard'));
-
-
-// Lazy load your page
-
+const SettingsPage = lazy(() => import('../pages/Settings')); 
 
 export const privateRoutes = [
     {
@@ -23,6 +20,11 @@ export const privateRoutes = [
     {
         title: "leaderboard",
         path: routes.leaderboard,
-        component: LeaderboardPage
+        component: LeaderboardPage,
+    },
+    {
+        title: "settings",
+        path: routes.settings, 
+        component: SettingsPage, 
     }
 ];
