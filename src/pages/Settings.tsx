@@ -7,8 +7,7 @@ const tabs = ["პროფილი", "უსაფრთხოება და
 
 export default function Settings() {
   const [activeTab, setActiveTab] = useState("პროფილი");
-  const [themeColor, setThemeColor] = useState("blue");
-  const { profileImage, setProfileImage } = useUser();
+  const { profileImage, setProfileImage, themeColor, setThemeColor } = useUser();
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -27,7 +26,10 @@ export default function Settings() {
             {/* Profile Picture */}
             <div className="flex flex-col sm:flex-row items-center gap-4">
               <img src={profileImage} alt="Profile" className="w-20 h-20 sm:w-16 sm:h-16 rounded-full object-cover" />
-              <label className="cursor-pointer bg-main-color text-white px-4 py-2 rounded-xl text-sm font-medium">
+              <label
+                className="cursor-pointer text-white px-4 py-2 rounded-xl text-sm font-medium"
+                style={{ backgroundColor: themeColor }}
+              >
                 ფოტოს შეცვლა
                 <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
               </label>
@@ -60,7 +62,7 @@ export default function Settings() {
                     key={color}
                     onClick={() => setThemeColor(color)}
                     className={`w-8 h-8 rounded-lg cursor-pointer border-2 transition ${
-                      themeColor === color ? "border-main-color scale-105" : "border-transparent"
+                      themeColor === color ? "border-[3px] border-gray-500 scale-105" : "border-transparent"
                     }`}
                     style={{ backgroundColor: color }}
                   />
@@ -76,11 +78,19 @@ export default function Settings() {
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-semibold mb-1">შეცვალე პაროლი</label>
-              <input type="password" className="w-full bg-gray-100 p-3 rounded-xl outline-none text-sm" placeholder="ახალი პაროლი" />
+              <input
+                type="password"
+                className="w-full bg-gray-100 p-3 rounded-xl outline-none text-sm"
+                placeholder="ახალი პაროლი"
+              />
             </div>
             <div>
               <label className="block text-sm font-semibold mb-1">დაადასტურე პაროლი</label>
-              <input type="password" className="w-full bg-gray-100 p-3 rounded-xl outline-none text-sm" placeholder="დაადასტურე" />
+              <input
+                type="password"
+                className="w-full bg-gray-100 p-3 rounded-xl outline-none text-sm"
+                placeholder="დაადასტურე"
+              />
             </div>
           </div>
         );

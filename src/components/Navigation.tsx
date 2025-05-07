@@ -7,56 +7,65 @@ import logo from "../assets/logo.png";
 import { useUser } from '../context/UserContext';
 
 const Navigation = () => {
-    const { pathname } = useLocation();
-    const { profileImage } = useUser();
+  const { pathname } = useLocation();
+  const { profileImage } = useUser();
 
-    const navigationList = [
-        { to: "tests", name: "ტესტები", Icon: TestsIcon },
-        { to: "leaderboard", name: "ლიდერბორდი", Icon: LeaderboardIcon },
-        { to: "settings", name: "პარამეტრები", Icon: SettingsIcon },
-    ];
+  const navigationList = [
+    { to: "/tests", name: "ტესტები", Icon: TestsIcon },
+    { to: "/leaderboard", name: "ლიდერბორდი", Icon: LeaderboardIcon },
+    { to: "/settings", name: "პარამეტრები", Icon: SettingsIcon },
+  ];
 
-    const isActive = (to: string) => pathname.startsWith(`/${to}`);
+  const isActive = (to: string) => pathname.startsWith(to);
 
-    return (
-        <>
-            {/* Sidebar for larger screens */}
-            <div className='top-0 left-0 h-screen w-[5dvw] bg-gray-900 text-white flex-col items-center py-4 gap-6 hidden md:flex'>
-                <Link to='/'>
-                    <img src={logo} className='w-8' alt='Logo' />
-                </Link>
-                <hr className='w-[80%] border-2' />
-                {navigationList.map(({ Icon, name, to }) => (
-                    <Link key={to} to={to} className='relative group w-fit'>
-                        <Icon className={`w-8 h-8 ${isActive(to) ? 'fill-main-color' : 'fill-texts-color'}`} />
-                        <span className='hidden absolute left-12 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white text-xs px-2 py-1 rounded z-10 group-hover:block transition-opacity'>{name}</span>
-                    </Link>
-                ))}
-                <div className='flex flex-col gap-y-5 absolute bottom-5 items-center'>
-                    <Link to='profile'>
-                        <img src={profileImage} className="w-10 h-10 rounded-full" alt='Profile' />
-                    </Link>
-                    <Link to='/' className='group'>
-                        <LeaveIcon className="w-8 h-8 fill-texts-color" />
-                        <span className='absolute left-12 bottom-0 transform -translate-y-1/2 bg-gray-700 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity'>გამოსვლა</span>
-                    </Link>
-                </div>
-            </div>
+  return (
+    <>
+      {/* Sidebar for desktop */}
+      <div className='top-0 left-0 h-screen w-[5dvw] bg-gray-900 text-white flex-col items-center py-4 gap-6 hidden md:flex fixed'>
+        <Link to='/'>
+          <img src={logo} className='w-8' alt='Logo' />
+        </Link>
 
-            {/* Bottom nav for smaller screens */}
-            <div className='fixed bottom-0 left-0 w-full bg-gray-900 text-white flex justify-around py-4 md:hidden'>
-                {navigationList.map(({ Icon, name, to }) => (
-                    <Link key={to} to={to} className='relative group'>
-                        <Icon className={`w-8 h-8 ${isActive(to) ? 'fill-main-color' : 'fill-texts-color'}`} />
-                        <span className='absolute left-12 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity'>{name}</span>
-                    </Link>
-                ))}
-                <Link to='profile'>
-                    <img src={profileImage} className="w-8 h-8 rounded-full" alt='Profile' />
-                </Link>
-            </div>
-        </>
-    );
+        <hr className='w-[80%] border-2 border-gray-600 my-4' />
+
+        {navigationList.map(({ Icon, name, to }) => (
+          <Link key={to} to={to} className='relative group w-fit'>
+            <Icon className={`w-8 h-8 transition-colors duration-200 ${isActive(to) ? 'fill-main-color' : 'fill-texts-color'}`} />
+            <span className='hidden absolute left-12 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white text-xs px-2 py-1 rounded z-10 group-hover:block transition-opacity'>
+              {name}
+            </span>
+          </Link>
+        ))}
+
+        <div className='flex flex-col gap-y-5 absolute bottom-5 items-center'>
+          <Link to='/profile'>
+            <img src={profileImage} className="w-10 h-10 rounded-full border-2 border-main-color" alt='Profile' />
+          </Link>
+          <Link to='/' className='group'>
+            <LeaveIcon className="w-8 h-8 fill-texts-color" />
+            <span className='absolute left-12 bottom-0 transform -translate-y-1/2 bg-gray-700 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity'>
+              გამოსვლა
+            </span>
+          </Link>
+        </div>
+      </div>
+
+      {/* Bottom nav for mobile */}
+      <div className='fixed bottom-0 left-0 w-full bg-gray-900 text-white flex justify-around py-4 md:hidden z-50'>
+        {navigationList.map(({ Icon, name, to }) => (
+          <Link key={to} to={to} className='relative group'>
+            <Icon className={`w-8 h-8 ${isActive(to) ? 'fill-main-color' : 'fill-texts-color'}`} />
+            <span className='absolute left-1/2 transform -translate-x-1/2 bottom-full mb-1 bg-gray-700 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity'>
+              {name}
+            </span>
+          </Link>
+        ))}
+        <Link to='/profile'>
+          <img src={profileImage} className="w-8 h-8 rounded-full border-2 border-main-color" alt='Profile' />
+        </Link>
+      </div>
+    </>
+  );
 };
 
 export default Navigation;

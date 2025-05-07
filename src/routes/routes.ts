@@ -9,6 +9,7 @@ export const privateRoutes = {
     testsSingle: "/tests/:category/:questionId",
     leaderboard: "/leaderboard",
     settings: "/settings", 
+    profile: "/profile"
 };
 
 export const routes = {
