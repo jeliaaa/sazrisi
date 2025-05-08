@@ -8,7 +8,7 @@ type UserContextType = {
 };
 
 const defaultImage = "https://picsum.photos/100";
-const defaultThemeColor = "undefined"; 
+const defaultThemeColor = "blue"; 
 
 const UserContext = createContext<UserContextType>({
   profileImage: defaultImage,
