@@ -1,4 +1,4 @@
-import { useUser } from "../context/UserContext";
+import { useUser } from "../hooks/useUser";
 
 const Profile = () => {
   const { profileImage, username, email, themeColor } = useUser(); // Make sure all properties are coming from context

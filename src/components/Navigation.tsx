@@ -4,7 +4,7 @@ import TestsIcon from '../icons/tests.svg?react';
 import SettingsIcon from '../icons/settings.svg?react';
 import LeaveIcon from '../icons/leave.svg?react';
 import logo from "../assets/logo.png";
-import { useUser } from '../context/UserContext';
+import { useUser } from '../hooks/useUser';
 
 const Navigation = () => {
   const { pathname } = useLocation();
@@ -21,7 +21,7 @@ const Navigation = () => {
   return (
     <>
       {/* Sidebar for desktop */}
-      <div className='top-0 left-0 h-screen w-[5dvw] bg-gray-900 text-white flex-col items-center py-4 gap-6 hidden md:flex fixed'>
+      <div className='top-0 left-0 h-screen w-[5dvw] bg-gray-900 text-white flex-col items-center py-4 gap-6 hidden md:flex'>
         <Link to='/'>
           <img src={logo} className='w-8' alt='Logo' />
         </Link>
