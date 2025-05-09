@@ -197,12 +197,70 @@ export default function Settings() {
           </div>
         );
 
-      case "შეკვეთების ისტორია":
-        return (
-          <p className="text-sm">
-            აქ იქნება ძველი შეკვეთების და გადახდების სია.
-          </p>
-        );
+        case "შეკვეთების ისტორია":
+          const orderHistory = [
+            {
+              id: "ORD-001",
+              date: "2025-05-01",
+              total: "₾8.00",
+              status: "მიწოდებულია",
+              items: ["მათემატიკის ტესტები", "ვიდეო გაკვეთილები"],
+            },
+            {
+              id: "ORD-002",
+              date: "2025-04-20",
+              total: "₾10.00",
+              status: "მიმდინარეობს",
+              items: ["SAT მოსამზადებელი კურსი"],
+            },
+            {
+              id: "ORD-003",
+              date: "2025-04-01",
+              total: "₾6.00",
+              status: "გაუქმდა",
+              items: ["ტესტების პაკეტი"],
+            },
+          ];
+        
+          return (
+            <div className="space-y-4">
+              {orderHistory.length > 0 ? (
+                orderHistory.map((order) => (
+                  <div
+                    key={order.id}
+                    className="border rounded-xl p-4 bg-gray-50 hover:shadow transition"
+                  >
+                    <div className="flex justify-between items-center mb-2">
+                      <p className="text-sm font-semibold">შეკვეთა #{order.id}</p>
+                      <span
+                        className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+                          order.status === "მიწოდებულია"
+                            ? "bg-green-100 text-green-700"
+                            : order.status === "მიმდინარეობს"
+                            ? "bg-yellow-100 text-yellow-700"
+                            : "bg-red-100 text-red-700"
+                        }`}
+                      >
+                        {order.status}
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-600">თარიღი: {order.date}</p>
+                    <p className="text-sm text-gray-600 mt-1">
+                      პროდუქტები: {order.items.join(", ")}
+                    </p>
+                    <p className="text-sm text-gray-800 mt-1 font-medium">
+                      ჯამური ღირებულება: {order.total}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <p className="text-sm text-gray-500">
+                  ჯერჯერობით შეკვეთების ისტორია არ მოიძებნა.
+                </p>
+              )}
+            </div>
+          );
+        
 
       default:
         return null;
@@ -229,7 +287,7 @@ export default function Settings() {
         </div>
       </div>
 
-      <div className="w-full bg-white p-5 sm:p-6 md:p-8 rounded-xl shadow-md min-h-[470px] transition-all duration-300 ease-in-out">
+      <div className="w-full bg-white p-5 sm:p-6 md:p-8 rounded-xl shadow-md min-h-[530px] transition-all duration-300 ease-in-out">
         <h2 className="text-lg sm:text-xl font-bold mb-4">{activeTab}</h2>
         <div
           key={activeTab}

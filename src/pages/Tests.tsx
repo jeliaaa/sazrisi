@@ -1,8 +1,7 @@
 import { useState } from "react";
-import Lock from "../icons/lock-solid.svg?react";
 import { Link } from "react-router-dom";
+import Lock from "../icons/lock-solid.svg?react";
 
-// Define the type for category names
 type Category =
   | "მათემატიკა"
   | "ინგლისური"
@@ -12,10 +11,8 @@ type Category =
   | "ქიმია"
   | "ფიზიკა";
 
-// Category lock status
 const lockedCategories: Category[] = ["ისტორია", "ქიმია"];
 
-// Test data
 type TestItem = { name: string; locked: boolean };
 
 const testData: Record<Category, TestItem[]> = {
@@ -60,55 +57,67 @@ const Tests = () => {
   const [selectedCategory, setSelectedCategory] = useState<Category>("მათემატიკა");
 
   return (
-    <div className="w-full min-h-screen p-4 flex flex-col md:flex-row gap-4 bg-gray-50">
-      {/* Sidebar: Category List */}
-      <aside className="w-full md:w-64 bg-white rounded-lg shadow-md p-4 flex flex-col gap-3">
-        <h2 className="text-lg font-bold text-gray-800 mb-2">ტესტის კატეგორიები</h2>
-        <div className="flex flex-wrap md:flex-col gap-2">
+    <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row p-4 md:p-8 gap-6 font-sans">
+      {/* Sidebar */}
+      <aside className="md:w-64 w-full bg-white p-6 rounded-2xl shadow-lg">
+        <h2 className="text-xl font-bold text-dark-color mb-4 border-b pb-2">📚 კატეგორიები</h2>
+        <ul className="space-y-2">
           {(Object.keys(testData) as Category[]).map((category) => {
             const isLocked = lockedCategories.includes(category);
             return (
-              <button
-                key={category}
-                onClick={() => !isLocked && setSelectedCategory(category)}
-                disabled={isLocked}
-                className={`relative text-sm px-4 py-2 rounded font-medium transition flex items-center gap-2
-                  ${selectedCategory === category && !isLocked
-                    ? "bg-main-color text-texts-color"
-                    : isLocked
-                      ? "bg-gray-100 text-gray-500 cursor-not-allowed"
-                      : "hover:bg-gray-200 text-dark-color cursor-pointer"
+              <li key={category}>
+                <button
+                  onClick={() => !isLocked && setSelectedCategory(category)}
+                  disabled={isLocked}
+                  className={`w-full flex items-center justify-between px-4 py-2 rounded-xl transition duration-200 font-medium ${
+                    selectedCategory === category && !isLocked
+                      ? "bg-main-color text-white shadow"
+                      : isLocked
+                      ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                      : "bg-gray-50 hover:bg-gray-200 text-gray-700"
                   }`}
-              >
-                {category}
-                {isLocked && <Lock className="w-4 h-4 fill-gray-500" />}
-              </button>
+                >
+                  <span>{category}</span>
+                  {isLocked && <Lock className="w-4 h-4" />}
+                </button>
+              </li>
             );
           })}
-        </div>
+        </ul>
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col gap-4">
-        {testData[selectedCategory].map((test, index) => (
-          <Link
-            to={test.name + "/0"}
-            key={index}
-            className={`rounded-lg bg-white border ${!test.locked && "cursor-pointer"
-              } group border-dark-color p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between text-base sm:text-lg font-semibold text-dark-color transition`}
-          >
-            {test.name}
-            {test.locked && (
-              <div className="flex items-center gap-x-3 mt-2 sm:mt-0 sm:ml-4">
-                <span className="sm:group-hover:block block sm:hidden text-sm text-gray-500">
-                  ხელმისაწვდომი იქნება 03.06.2025
-                </span>
-                <Lock className="fill-dark-color w-5 h-5" />
-              </div>
-            )}
-          </Link>
-        ))}
-      </div>
+      <main className="flex-1 bg-white p-6 md:p-8 rounded-2xl shadow-lg">
+        <h3 className="text-2xl font-bold text-dark-color mb-6">{selectedCategory}</h3>
+        <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
+          {testData[selectedCategory].map((test, index) => (
+            <div
+              key={index}
+              className={`group p-5 border rounded-2xl transition-all duration-200 flex flex-col justify-between gap-3 shadow-sm ${
+                test.locked
+                  ? "border-gray-300 bg-gray-100 text-gray-500"
+                  : "border-main-color bg-white hover:bg-main-color hover:text-white"
+              }`}
+            >
+              <span className="text-lg font-semibold">{test.name}</span>
+
+              {test.locked ? (
+                <div className="flex items-center justify-between text-sm mt-2">
+                  <span className="hidden sm:inline">🕓 ხელმისაწვდომია 03.06.2025</span>
+                  <Lock className="w-5 h-5" />
+                </div>
+              ) : (
+                <Link
+                  to={`/test/${encodeURIComponent(test.name)}/0`}
+                  className="text-sm font-semibold text-main-color group-hover:text-white transition-colors"
+                >
+                  დაწყება →
+                </Link>
+              )}
+            </div>
+          ))}
+        </div>
+      </main>
     </div>
   );
 };
