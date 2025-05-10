@@ -1,6 +1,7 @@
 import { lazy } from "react";
 import { routes } from "./routes";
 
+const IndexPage = lazy(() => import("../pages/Main"));
 const TestsPage = lazy(() => import("../pages/Tests"));
 const TestsSinglePage = lazy(() => import("../pages/TestSingle"));
 const LeaderboardPage = lazy(() => import("../pages/Leaderboard"));
@@ -11,6 +12,11 @@ const ChatPage = lazy(() => import("../pages/Chat"));
 
 
 export const privateRoutes = [
+  {
+    title: "main",
+    path: routes.main,
+    component: IndexPage
+  },
   {
     title: "tests",
     path: routes.tests,
@@ -42,7 +48,7 @@ export const privateRoutes = [
     component: VideoLessonsPage,
   },
   {
-    title:"chat",
+    title: "chat",
     path: routes.chat,
     component: ChatPage,
   }

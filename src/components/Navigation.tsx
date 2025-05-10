@@ -3,6 +3,7 @@ import LeaderboardIcon from "../icons/leaderboard.svg?react";
 import TestsIcon from "../icons/tests.svg?react";
 import SettingsIcon from "../icons/settings.svg?react";
 import LeaveIcon from "../icons/leave.svg?react";
+import VideoLessons from "../icons/video-lessons.svg?react";
 import logo from "../assets/logo.png";
 import { useUser } from "../hooks/useUser";
 
@@ -14,8 +15,7 @@ const Navigation = () => {
     { to: "/tests", name: "ტესტები", Icon: TestsIcon },
     { to: "/leaderboard", name: "ლიდერბორდი", Icon: LeaderboardIcon },
     { to: "/settings", name: "პარამეტრები", Icon: SettingsIcon },
-    { to: "/videoLessons", name: "ვიდეო გაკვეთილები", Icon: SettingsIcon },
-    { to: "/chat", name: "ჩატბოტი", Icon: SettingsIcon },
+    { to: "/videoLessons", name: "ვიდეო გაკვეთილები", Icon: VideoLessons },
   ];
 
   const isActive = (to: string) => pathname.startsWith(to);
@@ -33,7 +33,7 @@ const Navigation = () => {
         {navigationList.map(({ Icon, name, to }) => (
           <Link key={to} to={to} className="relative group w-fit">
             <Icon
-              className={`w-8 h-8 transition-colors duration-200 ${
+              className={`w-8 h-8 trans1ition-colors duration-200 ${
                 isActive(to) ? "fill-main-color" : "fill-texts-color"
               }`}
             />

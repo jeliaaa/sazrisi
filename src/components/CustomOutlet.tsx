@@ -5,7 +5,7 @@ function CustomOutlet() {
     return (
         <div className='w-full min-h-dvh items-center justify-center flex relative bg-white'>
             <Navigation />
-            <div className="w-[95dvw]">
+            <div className="w-full md:w-[95dvw] pb-30 md:pb-0">
                 <Outlet />
             </div>
         </div>

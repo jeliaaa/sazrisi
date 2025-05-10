@@ -1,14 +1,14 @@
 export const PublicRoutes = {
-    index: "/",
-    login: "/login",
-    register: "/register",
+  login: "/login",
+  register: "/register",
 };
 
 export const privateRoutes = {
+  main: "/",
   tests: "/tests",
   testsSingle: "/tests/:category/:questionId",
   leaderboard: "/leaderboard",
-  settings: "/settings", 
+  settings: "/settings",
   profile: "/profile",
   videoLessons: "/videoLessons",
   chat: "/chat"
@@ -16,6 +16,6 @@ export const privateRoutes = {
 
 
 export const routes = {
-    ...PublicRoutes,
-    ...privateRoutes,
+  ...PublicRoutes,
+  ...privateRoutes,
 };

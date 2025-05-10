@@ -54,7 +54,7 @@ const VideoLessons = () => {
   return (
     <div className="min-h-screen bg-gray-50 p-6 md:p-12 font-sans">
       <h1 className="text-3xl font-bold text-dark-color mb-8">
-        🎥 ვიდეო გაკვეთილები
+        ვიდეო გაკვეთილები
       </h1>
 
       <div className="flex gap-4 mb-8">
@@ -95,7 +95,7 @@ const VideoLessons = () => {
               />
               <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
                 <span className="text-white text-lg font-bold">
-                  ▶️ ნახე ვიდეო
+                  ნახე ვიდეო
                 </span>
               </div>
             </div>
