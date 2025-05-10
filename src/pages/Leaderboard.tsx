@@ -253,7 +253,6 @@ const Leaderboard = () => {
         </div>
       </div>
 
-      {/* Leaderboard */}
       <div className="mt-6 w-full">
         <table className="w-full text-sm md:text-base bg-white shadow-sm rounded-xl overflow-hidden table-fixed">
           <thead className="text-left bg-gray-100">
