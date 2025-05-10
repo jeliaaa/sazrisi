@@ -10,7 +10,8 @@ export const privateRoutes = {
   leaderboard: "/leaderboard",
   settings: "/settings", 
   profile: "/profile",
-  videoLessons: "/videoLessons"
+  videoLessons: "/videoLessons",
+  chat: "/chat"
 };
 
 

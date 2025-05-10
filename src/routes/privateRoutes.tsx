@@ -7,6 +7,8 @@ const LeaderboardPage = lazy(() => import("../pages/Leaderboard"));
 const SettingsPage = lazy(() => import("../pages/Settings"));
 const ProfilePage = lazy(() => import("../pages/Profile"));
 const VideoLessonsPage = lazy(() => import("../pages/VideoLessons"));
+const ChatPage = lazy(() => import("../pages/Chat"));
+
 
 export const privateRoutes = [
   {
@@ -39,4 +41,9 @@ export const privateRoutes = [
     path: routes.videoLessons,
     component: VideoLessonsPage,
   },
+  {
+    title:"chat",
+    path: routes.chat,
+    component: ChatPage,
+  }
 ];
