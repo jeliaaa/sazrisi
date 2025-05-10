@@ -1,5 +1,7 @@
 "use client";
 
+import { NavCard } from "../components/reusables/NavCard";
+import { StatCard } from "../components/reusables/StatCard";
 import { useUser } from "../hooks/useUser";
 
 const Main = () => {
@@ -56,43 +58,8 @@ const Main = () => {
   );
 };
 
-const StatCard = ({
-  label,
-  value,
-  color,
-}: {
-  label: string;
-  value: string;
-  color: string;
-}) => {
-  return (
-    <div className="bg-white p-5 rounded-xl shadow hover:shadow-lg transition border-l-4" style={{ borderColor: color }}>
-      <p className="text-sm text-gray-500 mb-1">{label}</p>
-      <p className="text-2xl font-bold text-gray-800">{value}</p>
-    </div>
-  );
-};
 
-const NavCard = ({
-  title,
-  href,
-  color,
-}: {
-  title: string;
-  href: string;
-  color: string;
-}) => {
-  return (
-    <a
-      href={href}
-      className="block bg-white hover:bg-gray-50 transition rounded-xl shadow p-5 border-l-4"
-      style={{ borderColor: color }}
-    >
-      <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
-      <p className="text-sm text-gray-500 mt-1">დეტალების ნახვა</p>
-    </a>
-  );
-};
+
 
 export default Main;
 
