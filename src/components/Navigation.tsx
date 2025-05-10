@@ -14,6 +14,7 @@ const Navigation = () => {
     { to: "/tests", name: "ტესტები", Icon: TestsIcon },
     { to: "/leaderboard", name: "ლიდერბორდი", Icon: LeaderboardIcon },
     { to: "/settings", name: "პარამეტრები", Icon: SettingsIcon },
+    { to: "/videoLessons", name: "ვიდეო გაკვეთილები", Icon: SettingsIcon }
   ];
 
   const isActive = (to: string) => pathname.startsWith(to);
@@ -50,7 +51,6 @@ const Navigation = () => {
         </div>
       </div>
 
-      {/* Bottom nav for mobile */}
       <div className='fixed bottom-0 left-0 w-full bg-gray-900 text-white flex justify-around py-4 md:hidden z-50'>
         {navigationList.map(({ Icon, name, to }) => (
           <Link key={to} to={to} className='relative group'>

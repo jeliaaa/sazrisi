@@ -1,7 +1,7 @@
 import { useUser } from "../hooks/useUser";
 
 const Profile = () => {
-  const { profileImage, username, email, themeColor } = useUser(); // Make sure all properties are coming from context
+  const { profileImage, username, email, themeColor } = useUser();
 
   if (!profileImage || !username || !email) {
     return (
@@ -12,9 +12,8 @@ const Profile = () => {
   }
 
   return (
-    <div className="p-6 max-w-3xl mx-auto">
+    <div className="bg-gray-50 px-4 py-6 md:px-8 max-w-4xl mx-auto font-sans">
       <div className="flex items-center gap-6 mb-6">
-        {/* Profile Image */}
         <img
           src={profileImage}
           alt="Profile"
@@ -26,7 +25,6 @@ const Profile = () => {
         </div>
       </div>
 
-      {/* Profile Details */}
       <div className="bg-white shadow-md rounded-xl p-4 space-y-4">
         <div>
           <h2 className="text-lg font-semibold">Სახელი</h2>
@@ -43,8 +41,24 @@ const Profile = () => {
           </p>
         </div>
       </div>
+
+      <div className="mt-10 grid grid-cols-2 sm:grid-cols-3 gap-4 text-center pb-28 md:pb-10">
+        <StatCard label="გავლილი ტესტები" value="24" />
+        <StatCard label="ვიდეო გაკვეთილები" value="12" />
+        <StatCard label="საერთო ქულა" value="760" />
+        <StatCard label="საუკეთესო შედეგი" value="95%" />
+        <StatCard label="აქტიური დღეები" value="18" />
+        <StatCard label="ქულები ამ კვირაში" value="120" />
+      </div>
     </div>
   );
 };
+
+const StatCard = ({ label, value }: { label: string; value: string }) => (
+  <div className="bg-white p-4 rounded-xl shadow hover:shadow-md transition">
+    <h3 className="text-2xl font-bold text-main-color">{value}</h3>
+    <p className="text-gray-600 text-sm mt-1">{label}</p>
+  </div>
+);
 
 export default Profile;

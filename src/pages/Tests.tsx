@@ -57,67 +57,72 @@ const Tests = () => {
   const [selectedCategory, setSelectedCategory] = useState<Category>("მათემატიკა");
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row p-4 md:p-8 gap-6 font-sans">
-      {/* Sidebar */}
-      <aside className="md:w-64 w-full bg-white p-6 rounded-2xl shadow-lg">
-        <h2 className="text-xl font-bold text-dark-color mb-4 border-b pb-2">📚 კატეგორიები</h2>
-        <ul className="space-y-2">
-          {(Object.keys(testData) as Category[]).map((category) => {
-            const isLocked = lockedCategories.includes(category);
-            return (
-              <li key={category}>
-                <button
-                  onClick={() => !isLocked && setSelectedCategory(category)}
-                  disabled={isLocked}
-                  className={`w-full flex items-center justify-between px-4 py-2 rounded-xl transition duration-200 font-medium ${
-                    selectedCategory === category && !isLocked
-                      ? "bg-main-color text-white shadow"
-                      : isLocked
-                      ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                      : "bg-gray-50 hover:bg-gray-200 text-gray-700"
-                  }`}
-                >
-                  <span>{category}</span>
-                  {isLocked && <Lock className="w-4 h-4" />}
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      </aside>
+    <div className="min-h-screen bg-gray-50 p-4 sm:p-6 md:p-8 font-sans">
+      {/* Responsive Layout */}
+      <div className="flex flex-col lg:flex-row gap-6">
+        {/* Sidebar */}
+        <aside className="w-full lg:w-64 bg-white p-4 sm:p-6 rounded-2xl shadow sticky top-4">
+          <h2 className="text-lg sm:text-xl font-bold text-dark-color mb-4 border-b pb-2">📚 კატეგორიები</h2>
+          <ul className="space-y-2">
+            {(Object.keys(testData) as Category[]).map((category) => {
+              const isLocked = lockedCategories.includes(category);
+              return (
+                <li key={category}>
+                  <button
+                    onClick={() => !isLocked && setSelectedCategory(category)}
+                    disabled={isLocked}
+                    className={`w-full flex items-center justify-between px-4 py-2 rounded-xl transition duration-200 font-medium text-sm sm:text-base ${
+                      selectedCategory === category && !isLocked
+                        ? "bg-main-color text-white shadow"
+                        : isLocked
+                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                        : "bg-gray-50 hover:bg-gray-200 text-gray-700"
+                    }`}
+                  >
+                    <span>{category}</span>
+                    {isLocked && <Lock className="w-4 h-4" />}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </aside>
 
-      {/* Main Content */}
-      <main className="flex-1 bg-white p-6 md:p-8 rounded-2xl shadow-lg">
-        <h3 className="text-2xl font-bold text-dark-color mb-6">{selectedCategory}</h3>
-        <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
-          {testData[selectedCategory].map((test, index) => (
-            <div
-              key={index}
-              className={`group p-5 border rounded-2xl transition-all duration-200 flex flex-col justify-between gap-3 shadow-sm ${
-                test.locked
-                  ? "border-gray-300 bg-gray-100 text-gray-500"
-                  : "border-main-color bg-white hover:bg-main-color hover:text-white"
-              }`}
-            >
-              <span className="text-lg font-semibold">{test.name}</span>
+        {/* Main Content */}
+        <main className="flex-1 bg-white p-4 sm:p-6 md:p-8 rounded-2xl shadow-lg">
+          <h3 className="text-xl sm:text-2xl font-bold text-dark-color mb-6">
+            {selectedCategory}
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5">
+            {testData[selectedCategory].map((test, index) => (
+              <div
+                key={index}
+                className={`group p-4 sm:p-5 border rounded-2xl transition-all duration-200 flex flex-col justify-between gap-3 text-sm sm:text-base shadow-sm ${
+                  test.locked
+                    ? "border-gray-300 bg-gray-100 text-gray-500"
+                    : "border-main-color bg-white hover:bg-main-color hover:text-white"
+                }`}
+              >
+                <span className="font-semibold">{test.name}</span>
 
-              {test.locked ? (
-                <div className="flex items-center justify-between text-sm mt-2">
-                  <span className="hidden sm:inline">🕓 ხელმისაწვდომია 03.06.2025</span>
-                  <Lock className="w-5 h-5" />
-                </div>
-              ) : (
-                <Link
-                  to={`/test/${encodeURIComponent(test.name)}/0`}
-                  className="text-sm font-semibold text-main-color group-hover:text-white transition-colors"
-                >
-                  დაწყება →
-                </Link>
-              )}
-            </div>
-          ))}
-        </div>
-      </main>
+                {test.locked ? (
+                  <div className="flex items-center justify-between mt-2 text-xs sm:text-sm">
+                    <span className="hidden sm:inline">🕓 ხელმისაწვდომია 03.06.2025</span>
+                    <Lock className="w-5 h-5" />
+                  </div>
+                ) : (
+                  <Link
+                    to={`/test/${encodeURIComponent(test.name)}/0`}
+                    className="font-semibold text-main-color group-hover:text-white transition-colors"
+                  >
+                    დაწყება →
+                  </Link>
+                )}
+              </div>
+            ))}
+          </div>
+        </main>
+      </div>
     </div>
   );
 };

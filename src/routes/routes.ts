@@ -5,12 +5,14 @@ export const PublicRoutes = {
 };
 
 export const privateRoutes = {
-    tests: "/tests",
-    testsSingle: "/tests/:category/:questionId",
-    leaderboard: "/leaderboard",
-    settings: "/settings", 
-    profile: "/profile"
+  tests: "/tests",
+  testsSingle: "/tests/:category/:questionId",
+  leaderboard: "/leaderboard",
+  settings: "/settings", 
+  profile: "/profile",
+  videoLessons: "/videoLessons"
 };
+
 
 export const routes = {
     ...PublicRoutes,
