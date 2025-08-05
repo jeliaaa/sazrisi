@@ -4,14 +4,76 @@
     --color-main-color: #FF9900;
     --color-dark-color: #1a202c;
     --color-primary-color: #1a202c1;
-    --color-texts-color: #fafcff 
+    --color-texts-color: #fafcff
 }
+
 @font-face {
     font-family: "NinoMtavruli";
     src: url(fonts/bpg_nino_mtavruli_bold.ttf);
 }
 
-*{
+* {
     font-family: "NinoMtavruli", sans-serif;
     font-weight: 500;
 }
+
+:root {
+    --font-multiplier: 1;
+}
+
+.title {
+    font-size: calc(1.25rem * var(--font-multiplier));
+    font-weight: bold;
+}
+
+.plain-text {
+    font-size: calc(0.875rem * var(--font-multiplier));
+}
+
+@media (min-width: 640px) {
+    .title {
+        font-size: calc(1.125rem * var(--font-multiplier));
+    }
+
+    .plain-text {
+        font-size: calc(1rem * var(--font-multiplier));
+    }
+}
+
+@media (min-width: 768px) {
+    .title {
+        font-size: calc(1.25rem * var(--font-multiplier));
+    }
+
+    .plain-text {
+        font-size: calc(1.125rem * var(--font-multiplier));
+    }
+}
+
+@media (min-width: 1024px) {
+    .title {
+        font-size: calc(1.5rem * var(--font-multiplier));
+    }
+
+    .plain-text {
+        font-size: calc(1.1rem * var(--font-multiplier));
+    }
+}
+
+.react-pdf__Page__textContent {
+    display: none;
+}
+
+/* .react-pdf__Document {
+    width: 320px !important;
+}
+
+.react-pdf__Page {
+    width: 320px !important;
+
+}
+
+.react-pdf__Page__canvas {
+    width: 320px !important;
+
+} */

@@ -3,6 +3,7 @@ import { routes } from "./routes";
 
 const IndexPage = lazy(() => import("../pages/Main"));
 const TestsPage = lazy(() => import("../pages/Tests"));
+const TestsStartPage = lazy(() => import("../pages/TestStart"));
 const TestsSinglePage = lazy(() => import("../pages/TestSingle"));
 const LeaderboardPage = lazy(() => import("../pages/Leaderboard"));
 const SettingsPage = lazy(() => import("../pages/Settings"));
@@ -23,8 +24,13 @@ export const privateRoutes = [
     component: TestsPage,
   },
   {
+    title: "testsStart",
+    path: routes.testsStart,
+    component: TestsStartPage,
+  },
+  {
     title: "testsSingle",
-    path: routes.testsSingle,
+    path: routes.testSingle,
     component: TestsSinglePage,
   },
   {
