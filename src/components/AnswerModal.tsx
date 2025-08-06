@@ -18,6 +18,8 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, quiz }: AnswerModalProps) 
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [questionStartTime, setQuestionStartTime] = useState<number>(Date.now());
     const [timeTaken, setTimeTaken] = useState<number[]>([]);
+    const [submittedQuestions, setSubmittedQuestions] = useState<Set<number>>(new Set());
+
 
     useEffect(() => {
         if (quiz?.total_questions) {
@@ -153,31 +155,59 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, quiz }: AnswerModalProps) 
 
 
     const handleSkip = () => {
-        const now = Date.now();
-        const timeSpent = Math.floor((now - questionStartTime) / 1000);
-        const updatedTimes = [...timeTaken];
-        updatedTimes[currentQuestionIndex] = timeSpent;
-        setTimeTaken(updatedTimes);
+        const questionId = currentQuestionIndex + 1;
 
-        setCurrentQuestionIndex((prev) => Math.min(questions.length - 1, prev + 1));
-        setQuestionStartTime(Date.now());
+        if (submittedQuestions.has(currentQuestionIndex)) {
+            alert("You have already completed this question.");
+            return;
+        }
+
+        // Submit skipped question with null answer
+        const skipPayload = {
+            question_id: questionId,
+            selected_answer: null,
+        };
+
+        // Example: API call
+        // await api.submitAnswer(skipPayload);
+        console.log("Skipping question:", skipPayload);
+
+        // Mark question as submitted (locked)
+        setSubmittedQuestions((prev) => new Set(prev).add(currentQuestionIndex));
+
+        // Move to next question if any
+        setCurrentQuestionIndex((prev) => {
+            const next = Math.min(questions.length - 1, prev + 1);
+            return next;
+        });
     };
 
     const handleTimedComplete = () => {
-        const now = Date.now();
-        const timeSpent = Math.floor((now - questionStartTime) / 1000);
-        const updatedTimes = [...timeTaken];
-        updatedTimes[currentQuestionIndex] = timeSpent;
-        setTimeTaken(updatedTimes);
+        const questionId = currentQuestionIndex + 1;
+        const selectedAnswer = answersTimed[currentQuestionIndex]; // or null if no answer chosen
 
-        const results = answersTimed.map((answer, i) => ({
-            question_id: i + 1,
-            selected_answer: answer,
-            time_taken: updatedTimes[i],
-        }));
+        if (submittedQuestions.has(currentQuestionIndex)) {
+            alert("You have already completed this question.");
+            return;
+        }
 
-        console.log("Submitted results:", results);
-        setIsOpen(false);
+        if (!selectedAnswer) {
+            alert("Please select an answer before completing.");
+            return;
+        }
+
+        // Submit the single answer object to backend
+        const answerPayload = {
+            question_id: questionId,
+            selected_answer: selectedAnswer,
+        };
+
+        // Example: API call
+        // await api.submitAnswer(answerPayload);
+        console.log("Submitting answer:", answerPayload);
+
+        // Mark question as submitted (locked)
+        setSubmittedQuestions((prev) => new Set(prev).add(currentQuestionIndex));
     };
 
     if (!isOpen) return null;
@@ -318,7 +348,9 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, quiz }: AnswerModalProps) 
                                             value={choice}
                                             checked={answersTimed[currentQuestionIndex] === choice}
                                             onChange={() => handleTimedAnswer(choice)}
+                                            disabled={submittedQuestions.has(currentQuestionIndex)} // disable if completed
                                         />
+
                                         <span>{georgianChoices[index]}</span>
                                     </label>
                                 );
