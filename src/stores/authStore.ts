@@ -10,6 +10,15 @@ export interface User {
     lastname: string;
     email: string;
     email_verified: boolean;
+    avatar: Avatar | null;
+    preferences: Preferences | null;
+}
+export interface Avatar {
+    url: string;
+}
+
+interface Preferences {
+    theme_color: string;
 }
 
 interface RegisterStep1Data {
@@ -20,9 +29,7 @@ interface RegisterStep1Data {
     rePassword: string;
 }
 
-interface RegisterStep2Data {
-    preferences: string;
-}
+
 
 // ---------- Auth State ----------
 interface AuthState {
@@ -40,7 +47,7 @@ interface AuthState {
 
     // Register
     registerBasic: (data: RegisterStep1Data) => Promise<boolean>;
-    setPreference: (data: RegisterStep2Data) => Promise<boolean>;
+    setPreference: (data: Preferences) => Promise<boolean>;
     uploadAvatar: (file: File) => Promise<boolean>;
 }
 
@@ -139,10 +146,20 @@ export const useAuthStore = create<AuthState>()(
                 }
             },
 
-            setPreference: async (data: RegisterStep2Data) => {
+            setPreference: async (data: Preferences) => {
                 try {
                     set({ loading: true, error: null });
-                    await apiV1.post('/user/preference/', data);
+                    const res = await apiV1.post('/user/preferences/', data);
+                    set((state) => {
+                        if (!state.user) return state; // or handle however you prefer
+                        return {
+                            user: {
+                                ...state.user,
+                                preferences: res.data,
+                            }
+                        };
+                    });
+
                     return true;
                 } catch (error) {
                     const err = error as AxiosError<{ detail?: string }>
@@ -157,8 +174,17 @@ export const useAuthStore = create<AuthState>()(
                 try {
                     set({ loading: true, error: null });
                     const formData = new FormData();
-                    formData.append('avatar', file);
-                    await apiV1.post('/user/avatar/', formData);
+                    formData.append('image', file);
+                    const res = await apiV1.post('/user/avatar/', formData);
+                    set((state) => {
+                        if (!state.user) return state; // or handle however you prefer
+                        return {
+                            user: {
+                                ...state.user,
+                                avatar: res.data,
+                            }
+                        };
+                    });
                     return true;
                 } catch (error) {
                     const err = error as AxiosError<{ detail?: string }>

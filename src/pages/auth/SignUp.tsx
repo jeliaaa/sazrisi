@@ -23,7 +23,7 @@ export default function SignUp() {
             lastname: "",
             email: "",
             password: "",
-            // rePassword: "",
+            rePassword: "",
             profile: null,
             preferences: "red"
         },
@@ -76,7 +76,7 @@ export default function SignUp() {
 
         if (currentStep === steps.preferences) {
             // Step 2: Send preferences
-            const success = await setPreference({ preferences: data.preferences });
+            const success = await setPreference({ theme_color: data.preferences });
             if (!success) return toast.error("პრეფერენციები ვერ გაიგზავნა.");
         }
 
