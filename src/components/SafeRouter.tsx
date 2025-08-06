@@ -6,7 +6,7 @@ import { Navigate } from "react-router-dom";
 function SafeRoute({ children }: { children: React.ReactNode }) {
     const { user, getCurrentUser, loading } = useAuthStore();
 
-    const isAuth = !!user;
+    const isAuth = !user;
 
     useEffect(() => {
         if (!user && !loading) {
