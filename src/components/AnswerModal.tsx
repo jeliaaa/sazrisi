@@ -152,39 +152,11 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, quiz }: AnswerModalProps) 
         updatedAnswers[currentQuestionIndex] = choice;
         setAnswersTimed(updatedAnswers);
     };
-
-
-    const handleSkip = () => {
-        const questionId = currentQuestionIndex + 1;
-
-        if (submittedQuestions.has(currentQuestionIndex)) {
-            alert("You have already completed this question.");
-            return;
-        }
-
-        // Submit skipped question with null answer
-        const skipPayload = {
-            question_id: questionId,
-            selected_answer: null,
-        };
-
-        // Example: API call
-        // await api.submitAnswer(skipPayload);
-        console.log("Skipping question:", skipPayload);
-
-        // Mark question as submitted (locked)
-        setSubmittedQuestions((prev) => new Set(prev).add(currentQuestionIndex));
-
-        // Move to next question if any
-        setCurrentQuestionIndex((prev) => {
-            const next = Math.min(questions.length - 1, prev + 1);
-            return next;
-        });
-    };
-
     const handleTimedComplete = () => {
         const questionId = currentQuestionIndex + 1;
-        const selectedAnswer = answersTimed[currentQuestionIndex]; // or null if no answer chosen
+        const selectedAnswer = answersTimed[currentQuestionIndex]; // current answer
+        const now = Date.now();
+        const timeSpent = Math.floor((now - questionStartTime) / 1000);
 
         if (submittedQuestions.has(currentQuestionIndex)) {
             alert("You have already completed this question.");
@@ -196,19 +168,66 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, quiz }: AnswerModalProps) 
             return;
         }
 
-        // Submit the single answer object to backend
+        // Submit answer
         const answerPayload = {
             question_id: questionId,
             selected_answer: selectedAnswer,
+            time_taken: timeSpent,
         };
 
-        // Example: API call
-        // await api.submitAnswer(answerPayload);
         console.log("Submitting answer:", answerPayload);
 
         // Mark question as submitted (locked)
         setSubmittedQuestions((prev) => new Set(prev).add(currentQuestionIndex));
+
+        // Log time
+        console.log(`Time spent on question ${questionId}: ${timeSpent} seconds`);
+
+        // Reset timer for next question when switching (optional)
+        setQuestionStartTime(Date.now());
     };
+
+
+    const handleSkip = () => {
+        const questionId = currentQuestionIndex + 1;
+        const now = Date.now();
+        const timeSpent = Math.floor((now - questionStartTime) / 1000);
+
+        if (submittedQuestions.has(currentQuestionIndex)) {
+            alert("You have already completed this question.");
+            return;
+        }
+
+        // Submit skip with no answer
+        const skipPayload = {
+            question_id: questionId,
+            selected_answer: null,
+            time_taken: timeSpent,
+        };
+
+        console.log("Skipping question:", skipPayload);
+
+        // Clear answer for this question so user can return and answer later
+        setAnswersTimed((prev) => {
+            const copy = [...prev];
+            copy[currentQuestionIndex] = null;
+            return copy;
+        });
+
+        // Log time
+        console.log(`Time spent on question ${questionId} before skipping: ${timeSpent} seconds`);
+
+        // Mark question as submitted (locked)
+        setSubmittedQuestions((prev) => new Set(prev).add(currentQuestionIndex));
+
+        // Move to next question (if any)
+        setCurrentQuestionIndex((prev) => {
+            const next = Math.min(questions.length - 1, prev + 1);
+            setQuestionStartTime(Date.now());
+            return next;
+        });
+    };
+
 
     if (!isOpen) return null;
 
@@ -348,8 +367,9 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, quiz }: AnswerModalProps) 
                                             value={choice}
                                             checked={answersTimed[currentQuestionIndex] === choice}
                                             onChange={() => handleTimedAnswer(choice)}
-                                            disabled={submittedQuestions.has(currentQuestionIndex)} // disable if completed
+                                            disabled={submittedQuestions.has(currentQuestionIndex)}
                                         />
+
 
                                         <span>{georgianChoices[index]}</span>
                                     </label>
