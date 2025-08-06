@@ -16,8 +16,10 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining }: AnswerModalProps) => {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     console.log(isTraining)
     useEffect(() => {
-        if (!isTraining) {
+        if (isTraining) {
             setActiveTab("no-time")
+        } else {
+            setActiveTab('timed')
         }
     }, [isTraining])
     // Position and size state
