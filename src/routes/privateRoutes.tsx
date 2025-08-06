@@ -2,36 +2,35 @@ import { lazy } from "react";
 import { routes } from "./routes";
 
 const IndexPage = lazy(() => import("../pages/Main"));
-const TestsPage = lazy(() => import("../pages/Tests"));
-const TestsStartPage = lazy(() => import("../pages/TestStart"));
-const TestsSinglePage = lazy(() => import("../pages/TestSingle"));
+const QuizPage = lazy(() => import("../pages/Quizs"));
+const QuizStartPage = lazy(() => import("../pages/QuizStart"));
+const QuizSinglePage = lazy(() => import("../pages/QuizSingle"));
 const LeaderboardPage = lazy(() => import("../pages/Leaderboard"));
 const SettingsPage = lazy(() => import("../pages/Settings"));
 const ProfilePage = lazy(() => import("../pages/Profile"));
 const VideoLessonsPage = lazy(() => import("../pages/VideoLessons"));
 const ChatPage = lazy(() => import("../pages/Chat"));
 
-
 export const privateRoutes = [
   {
     title: "main",
     path: routes.main,
-    component: IndexPage
+    component: IndexPage,
   },
   {
-    title: "tests",
-    path: routes.tests,
-    component: TestsPage,
+    title: "quizs",
+    path: routes.quizs,
+    component: QuizPage,
   },
   {
-    title: "testsStart",
-    path: routes.testsStart,
-    component: TestsStartPage,
+    title: "quizStart",
+    path: routes.quizStart,
+    component: QuizStartPage,
   },
   {
-    title: "testsSingle",
-    path: routes.testSingle,
-    component: TestsSinglePage,
+    title: "quizSingle",
+    path: routes.quizSingle,
+    component: QuizSinglePage,
   },
   {
     title: "leaderboard",

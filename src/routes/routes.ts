@@ -5,16 +5,15 @@ export const PublicRoutes = {
 
 export const privateRoutes = {
   main: "/",
-  tests: "/tests",
-  testsStart: "/tests/:category/",
-  testSingle: "/tests/:category/test",
+  quizs: "/quizs",
+  quizStart: "/quiz/:category/",
+  quizSingle: "/quiz/:category/quiz",
   leaderboard: "/leaderboard",
   settings: "/settings",
   profile: "/profile",
   videoLessons: "/videoLessons",
   chat: "/chat"
 };
-
 
 export const routes = {
   ...PublicRoutes,

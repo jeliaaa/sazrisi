@@ -3,7 +3,7 @@ import myPdf from '../assets/test.pdf';
 import { useState } from "react";
 import AnswerModal from "../components/AnswerModal";
 import { Pen, Sheet } from "lucide-react";
-const TestSingle = () => {
+const QuizSingle = () => {
     const [answersModal, setAnswersModal] = useState<boolean>(false)
 
     return (
@@ -25,4 +25,4 @@ const TestSingle = () => {
     )
 }
 
-export default TestSingle
+export default QuizSingle

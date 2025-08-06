@@ -14,9 +14,9 @@ type Category =
 
 const lockedCategories: Category[] = ["ისტორია", "ქიმია"];
 
-type TestItem = { name: string; locked: boolean };
+type QuizItem = { name: string; locked: boolean };
 
-const testData: Record<Category, TestItem[]> = {
+const testData: Record<Category, QuizItem[]> = {
   მათემატიკა: [
     { name: "მათემატიკა - ეროვნული N1", locked: false },
     { name: "მათემატიკა - ეროვნული N2", locked: true },
@@ -54,7 +54,7 @@ const testData: Record<Category, TestItem[]> = {
   ],
 };
 
-const Tests = () => {
+const Quizs = () => {
   const [selectedCategory, setSelectedCategory] = useState<Category>("მათემატიკა");
 
   return (
@@ -126,4 +126,4 @@ const Tests = () => {
   );
 };
 
-export default Tests;
+export default Quizs;

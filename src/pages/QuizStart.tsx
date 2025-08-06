@@ -2,7 +2,7 @@ import { Clock, Trophy, Target, Calendar, BookOpen, Star, FileQuestionMark, X } 
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-const TestStart = () => {
+const QuizStart = () => {
     const [questionModal, setQuestionModal] = useState<boolean>(false);
 
     return (
@@ -108,4 +108,4 @@ const TestStart = () => {
     )
 }
 
-export default TestStart
+export default QuizStart
