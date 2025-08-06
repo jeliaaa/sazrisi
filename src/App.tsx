@@ -22,9 +22,7 @@ function App() {
             ))}
           </Route>
           {publicRoutes.map(({ path, component: Component }) => (
-            <AuthRoute>
-              <Route key={path} path={path} element={<Component />} />
-            </AuthRoute>
+            <Route key={path} path={path} element={<AuthRoute><Component /></AuthRoute>} />
           ))}
         </Routes>
       </Suspense>
