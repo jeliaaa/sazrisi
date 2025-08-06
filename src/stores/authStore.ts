@@ -1,111 +1,177 @@
-import { create } from "zustand";
-import { AxiosError } from "axios";
-import { User } from "../types/types";
-import { apiV1 } from "../utils/axios";
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import { apiV1 } from '../utils/axios';
+import { AxiosError } from 'axios';
 
-interface AuthState {
-  user: User | null;
-  loading: boolean;
-  error: string | null;
-  registerBasic: (data: RegisterStep1Data) => Promise<boolean>;
-  setPreference: (data: RegisterStep2Data) => Promise<boolean>;
-  uploadAvatar: (file: File) => Promise<boolean>;
-  login: (email: string, password: string) => Promise<boolean>;
-  logout: () => void;
-  getCurrentUser: () => Promise<void>;
+// ---------- Types ----------
+export interface User {
+    id: number;
+    firstname: string;
+    lastname: string;
+    email: string;
+    email_verified: boolean;
 }
 
 interface RegisterStep1Data {
-  firstname: string;
-  lastname: string;
-  email: string;
-  password: string;
-  rePassword: string;
+    firstname: string;
+    lastname: string;
+    email: string;
+    password: string;
+    rePassword: string;
 }
 
 interface RegisterStep2Data {
-  preferences: string;
+    preferences: string;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
-  loading: true,
-  error: null,
+// ---------- Auth State ----------
+interface AuthState {
+    user: User | null;
+    loading: boolean;
+    error: string | null;
+    isAuth: boolean;
 
-  registerBasic: async (data) => {
-    try {
-      set({ loading: true, error: null });
-      const res = await apiV1.post("/user/register/", data);
-      set({ user: res.data });
-      return true;
-    } catch (error) {
-      const err = error as AxiosError<{ message?: string }>;
-      set({ error: err.response?.data?.message || "Registration failed" });
-      return false;
-    } finally {
-      set({ loading: false });
-    }
-  },
+    // Auth
+    login: (email: string, password: string) => Promise<boolean>;
+    logout: () => Promise<void>;
+    fetchMe: () => Promise<void>;
+    resetPassword: (params: { currentPassword: string; newPassword: string }) => Promise<void>;
+    update: (params: { email?: string | null; theme_color?: string }) => Promise<void>;
 
-  setPreference: async (data) => {
-    try {
-      set({ loading: true, error: null });
-      await apiV1.post("/user/preference/", data);
-      return true;
-    } catch (error) {
-      const err = error as AxiosError<{ message?: string }>;
-      set({ error: err.response?.data?.message || "Preference update failed" });
-      return false;
-    } finally {
-      set({ loading: false });
-    }
-  },
+    // Register
+    registerBasic: (data: RegisterStep1Data) => Promise<boolean>;
+    setPreference: (data: RegisterStep2Data) => Promise<boolean>;
+    uploadAvatar: (file: File) => Promise<boolean>;
+}
 
-  uploadAvatar: async (file) => {
-    try {
-      set({ loading: true, error: null });
-      const formData = new FormData();
-      formData.append("avatar", file);
-      await apiV1.post("/user/avatar/", formData);
-      return true;
-    } catch (error) {
-      const err = error as AxiosError<{ message?: string }>;
-      set({ error: err.response?.data?.message || "Avatar upload failed" });
-      return false;
-    } finally {
-      set({ loading: false });
-    }
-  },
+// ---------- Store ----------
+export const useAuthStore = create<AuthState>()(
+    persist(
+        (set, get) => ({
+            user: null,
+            loading: false,
+            error: null,
+            isAuth: false,
 
-  login: async (email, password) => {
-    try {
-      set({ loading: true, error: null });
-      const res = await apiV1.post("/user/login/", { email, password });
-      set({ user: res.data });
-      return true;
-    } catch (error) {
-      const err = error as AxiosError<{ message?: string }>;
-      set({ error: err.response?.data?.message || "Login failed" });
-      return false;
-    } finally {
-      set({ loading: false });
-    }
-  },
+            // ---------- Auth ----------
+            login: async (email, password) => {
+                try {
+                    set({ loading: true, error: null });
+                    await apiV1.post('/user/login/', { email, password });
+                    await get().fetchMe();
+                    set({ isAuth: true });
+                    return true;
+                } catch (error) {
+                    const err = error as AxiosError<{ detail?: string }>
+                    set({ error: err.response?.data?.detail || 'Login failed', isAuth: false });
+                    return false;
+                } finally {
+                    set({ loading: false });
+                }
+            },
 
-  logout: () => {
-    set({ user: null });
-    // optionally: await apiV1.post("/user/logout/")
-  },
+            logout: async () => {
+                try {
+                    set({ loading: true });
+                    await apiV1.post('/user/logout');
+                } catch (error) {
+                    const err = error as AxiosError<{ detail?: string }>
+                    console.warn('Logout request failed' + err);
+                } finally {
+                    set({ user: null, isAuth: false, loading: false, error: null });
+                }
+            },
 
-  getCurrentUser: async () => {
-    try {
-      set({ loading: true });
-      const res = await apiV1.get("/user/profile/");
-      set({ user: res.data });
-    } catch {
-      set({ user: null });
-    } finally {
-      set({ loading: false });
-    }
-  },
-}));
+            fetchMe: async () => {
+                try {
+                    set({ loading: true, error: null });
+                    const res = await apiV1.get<User>('/user/profile');
+                    set({ user: res.data, isAuth: true });
+                } catch (error) {
+                    const err = error as AxiosError<{ detail?: string }>
+                    set({ error: err.response?.data?.detail || 'Failed to fetch user', isAuth: false });
+                } finally {
+                    set({ loading: false });
+                }
+            },
+
+            resetPassword: async ({ currentPassword, newPassword }) => {
+                try {
+                    set({ loading: true, error: null });
+                    await apiV1.post('/user/change-password', {
+                        prev_password: currentPassword,
+                        new_password: newPassword,
+                    });
+                } catch (error) {
+                    const err = error as AxiosError<{ detail?: string }>
+                    set({ error: err.response?.data?.detail || 'Something went wrong' });
+                } finally {
+                    set({ loading: false });
+                }
+            },
+
+            update: async ({ email, theme_color }) => {
+                try {
+                    set({ loading: true, error: null });
+                    const res = await apiV1.post<User>('/user/update', { email, theme_color });
+                    set({ user: res.data });
+                } catch (error) {
+                    const err = error as AxiosError<{ detail?: string }>
+                    set({ error: err.response?.data?.detail || 'Update failed' });
+                } finally {
+                    set({ loading: false });
+                }
+            },
+
+            // ---------- Register ----------
+            registerBasic: async (data: RegisterStep1Data) => {
+                try {
+                    set({ loading: true, error: null });
+                    const res = await apiV1.post<User>('/user/register/', data);
+                    set({ user: res.data });
+                    return true;
+                } catch (error) {
+                    const err = error as AxiosError<{ detail?: string }>
+                    set({ error: err.response?.data?.detail || 'Registration failed' });
+                    return false;
+                } finally {
+                    set({ loading: false });
+                }
+            },
+
+            setPreference: async (data: RegisterStep2Data) => {
+                try {
+                    set({ loading: true, error: null });
+                    await apiV1.post('/user/preference/', data);
+                    return true;
+                } catch (error) {
+                    const err = error as AxiosError<{ detail?: string }>
+                    set({ error: err.response?.data?.detail || 'Preference update failed' });
+                    return false;
+                } finally {
+                    set({ loading: false });
+                }
+            },
+
+            uploadAvatar: async (file: File) => {
+                try {
+                    set({ loading: true, error: null });
+                    const formData = new FormData();
+                    formData.append('avatar', file);
+                    await apiV1.post('/user/avatar/', formData);
+                    return true;
+                } catch (error) {
+                    const err = error as AxiosError<{ detail?: string }>
+                    set({ error: err.response?.data?.detail || 'Avatar upload failed' });
+                    return false;
+                } finally {
+                    set({ loading: false });
+                }
+            },
+        }),
+        {
+            name: 'auth-storage',
+            partialize: (state) => ({ isAuth: state.isAuth }),
+        }
+    )
+);
