@@ -46,7 +46,7 @@ const Quizs = () => {
                         : "bg-gray-50 hover:bg-gray-200 text-gray-700"
                       }`}
                   >
-                    <span>{cat.name}</span>
+                    <span>{cat.title}</span>
                     {isLocked && <Lock className="w-4 h-4" />}
                   </button>
                 </li>
