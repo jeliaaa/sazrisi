@@ -1,24 +1,49 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useQuizStore } from "../stores/quizStore";
 import Lock from "../icons/lock-solid.svg?react";
 import { Category } from "../types/types";
-// import Clock from "../../icons/clock.svg?react";
+import { apiV2 } from "../utils/axios";
 
-const lockedCategories = [2, 5]; // use actual locked IDs here
+// Example locked category IDs
+const lockedCategories = [2, 5];
+
+interface Quiz {
+  id: number;
+  title: string;
+  description?: string;
+  // Add more fields if your backend returns them
+}
 
 const Quizs = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const selectedCategoryId = Number(searchParams.get("categoryId"));
 
+  const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const { categories, fetchCategories } = useQuizStore();
 
+  // Fetch categories on mount
   useEffect(() => {
     fetchCategories();
+  }, []);
 
-  }, [fetchCategories]);
-  console.log(categories);
+  // Fetch quizzes when categoryId changes
+  useEffect(() => {
+    const fetchQuizzes = async () => {
+      if (!selectedCategoryId) return;
+      try {
+        const res = await apiV2.get(`/quiz/category/${selectedCategoryId}/quizzes/`);
+        setQuizzes(res.data);
+        console.log("Fetched quizzes:", res.data);
+      } catch (err) {
+        console.error("Error fetching quizzes:", err);
+      }
+    };
+
+    fetchQuizzes();
+  }, [selectedCategoryId]);
+
   const handleCategoryClick = (id: number, locked: boolean) => {
     if (!locked) {
       navigate(`?categoryId=${id}`);
@@ -56,16 +81,31 @@ const Quizs = () => {
         </aside>
 
         {/* Main */}
-        <main className="flex-1 bg-white p-6 rounded-2xl shadow-lg flex items-center justify-center text-gray-400">
+        <main className="flex-1 bg-white p-6 rounded-2xl shadow-lg">
           {selectedCategoryId ? (
-            <div className="text-center">
-              <h3 className="text-xl sm:text-2xl font-bold text-dark-color mb-4">
+            <div>
+              <h3 className="text-xl sm:text-2xl font-bold text-dark-color mb-6">
                 ტესტები კატეგორიაში #{selectedCategoryId}
               </h3>
-              <p className="text-sm">აქ გამოჩნდება შესაბამისი ტესტების სია</p>
+
+              {quizzes.length === 0 ? (
+                <p className="text-sm text-gray-500">ტესტები ვერ მოიძებნა.</p>
+              ) : (
+                <ul className="space-y-4">
+                  {quizzes.map((quiz) => (
+                    <li
+                      key={quiz.id}
+                      className="border border-gray-200 p-4 rounded-xl shadow-sm hover:shadow-md transition"
+                    >
+                      <h4 className="text-lg font-semibold">{quiz.title}</h4>
+                      {quiz.description && <p className="text-sm text-gray-600">{quiz.description}</p>}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           ) : (
-            <span>აირჩიეთ კატეგორია მარცხნიდან</span>
+            <span className="text-gray-500">აირჩიეთ კატეგორია მარცხნიდან</span>
           )}
         </main>
       </div>

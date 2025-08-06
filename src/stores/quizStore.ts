@@ -18,4 +18,12 @@ export const useQuizStore = create<QuizStore>((set) => ({
             console.error('Failed to fetch categories:', error);
         }
     },
+    // fetchCategoryQuizes: async (category_id: number) => {
+    //     try {
+    //         const res = await apiV2.get<any>(`/quiz/category/${category_id}/quizzes`);
+    //         set({ quizes: res.data });
+    //     } catch (error) {
+    //         console.error('Failed to fetch categories:', error);
+    //     }
+    // },
 }));
