@@ -31,7 +31,7 @@ export default function SignUp() {
 
     useEffect(() => {
         if (isAuth) {
-            nav('/')
+            setCurrentStep(steps.preferences)
         }
     }, [isAuth, nav])
     const {
@@ -142,7 +142,7 @@ export default function SignUp() {
                                         type="submit"
                                         className="px-4 py-2 text-sm font-medium bg-dark-color text-white rounded cursor-pointer hover:bg-gray-800"
                                     >
-                                        {currentStep === steps.profile ? "რეგისტრაცია" : "შემდეგ"}
+                                        {currentStep === steps.info ? "რეგისტრაცია" : "შემდეგ"}
                                     </button>
                                 </div>
                             )}

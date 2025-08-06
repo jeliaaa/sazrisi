@@ -2,6 +2,7 @@ import { useFormContext, useController } from "react-hook-form";
 import { SignUpFormData } from "../../../types/types";
 import { useState } from "react";
 
+
 const ProfilePicture = () => {
     const { control } = useFormContext<SignUpFormData>();
     const {
