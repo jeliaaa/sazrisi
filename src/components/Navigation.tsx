@@ -12,7 +12,7 @@ const Navigation = () => {
   const { profileImage } = useUser();
 
   const navigationList = [
-    { to: "/tests", name: "ტესტები", Icon: TestsIcon },
+    { to: "/quizs", name: "ტესტები", Icon: TestsIcon },
     { to: "/leaderboard", name: "ლიდერბორდი", Icon: LeaderboardIcon },
     { to: "/settings", name: "პარამეტრები", Icon: SettingsIcon },
     { to: "/videoLessons", name: "ვიდეო გაკვეთილები", Icon: VideoLessons },

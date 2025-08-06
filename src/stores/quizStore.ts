@@ -1,10 +1,7 @@
 import { create } from 'zustand';
 import { apiV2 } from '../utils/axios';
+import { Category } from '../types/types';
 
-interface Category {
-    id: number;
-    name: string;
-}
 
 interface QuizStore {
     categories: Category[];

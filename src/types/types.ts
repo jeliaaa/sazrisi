@@ -25,10 +25,17 @@ export const stepLabels: Record<steps, string> = {
 };
 
 export interface User {
-  id: number;
-  firstname: string;
-  lastname: string;
-  email: string;
-  preference: string;
-//   email_verified: boolean;
+    id: number;
+    firstname: string;
+    lastname: string;
+    email: string;
+    preference: string;
+    //   email_verified: boolean;
+}
+
+
+//Quizs
+export interface Category {
+    id: number;
+    name: string;
 }
