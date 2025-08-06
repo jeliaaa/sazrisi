@@ -11,13 +11,13 @@ const QuizStart = () => {
     useEffect(() => {
         if (catId && id) {
             fetchQuizStart(catId, id)
-            console.log(quizzStart);
-
         }
     }, [fetchQuizStart, catId, id]);
     if (loading) {
         return <Loader />
     }
+    console.log(quizzStart);
+
 
 
 
