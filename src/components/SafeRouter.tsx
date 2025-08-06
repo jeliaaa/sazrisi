@@ -13,6 +13,7 @@ function SafeRoute({ children }: { children: React.ReactNode }) {
             getCurrentUser();
         }
     }, [user, loading, getCurrentUser]);
+    console.log(user);
 
     if (loading) return <Loader />;
     if (!isAuth) return <Navigate to="/login" replace />;
