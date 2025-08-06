@@ -33,7 +33,7 @@ export default function SignUp() {
         if (isAuth) {
             setCurrentStep(steps.preferences)
         }
-    }, [isAuth, nav])
+    }, [])
     const {
         watch,
         handleSubmit,
