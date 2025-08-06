@@ -3,9 +3,11 @@ import myPdf from '../assets/test.pdf';
 import { useState } from "react";
 import AnswerModal from "../components/AnswerModal";
 import { Pen, Sheet } from "lucide-react";
+import { useParams } from "react-router-dom";
 const QuizSingle = () => {
     const [answersModal, setAnswersModal] = useState<boolean>(false)
-
+    const { id } = useParams();
+    console.log(id);
     return (
         <div className="h-screen overflow-hidden">
             <PDFViewer fileUrl={myPdf} />

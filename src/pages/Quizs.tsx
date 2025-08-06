@@ -1,49 +1,31 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import { useQuizStore } from "../stores/quizStore";
 import Lock from "../icons/lock-solid.svg?react";
 import { Category } from "../types/types";
-import { apiV2 } from "../utils/axios";
-
 // Example locked category IDs
 const lockedCategories = [2, 5];
 
-interface Quiz {
-  id: number;
-  title: string;
-  description?: string;
-  // Add more fields if your backend returns them
-}
 
 const Quizs = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const selectedCategoryId = Number(searchParams.get("categoryId"));
 
-  const [quizzes, setQuizzes] = useState<Quiz[]>([]);
-  const { categories, fetchCategories } = useQuizStore();
+  const { categories, fetchCategories, quizzes, fetchCategoryQuizzes } = useQuizStore();
 
   // Fetch categories on mount
   useEffect(() => {
     fetchCategories();
-  }, []);
+  }, [fetchCategories]);
 
   // Fetch quizzes when categoryId changes
-  useEffect(() => {
-    const fetchQuizzes = async () => {
-      if (!selectedCategoryId) return;
-      try {
-        const res = await apiV2.get(`/quiz/category/${selectedCategoryId}/quizzes/`);
-        setQuizzes(res.data);
-        console.log("Fetched quizzes:", res.data);
-        console.log(categories)
-      } catch (err) {
-        console.error("Error fetching quizzes:", err);
-      }
-    };
+   useEffect(() => {
+    if (selectedCategoryId) {
+      fetchCategoryQuizzes(selectedCategoryId);
+    }
+  }, [selectedCategoryId, fetchCategoryQuizzes]);
 
-    fetchQuizzes();
-  }, [selectedCategoryId, categories]);
 
   const handleCategoryClick = (id: number, locked: boolean) => {
     if (!locked) {

@@ -1,15 +1,19 @@
 import { create } from 'zustand';
 import { apiV2 } from '../utils/axios';
-import { Category } from '../types/types';
+import { Category, Quiz } from '../types/types';
 
 
 interface QuizStore {
     categories: Category[];
+    quizzes: Quiz[];
     fetchCategories: () => Promise<void>;
+    fetchCategoryQuizzes: (categoryId: number) => Promise<void>;
 }
 
 export const useQuizStore = create<QuizStore>((set) => ({
     categories: [],
+    quizzes: [],
+
     fetchCategories: async () => {
         try {
             const res = await apiV2.get<Category[]>('/category/list/');
@@ -18,12 +22,13 @@ export const useQuizStore = create<QuizStore>((set) => ({
             console.error('Failed to fetch categories:', error);
         }
     },
-    // fetchCategoryQuizes: async (category_id: number) => {
-    //     try {
-    //         const res = await apiV2.get<any>(`/quiz/category/${category_id}/quizzes`);
-    //         set({ quizes: res.data });
-    //     } catch (error) {
-    //         console.error('Failed to fetch categories:', error);
-    //     }
-    // },
+
+    fetchCategoryQuizzes: async (categoryId: number) => {
+        try {
+            const res = await apiV2.get(`/quiz/category/${categoryId}/quizzes/`);
+            set({ quizzes: res.data });
+        } catch (error) {
+            console.error('Failed to fetch quizzes:', error);
+        }
+    },
 }));

@@ -39,3 +39,13 @@ export interface Category {
     id: number;
     title: string;
 }
+
+export interface Quiz {
+  id: number;
+  title: string;
+  description: string;
+  is_paid: boolean;
+  price: string;
+  has_access: boolean;
+  access_expires_at: string; // ISO date string, e.g., "2025-08-30T18:00:00Z"
+}
