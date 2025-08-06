@@ -16,9 +16,10 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, quiz }: AnswerModalProps) 
     const [answersNoTime, setAnswersNoTime] = useState<(string | null)[]>(Array(quiz?.total_questions).fill(null));
     const [answersTimed, setAnswersTimed] = useState<(string | null)[]>(Array(quiz?.total_questions).fill(null));
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    const [questionStartTime, setQuestionStartTime] = useState<number>(Date.now());
-    const [timeTaken, setTimeTaken] = useState<number[]>([]);
+    const [questionStartTime, setQuestionStartTime] = useState<number | null>(Date.now());
     const [submittedQuestions, setSubmittedQuestions] = useState<Set<number>>(new Set());
+    const [elapsedTimes, setElapsedTimes] = useState<number[]>(Array(quiz?.total_questions).fill(0));
+
 
 
     useEffect(() => {
@@ -26,7 +27,6 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, quiz }: AnswerModalProps) 
             setQuestions(Array.from({ length: quiz.total_questions }, (_, i) => `Question ${i + 1}`));
             setAnswersNoTime(Array(quiz.total_questions).fill(null));
             setAnswersTimed(Array(quiz.total_questions).fill(null));
-            setTimeTaken(Array(quiz.total_questions).fill(0));
         }
     }, [quiz]);
     useEffect(() => {
@@ -127,17 +127,23 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, quiz }: AnswerModalProps) 
 
 
     const handleQuestionSwitch = (newIndex: number) => {
-        // Save time spent on current question before switching
-        const now = Date.now();
-        const timeSpent = Math.floor((now - questionStartTime) / 1000);
-        const updatedTimes = [...timeTaken];
-        updatedTimes[currentQuestionIndex] = timeSpent;
-        setTimeTaken(updatedTimes);
+        if (questionStartTime !== null) {
+            // Save elapsed time of current question before switching away
+            const now = Date.now();
+            const timeSpent = Math.floor((now - questionStartTime) / 1000);
+            setElapsedTimes(prev => {
+                const updated = [...prev];
+                updated[currentQuestionIndex] = (updated[currentQuestionIndex] || 0) + timeSpent;
+                return updated;
+            });
+        }
 
-        // Switch question and reset timer
         setCurrentQuestionIndex(newIndex);
+
+        // Resume timer for new question
         setQuestionStartTime(Date.now());
     };
+
 
 
 
@@ -156,7 +162,10 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, quiz }: AnswerModalProps) 
         const questionId = currentQuestionIndex + 1;
         const selectedAnswer = answersTimed[currentQuestionIndex]; // current answer
         const now = Date.now();
-        const timeSpent = Math.floor((now - questionStartTime) / 1000);
+        let timeSpent;
+        if (questionStartTime) {
+            timeSpent = Math.floor((now - questionStartTime) / 1000);
+        }
 
         if (submittedQuestions.has(currentQuestionIndex)) {
             alert("You have already completed this question.");
@@ -189,39 +198,38 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, quiz }: AnswerModalProps) 
 
 
     const handleSkip = () => {
-        const questionId = currentQuestionIndex + 1;
-        const now = Date.now();
-        const timeSpent = Math.floor((now - questionStartTime) / 1000);
-
-        if (submittedQuestions.has(currentQuestionIndex)) {
-            alert("You have already completed this question.");
+        if (questionStartTime === null) {
+            // Timer already paused, just move on
+            setCurrentQuestionIndex(prev => {
+                const next = Math.min(questions.length - 1, prev + 1);
+                setQuestionStartTime(Date.now()); // start timer for next question
+                return next;
+            });
             return;
         }
 
-        // Submit skip with no answer
-        const skipPayload = {
-            question_id: questionId,
-            selected_answer: null,
-            time_taken: timeSpent,
-        };
+        const now = Date.now();
+        const timeSpent = Math.floor((now - questionStartTime) / 1000);
 
-        console.log("Skipping question:", skipPayload);
-
-        // Clear answer for this question so user can return and answer later
-        setAnswersTimed((prev) => {
-            const copy = [...prev];
-            copy[currentQuestionIndex] = null;
-            return copy;
+        // Add timeSpent to elapsedTimes for current question
+        setElapsedTimes(prev => {
+            const updated = [...prev];
+            updated[currentQuestionIndex] = (updated[currentQuestionIndex] || 0) + timeSpent;
+            return updated;
         });
 
-        // Log time
-        console.log(`Time spent on question ${questionId} before skipping: ${timeSpent} seconds`);
+        // Clear answer for current question
+        setAnswersTimed(prev => {
+            const updated = [...prev];
+            updated[currentQuestionIndex] = null;
+            return updated;
+        });
 
-        // Mark question as submitted (locked)
-        setSubmittedQuestions((prev) => new Set(prev).add(currentQuestionIndex));
+        // Pause timer for current question
+        setQuestionStartTime(null);
 
-        // Move to next question (if any)
-        setCurrentQuestionIndex((prev) => {
+        // Move to next question & start its timer
+        setCurrentQuestionIndex(prev => {
             const next = Math.min(questions.length - 1, prev + 1);
             setQuestionStartTime(Date.now());
             return next;
@@ -349,6 +357,9 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, quiz }: AnswerModalProps) 
                         {/* Question info */}
                         <div className="text-center text-base font-semibold">
                             კითხვა {currentQuestionIndex + 1} / {questions.length}
+                            <div className="text-center text-sm italic text-gray-600 mt-2">
+                                Time spent: {elapsedTimes[currentQuestionIndex]} seconds
+                            </div>
                         </div>
 
                         {/* Answers */}
