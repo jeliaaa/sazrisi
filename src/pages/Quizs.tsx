@@ -33,7 +33,7 @@ const Quizs = () => {
     const fetchQuizzes = async () => {
       if (!selectedCategoryId) return;
       try {
-        const res = await apiV2.get(`/quiz/category/${selectedCategoryId}/quizzes/`);
+        const res = await apiV2.get(`/quiz/category/${selectedCategoryId}/quizzes/0/`);
         setQuizzes(res.data);
         console.log("Fetched quizzes:", res.data);
       } catch (err) {
