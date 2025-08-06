@@ -36,6 +36,7 @@ const Quizs = () => {
         const res = await apiV2.get(`/quiz/category/${selectedCategoryId}/quizzes/0/`);
         setQuizzes(res.data);
         console.log("Fetched quizzes:", res.data);
+        console.log(categories)
       } catch (err) {
         console.error("Error fetching quizzes:", err);
       }
