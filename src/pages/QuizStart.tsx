@@ -7,13 +7,12 @@ import Loader from '../components/reusables/Loader';
 const QuizStart = () => {
     const [questionModal, setQuestionModal] = useState<boolean>(false);
     const { catId, id } = useParams();
-    const { loading, fetchQuizStart } = useQuizStore();
+    const { loading, fetchQuizStart, quizzStart } = useQuizStore();
     useEffect(() => {
         if (catId && id) {
             fetchQuizStart(catId, id)
         }
     }, [fetchQuizStart, catId, id]);
-    console.log(catId, id);
     if (loading) {
         return <Loader />
     }
@@ -34,8 +33,8 @@ const QuizStart = () => {
                 </div>
 
                 <div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-2 title">ქუიზის სათაური</h3>
-                    <p className="text-gray-600 plain-text">ეს არის ქუიზის აღწერა. შეგიძლიათ დაიწყოთ ქვიზი და შეამოწმოთ თქვენი ცოდნა.</p>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2 title">{quizzStart?.title}</h3>
+                    <p className="text-gray-600 plain-text">{quizzStart?.description}</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -43,28 +42,28 @@ const QuizStart = () => {
                         <Target className="h-5 w-5 text-main-color mr-3" />
                         <div>
                             <div className="text-sm text-main-color plain-text">შეკითხვების რაოდენობა</div>
-                            <div className="font-semibold text-main-color title">10</div>
+                            <div className="font-semibold text-main-color title">{quizzStart?.total_questions}</div>
                         </div>
                     </div>
                     <div className="flex items-center p-3 bg-green-50 rounded-lg">
                         <Star className="h-5 w-5 text-green-500 mr-3" />
                         <div>
                             <div className="text-sm text-green-600 plain-text">ქულა</div>
-                            <div className="font-semibold text-green-900 title">100</div>
+                            <div className="font-semibold text-green-900 title">{quizzStart?.total_score}</div>
                         </div>
                     </div>
                     <div className="flex items-center p-3 bg-orange-50 rounded-lg">
                         <Clock className="h-5 w-5 text-orange-500 mr-3" />
                         <div>
                             <div className="text-sm text-orange-600 plain-text">დრო</div>
-                            <div className="font-semibold text-orange-900 title">15 min</div>
+                            <div className="font-semibold text-orange-900 title">{quizzStart?.time_limit}</div>
                         </div>
                     </div>
                     <div className="flex items-center p-3 bg-purple-50 rounded-lg">
                         <Calendar className="h-5 w-5 text-purple-500 mr-3" />
                         <div>
                             <div className="text-sm text-purple-600 plain-text">თარიღი</div>
-                            <div className="font-semibold text-purple-900 title">Aug 4, 2025</div>
+                            <div className="font-semibold text-purple-900 title">{quizzStart?.time_limit}</div>
                         </div>
                     </div>
                 </div>
