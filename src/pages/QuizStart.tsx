@@ -1,20 +1,24 @@
 import { Clock, Trophy, Target, Calendar, BookOpen, Star, FileQuestionMark, X } from 'lucide-react'
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { apiV2 } from '../utils/axios';
+import { useQuizStore } from '../stores/quizStore';
+import Loader from '../components/reusables/Loader';
 
 const QuizStart = () => {
     const [questionModal, setQuestionModal] = useState<boolean>(false);
     const { catId, id } = useParams();
-    console.log(catId, id);
-
+    const { loading, fetchQuizStart } = useQuizStore();
     useEffect(() => {
-        const fetchQuizStart = async () => {
-            const res = await apiV2.get(`/quiz/category/${catId}/quizzes/${id}`)
-            console.log(res)
+        if (catId && id) {
+            fetchQuizStart(catId, id)
         }
-        fetchQuizStart()
-    }, [catId, id])
+    }, [fetchQuizStart, catId, id]);
+    console.log(catId, id);
+    if (loading) {
+        return <Loader />
+    }
+
+
 
     return (
         <div className='min-h-screen overflow-y-auto flex flex-col gap-6 bg-gray-50 p-4 sm:p-6 md:p-8'>
