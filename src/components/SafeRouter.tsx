@@ -4,23 +4,27 @@ import Loader from "./reusables/Loader";
 import { Navigate } from "react-router-dom";
 
 function SafeRoute({ children }: { children: React.ReactNode }) {
-  const { user, getCurrentUser, isAuth, loading } = useAuthStore();
+    const { user, getCurrentUser, isAuth, loading } = useAuthStore();
 
-  useEffect(() => {
-    if (!user && !loading) {
-      getCurrentUser();
+    useEffect(() => {
+        console.log(isAuth);
+
+    }, [isAuth])
+    useEffect(() => {
+        if (!user && !loading) {
+            getCurrentUser();
+        }
+    }, [user, loading, getCurrentUser]);
+
+    if (loading) {
+        return <Loader />;
     }
-  }, [user, loading, getCurrentUser]);
 
-  if (loading) {
-    return <Loader/>;
-  }
+    if (!isAuth) {
+        return <Navigate to={"/login"} replace />;
+    }
 
-  if (!isAuth) {
-    return <Navigate to={"/login"} replace />;
-  }
-
-  return <>{children}</>;
+    return <>{children}</>;
 }
 
 export default SafeRoute;

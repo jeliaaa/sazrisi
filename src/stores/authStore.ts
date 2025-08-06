@@ -84,7 +84,7 @@ export const useAuthStore = create<AuthState>((set) => ({
             set({ loading: true, error: null });
             const res = await apiV1.post("/user/login/", { email, password });
             // Cookies.set('session_token', res.data.session_token)
-            set({ user: res.data.user });
+            set({ user: res.data, isAuth:true });
             return true;
         } catch (error) {
             const err = error as AxiosError<{ message?: string }>;
