@@ -14,7 +14,7 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining }: AnswerModalProps) => {
     const [answersNoTime, setAnswersNoTime] = useState<(string | null)[]>(Array(37).fill(null));
     const [answersTimed, setAnswersTimed] = useState<(string | null)[]>(Array(37).fill(null));
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-
+    console.log(isTraining)
     useEffect(() => {
         if (isTraining) {
             setActiveTab("no-time")
