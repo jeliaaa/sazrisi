@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useQuizStore } from "../stores/quizStore";
-import Lock from "../../icons/lock-solid.svg?react";
+import Lock from "../icons/lock-solid.svg?react";
 import { Category } from "../types/types";
 // import Clock from "../../icons/clock.svg?react";
 
