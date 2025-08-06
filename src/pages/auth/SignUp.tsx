@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import Stepper from "../../components/signup/Stepper";
 import PersonalInfo from "../../components/signup/steps/PersonalInfo";
@@ -11,11 +11,12 @@ import TikTok from "../../icons/brands/tiktok.svg?react";
 import Facebook from "../../icons/brands/facebook.svg?react";
 import Instagram from "../../icons/brands/instagram.svg?react";
 import { useAuthStore } from "../../stores/authStore";
+import { useNavigate } from "react-router-dom";
 
 export default function SignUp() {
     const [currentStep, setCurrentStep] = useState<steps>(steps.info);
-    const { registerBasic, setPreference, uploadAvatar } = useAuthStore();
-
+    const { registerBasic, setPreference, isAuth, uploadAvatar } = useAuthStore();
+    const nav = useNavigate();
     const methods = useForm<SignUpFormData>({
         defaultValues: {
             firstname: "",
@@ -28,6 +29,11 @@ export default function SignUp() {
         },
     });
 
+    useEffect(() => {
+        if (isAuth) {
+            nav('/')
+        }
+    }, [isAuth, nav])
     const {
         watch,
         handleSubmit,
