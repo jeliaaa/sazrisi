@@ -38,7 +38,7 @@ export const useAuthStore = create<AuthState>((set) => ({
         try {
             set({ loading: true, error: null });
             const res = await apiV1.post("/user/register/", data);
-            set({ user: res.data.user });
+            set({ user: res.data });
             return true;
         } catch (error) {
             const err = error as AxiosError<{ message?: string }>;
