@@ -7,28 +7,22 @@ import ProfilePicture from "../../components/signup/steps/ProfilePicture";
 import AllSet from "../../components/signup/steps/AllSet";
 import { SignUpFormData, stepLabels, steps } from "../../types/types";
 import toast from "react-hot-toast";
-import TikTok from "../../icons/brands/tiktok.svg?react"
-import Facebook from "../../icons/brands/facebook.svg?react"
-import Instagram from "../../icons/brands/instagram.svg?react"
-
-
-// const steps = [
-//     "Personal Information",
-//     "User Preferences",
-//     "Profile Picture",
-//     "All Set",
-// ];
-
+import TikTok from "../../icons/brands/tiktok.svg?react";
+import Facebook from "../../icons/brands/facebook.svg?react";
+import Instagram from "../../icons/brands/instagram.svg?react";
+import { useAuthStore } from "../../stores/authStore";
 
 export default function SignUp() {
     const [currentStep, setCurrentStep] = useState<steps>(steps.info);
+    const { registerBasic, setPreference, uploadAvatar } = useAuthStore();
+
     const methods = useForm<SignUpFormData>({
         defaultValues: {
-            firstName: "",
-            lastName: "",
+            firstname: "",
+            lastname: "",
             email: "",
             password: "",
-            rePassword: "",
+            // rePassword: "",
             profile: null,
             preferences: "red"
         },
@@ -37,45 +31,60 @@ export default function SignUp() {
     const {
         watch,
         handleSubmit,
+        setError
     } = methods;
 
-    const watchAuth = watch(["firstName", "lastName", "email", "password", "rePassword"]);
+    const watchAuth = watch(["firstname", "lastname", "email", "password", "rePassword"]);
     const isAuthNextDisabled =
         !watchAuth[0] || !watchAuth[1] || !watchAuth[2] || !watchAuth[3] || !watchAuth[4];
 
-    const onNext = () => {
-        if (currentStep === 0 && isAuthNextDisabled) {
-            return toast.error("გთხოვთ, შეავსეთ ყველა აუცილებელი ველი.");
-        }
-
-        if (currentStep < steps.profile) {
-            setCurrentStep((prev) => prev + 1);
-        }
-    };
-
     const onBack = () => {
-        if (currentStep > 0) {
-            setCurrentStep((prev) => prev - 1);
-        }
+        if (currentStep > steps.info) setCurrentStep((prev) => prev - 1);
     };
 
-    const onSubmit = (data: SignUpFormData) => {
-        if (isAuthNextDisabled) {
-            return toast.error("გთხოვთ, შეავსეთ ყველა აუცილებელი ველი.");
+    const handleStepSubmit = async (data: SignUpFormData) => {
+        if (currentStep === steps.info) {
+            // Step 1: Register basic
+            if (isAuthNextDisabled) {
+                return toast.error("გთხოვთ, შეავსეთ ყველა აუცილებელი ველი.");
+            }
+
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+                setError("email", { message: "გთხოვთ, შეიყვანოთ ვალიდური ელ-ფოსტა." });
+                return toast.error("გთხოვთ, შეიყვანოთ ვალიდური ელ-ფოსტა.");
+            }
+
+            if (data.password !== data.rePassword) {
+                setError("rePassword", { message: "პაროლები არ ემთხვევა." });
+                return toast.error("პაროლები არ ემთხვევა.");
+            }
+            const success = await registerBasic({
+                firstname: data.firstname,
+                lastname: data.lastname,
+                email: data.email,
+                password: data.password,
+                rePassword: data.rePassword,
+            });
+            if (!success) return toast.error("რეგისტრაცია ვერ განხორციელდა.");
         }
 
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(data.email)) {
-            return toast.error("გთხოვთ, შეიყვანოთ ვალიდური ელ-ფოსტა.");
+        if (currentStep === steps.preferences) {
+            // Step 2: Send preferences
+            const success = await setPreference({ preferences: data.preferences });
+            if (!success) return toast.error("პრეფერენციები ვერ გაიგზავნა.");
         }
 
-        if (data.password !== data.rePassword) {
-            return toast.error("პაროლები არ ემთხვევა.");
+        if (currentStep === steps.profile) {
+            // Step 3: Upload avatar
+            if (!data.profile) {
+                return toast.error("გთხოვთ, ატვირთოთ პროფილის ფოტო.");
+            }
+
+            const success = await uploadAvatar(data.profile);
+            if (!success) return toast.error("ფოტოს ატვირთვა ვერ განხორციელდა.");
         }
 
-        // All validations passed
-        toast.success("წარმატებით გაიგზავნა!");
-        onNext();
+        setCurrentStep((prev) => prev + 1);
     };
 
     return (
@@ -100,18 +109,17 @@ export default function SignUp() {
 
                     <div className="flex-1 p-6 lg:p-10 min-h-fit h-[85dvh] bg-gray-100 rounded-b-3xl md:rounded-t-3xl">
                         <form
-                            onSubmit={(e) => e.preventDefault()}
+                            onSubmit={handleSubmit(handleStepSubmit)}
                             className="max-w-xl mx-auto flex flex-col gap-6"
                         >
                             <h2 className="text-2xl font-bold text-main-color mb-2">
                                 Step {currentStep + 1}: {stepLabels[currentStep]}
                             </h2>
 
-                            {currentStep === 0 && <PersonalInfo />}
-                            {/* {currentStep === 1 && <Exams />} */}
-                            {currentStep === 1 && <Preferences />}
-                            {currentStep === 2 && <ProfilePicture />}
-                            {currentStep === 3 && <AllSet />}
+                            {currentStep === steps.info && <PersonalInfo />}
+                            {currentStep === steps.preferences && <Preferences />}
+                            {currentStep === steps.profile && <ProfilePicture />}
+                            {currentStep === steps.success && <AllSet />}
 
                             {currentStep < steps.success && (
                                 <div className="flex flex-col md:flex-row justify-between mt-6">
@@ -125,13 +133,7 @@ export default function SignUp() {
                                         </button>
                                     )}
                                     <button
-                                        onClick={() => {
-                                            if (currentStep === steps.profile) {
-                                                handleSubmit(onSubmit)()
-                                            } else {
-                                                onNext()
-                                            }
-                                        }}
+                                        type="submit"
                                         className="px-4 py-2 text-sm font-medium bg-dark-color text-white rounded cursor-pointer hover:bg-gray-800"
                                     >
                                         {currentStep === steps.profile ? "რეგისტრაცია" : "შემდეგ"}

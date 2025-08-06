@@ -4,6 +4,7 @@ import { publicRoutes } from "./routes/publicRoutes"
 import CustomOutlet from "./components/CustomOutlet"
 import Loader from "./components/reusables/Loader"
 import { privateRoutes } from "./routes/privateRoutes"
+import SafeRoute from "./components/SafeRouter"
 // import Loader from "./components/reusables/Loader"
 
 function App() {
@@ -14,7 +15,7 @@ function App() {
       </Link> */}
       <Suspense fallback={<div><Loader /></div>}>
         <Routes>
-          <Route element={<CustomOutlet />}>
+          <Route element={<SafeRoute><CustomOutlet /></SafeRoute>}>
             {privateRoutes.map(({ path, component: Component }) => (
               <Route key={path} path={path} element={<Component />} />
             ))}

@@ -5,8 +5,8 @@ export interface SignUpFormData {
     email: string;
     preferences: string; // store selected color preference
     profile: File | null;
-    firstName: string;
-    lastName: string;
+    firstname: string;
+    lastname: string;
     password: string;
     rePassword: string;
 }
@@ -24,3 +24,11 @@ export const stepLabels: Record<steps, string> = {
     [steps.success]: "იქნა!"
 };
 
+export interface User {
+  id: number;
+  firstname: string;
+  lastname: string;
+  email: string;
+  preference: string;
+//   email_verified: boolean;
+}

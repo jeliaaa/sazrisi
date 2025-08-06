@@ -8,12 +8,12 @@ const PersonalInfo = () => {
     return (
         <div className="flex flex-col gap-4">
             <ControlledInput<SignUpFormData>
-                name="firstName"
+                name="firstname"
                 label="სახელი"
                 control={control}
             />
             <ControlledInput<SignUpFormData>
-                name="lastName"
+                name="lastname"
                 label="გვარი"
                 control={control}
             />
