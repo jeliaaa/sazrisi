@@ -1,9 +1,20 @@
 import { Clock, Trophy, Target, Calendar, BookOpen, Star, FileQuestionMark, X } from 'lucide-react'
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { apiV2 } from '../utils/axios';
 
 const QuizStart = () => {
     const [questionModal, setQuestionModal] = useState<boolean>(false);
+    const { catId, id } = useParams();
+    console.log(catId, id);
+
+    useEffect(() => {
+        const fetchQuizStart = async () => {
+            const res = await apiV2.get(`/quiz/category/${catId}/quizzes/${id}`)
+            console.log(res)
+        }
+        fetchQuizStart()
+    }, [catId, id])
 
     return (
         <div className='min-h-screen overflow-y-auto flex flex-col gap-6 bg-gray-50 p-4 sm:p-6 md:p-8'>

@@ -1,22 +1,10 @@
 import PDFViewer from "../components/PdfViewer"
 import myPdf from '../assets/test.pdf';
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import AnswerModal from "../components/AnswerModal";
 import { Pen, Sheet } from "lucide-react";
-import { useParams } from "react-router-dom";
-import { apiV2 } from "../utils/axios";
 const QuizSingle = () => {
     const [answersModal, setAnswersModal] = useState<boolean>(false)
-    const { catId, id } = useParams();
-    console.log(catId, id);
-
-    useEffect(() => {
-        const fetchQuizStart = async () => {
-            const res = await apiV2.get(`/quiz/category/${catId}/quizzes/${id}`)
-            console.log(res)
-        }
-        fetchQuizStart()
-    }, [catId, id])
 
     return (
         <div className="h-screen overflow-hidden">
