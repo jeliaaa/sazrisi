@@ -1,14 +1,27 @@
 import PDFViewer from "../components/PdfViewer"
-import myPdf from '../assets/test.pdf';
-import { useState } from "react";
+// import myPdf from '../assets/test.pdf';
+import { useEffect, useState } from "react";
 import AnswerModal from "../components/AnswerModal";
 import { Pen, Sheet } from "lucide-react";
+import { useParams } from "react-router-dom";
+import { useQuizStore } from "../stores/quizStore";
+import Loader from "../components/reusables/Loader";
 const QuizSingle = () => {
     const [answersModal, setAnswersModal] = useState<boolean>(false)
+    const { catId, quizId } = useParams();
+    const { loading, quizzStart, fetchQuizStart } = useQuizStore();
+    useEffect(() => {
+        if (catId && quizId) {
+            fetchQuizStart(catId, quizId)
+        }
+    }, [fetchQuizStart, catId, quizId])
+    if (loading) {
+        return <Loader />
+    }
 
     return (
         <div className="h-screen overflow-hidden">
-            <PDFViewer fileUrl={myPdf} />
+            <PDFViewer fileUrl={quizzStart?.file} />
             {answersModal &&
                 <AnswerModal isOpen={answersModal} setIsOpen={setAnswersModal} />
             }

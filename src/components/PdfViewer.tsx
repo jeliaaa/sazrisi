@@ -5,7 +5,7 @@ import { Document, Page, pdfjs } from 'react-pdf';
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 interface PDFViewerProps {
-    fileUrl: string;
+    fileUrl: string | undefined;
 }
 
 const PDFViewer = ({ fileUrl }: PDFViewerProps) => {
@@ -57,7 +57,7 @@ const PDFViewer = ({ fileUrl }: PDFViewerProps) => {
                     გვერდი {pageNumber} / {numPages} -დან
                 </p>
                 <button onClick={goToNextPage} disabled={pageNumber === numPages} className='flex text-main-color'>
-                    <span className='mt-1'>შემდეგ</span> <ChevronRight className='w-10 h-8' /> 
+                    <span className='mt-1'>შემდეგ</span> <ChevronRight className='w-10 h-8' />
                 </button>
             </div>
 
