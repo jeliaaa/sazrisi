@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Input from "../../components/reusables/Input";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.png";
@@ -8,9 +8,11 @@ const Login = () => {
     const nav = useNavigate();
     const { login, loading, error, isAuth } = useAuthStore();
     console.log(isAuth);
-    if (isAuth) {
-        nav('/')
-    }
+    useEffect(() => {
+        if (isAuth) {
+            nav('/')
+        }
+    }, [isAuth, nav])
     const [form, setForm] = useState({
         email: "",
         password: "",
