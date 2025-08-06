@@ -84,6 +84,9 @@ export default function SignUp() {
                 return toast.error("გთხოვთ, ატვირთოთ პროფილის ფოტო.");
             }
 
+            console.log(data.profile);
+
+
             const success = await uploadAvatar(data.profile);
             if (!success) return toast.error("ფოტოს ატვირთვა ვერ განხორციელდა.");
         }
