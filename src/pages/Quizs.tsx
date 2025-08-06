@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import { useQuizStore } from "../stores/quizStore";
 import Lock from "../icons/lock-solid.svg?react";
 import { Category } from "../types/types";
@@ -43,7 +43,7 @@ const Quizs = () => {
     };
 
     fetchQuizzes();
-  }, [selectedCategoryId]);
+  }, [selectedCategoryId, categories]);
 
   const handleCategoryClick = (id: number, locked: boolean) => {
     if (!locked) {
@@ -94,13 +94,14 @@ const Quizs = () => {
               ) : (
                 <ul className="space-y-4">
                   {quizzes.map((quiz) => (
-                    <li
+                    <Link
+                      to={`/quiz/{${quiz.id}}`}
                       key={quiz.id}
-                      className="border border-gray-200 p-4 rounded-xl shadow-sm hover:shadow-md transition"
+                      className="border border-gray-200 p-4 rounded-xl cursor-pointer shadow-sm hover:shadow-md transition"
                     >
                       <h4 className="text-lg font-semibold">{quiz.title}</h4>
                       {quiz.description && <p className="text-sm text-gray-600">{quiz.description}</p>}
-                    </li>
+                    </Link>
                   ))}
                 </ul>
               )}
