@@ -77,9 +77,9 @@ const Quizs = () => {
                 <ul className="space-y-4">
                   {quizzes.map((quiz) => (
                     <Link
-                      to={`/quiz/${quiz.id}`}
+                      to={`/quiz/${selectedCategoryId}/${quiz.id}`}
                       key={quiz.id}
-                      className="border border-gray-200 p-4 rounded-xl cursor-pointer shadow-sm hover:shadow-md transition"
+                      className="border w-full border-gray-200 p-4 rounded-xl cursor-pointer shadow-sm hover:shadow-md transition"
                     >
                       <h4 className="text-lg font-semibold">{quiz.title}</h4>
                       {quiz.description && <p className="text-sm text-gray-600">{quiz.description}</p>}
