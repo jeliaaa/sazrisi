@@ -1,18 +1,20 @@
 import { MoveDiagonal2 } from "lucide-react";
 import { SetStateAction, Dispatch, useState, useRef, useEffect, useCallback } from "react";
+import { QuizStart } from "../types/types";
 
 const questions = Array.from({ length: 37 }, (_, i) => `Question ${i + 1}`);
 
 interface AnswerModalProps {
     isOpen: boolean;
     setIsOpen: Dispatch<SetStateAction<boolean>>;
-    isTraining: boolean
+    isTraining: boolean;
+    quiz: QuizStart | null;
 }
 
-const AnswerModal = ({ isOpen, setIsOpen, isTraining }: AnswerModalProps) => {
+const AnswerModal = ({ isOpen, setIsOpen, isTraining, quiz }: AnswerModalProps) => {
     const [activeTab, setActiveTab] = useState<"no-time" | "timed">("no-time");
-    const [answersNoTime, setAnswersNoTime] = useState<(string | null)[]>(Array(37).fill(null));
-    const [answersTimed, setAnswersTimed] = useState<(string | null)[]>(Array(37).fill(null));
+    const [answersNoTime, setAnswersNoTime] = useState<(string | null)[]>(Array(quiz?.total_questions).fill(null));
+    const [answersTimed, setAnswersTimed] = useState<(string | null)[]>(Array(quiz?.total_questions).fill(null));
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     console.log(isTraining)
     useEffect(() => {
