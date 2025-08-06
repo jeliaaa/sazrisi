@@ -20,7 +20,7 @@ function SafeRoute({ children }: { children: React.ReactNode }) {
         return <Loader />;
     }
 
-    if (!isAuth) {
+    if (!user) {
         return <Navigate to={"/login"} replace />;
     }
 
