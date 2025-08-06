@@ -16,8 +16,9 @@ const Quizs = () => {
 
   useEffect(() => {
     fetchCategories();
-  }, [fetchCategories]);
 
+  }, [fetchCategories]);
+  console.log(categories);
   const handleCategoryClick = (id: number, locked: boolean) => {
     if (!locked) {
       navigate(`?categoryId=${id}`);
@@ -31,7 +32,7 @@ const Quizs = () => {
         <aside className="w-full lg:w-64 bg-white p-4 sm:p-6 rounded-2xl shadow top-4">
           <h2 className="text-lg sm:text-xl font-bold text-dark-color mb-4 border-b pb-2">კატეგორიები</h2>
           <ul className="space-y-2">
-            {categories.map((cat : Category) => {
+            {categories.map((cat: Category) => {
               const isLocked = lockedCategories.includes(cat.id);
               return (
                 <li key={cat.id}>

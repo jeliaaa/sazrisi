@@ -11,7 +11,6 @@ function SafeRoute({ children }: { children: React.ReactNode }) {
             fetchMe();
         }
     }, [user, loading, fetchMe]);
-    console.log(isAuth);
 
     if (loading) return <Loader />;
     if (!isAuth) return <Navigate to="/login" replace />;
