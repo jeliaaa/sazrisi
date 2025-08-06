@@ -111,7 +111,7 @@ const Tests = () => {
                   </div>
                 ) : (
                   <Link
-                    to={`/tests/${encodeURIComponent(test.name)}/0`}
+                    to={`/tests/${encodeURIComponent(test.name)}/`}
                     className="font-semibold text-main-color group-hover:text-white transition-colors"
                   >
                     დაწყება →
