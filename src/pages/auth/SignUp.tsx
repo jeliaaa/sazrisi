@@ -12,6 +12,7 @@ import Facebook from "../../icons/brands/facebook.svg?react";
 import Instagram from "../../icons/brands/instagram.svg?react";
 import { useAuthStore } from "../../stores/authStore";
 import { useNavigate } from "react-router-dom";
+import SafeRoute from "../../components/SafeRouter";
 
 export default function SignUp() {
     const [currentStep, setCurrentStep] = useState<steps>(steps.info);
@@ -123,9 +124,9 @@ export default function SignUp() {
                             </h2>
 
                             {currentStep === steps.info && <PersonalInfo />}
-                            {currentStep === steps.preferences && <Preferences />}
-                            {currentStep === steps.profile && <ProfilePicture />}
-                            {currentStep === steps.success && <AllSet />}
+                            {currentStep === steps.preferences && <SafeRoute><Preferences /></SafeRoute>}
+                            {currentStep === steps.profile && <SafeRoute><ProfilePicture /></SafeRoute>}
+                            {currentStep === steps.success && <SafeRoute><AllSet /></SafeRoute>}
 
                             {currentStep < steps.success && (
                                 <div className="flex flex-col md:flex-row justify-between mt-6">
