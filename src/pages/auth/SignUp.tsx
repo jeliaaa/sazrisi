@@ -11,12 +11,10 @@ import TikTok from "../../icons/brands/tiktok.svg?react";
 import Facebook from "../../icons/brands/facebook.svg?react";
 import Instagram from "../../icons/brands/instagram.svg?react";
 import { useAuthStore } from "../../stores/authStore";
-import { useNavigate } from "react-router-dom";
 
 export default function SignUp() {
     const [currentStep, setCurrentStep] = useState<steps>(steps.info);
     const { registerBasic, setPreference, isAuth, uploadAvatar } = useAuthStore();
-    const nav = useNavigate();
     const methods = useForm<SignUpFormData>({
         defaultValues: {
             firstname: "",
@@ -30,10 +28,10 @@ export default function SignUp() {
     });
 
     useEffect(() => {
-        if (isAuth) {
+        if (isAuth && currentStep === steps.info) {
             setCurrentStep(steps.preferences)
         }
-    }, [])
+    }, [isAuth, currentStep])
     const {
         watch,
         handleSubmit,
