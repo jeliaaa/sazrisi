@@ -11,6 +11,8 @@ const QuizStart = () => {
     useEffect(() => {
         if (catId && id) {
             fetchQuizStart(catId, id)
+            console.log(quizzStart);
+
         }
     }, [fetchQuizStart, catId, id]);
     if (loading) {
@@ -75,7 +77,7 @@ const QuizStart = () => {
                         className="w-full cursor-pointer bg-main-color plain-text hover:opacity-90 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                     >
                         <BookOpen className="h-5 w-5 mr-2" />
-                        სავარჯიშო ვერსიის გახსნა
+
                     </Link>
                 </div>
             </div>
