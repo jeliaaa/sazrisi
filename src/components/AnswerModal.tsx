@@ -183,7 +183,7 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, quiz }: AnswerModalProps) 
         }
 
         const now = Date.now();
-        const timeSpentNow = questionStartTime ? Math.floor((now - questionStartTime) / 1000) : 0;
+        const timeSpentNow = questionStartTime ? now - questionStartTime : 0;
 
         const totalTime = (elapsedTimes.get(currentQuestionIndex) || 0) + timeSpentNow;
 
