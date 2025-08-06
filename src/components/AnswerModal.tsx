@@ -206,13 +206,21 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, quiz }: AnswerModalProps) 
         setQuestionStartTime(null);
 
         // go to next unanswered question
-        setCurrentQuestionIndex((prev) => {
-            const next = Math.min(questions.length - 1, prev + 1);
-            if (!submittedQuestions.has(next)) {
+        const isLastQuestion = currentQuestionIndex >= questions.length - 1;
+
+        if (!isLastQuestion) {
+            let next = currentQuestionIndex + 1;
+            while (submittedQuestions.has(next) && next < questions.length) next++;
+
+            if (next < questions.length) {
+                setCurrentQuestionIndex(next);
                 setQuestionStartTime(Date.now());
             }
-            return next;
-        });
+        } else {
+            // Last question — stop timer
+            setQuestionStartTime(null);
+        }
+
     };
 
 
