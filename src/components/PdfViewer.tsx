@@ -9,7 +9,6 @@ interface PDFViewerProps {
 }
 
 const PDFViewer = ({ fileUrl }: PDFViewerProps) => {
-    console.log(fileUrl);
     const [numPages, setNumPages] = useState<number>(0);
     const [pageNumber, setPageNumber] = useState<number>(1);
     const [containerWidth, setContainerWidth] = useState<number>(0);

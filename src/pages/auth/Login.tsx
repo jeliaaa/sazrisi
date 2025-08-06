@@ -27,7 +27,7 @@ const Login = () => {
         e.preventDefault();
         const success = await login(form.email, form.password);
         if (success) {
-            nav("/app/main");
+            nav("/");
         }
     };
 

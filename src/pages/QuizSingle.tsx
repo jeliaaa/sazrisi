@@ -15,6 +15,7 @@ const QuizSingle = () => {
             fetchQuizStart(catId, quizId)
         }
     }, [fetchQuizStart, catId, quizId])
+    console.log(quizzStart)
     if (loading) {
         return <Loader />
     }
