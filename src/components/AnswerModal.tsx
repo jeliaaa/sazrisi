@@ -18,7 +18,8 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, quiz }: AnswerModalProps) 
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [questionStartTime, setQuestionStartTime] = useState<number | null>(Date.now());
     const [submittedQuestions, setSubmittedQuestions] = useState<Set<number>>(new Set());
-    const [elapsedTimes, setElapsedTimes] = useState<number[]>(Array(quiz?.total_questions).fill(0));
+    const [elapsedTimes, setElapsedTimes] = useState<Map<number, number>>(new Map());
+
 
 
 
@@ -36,6 +37,13 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, quiz }: AnswerModalProps) 
             setActiveTab('timed')
         }
     }, [isTraining])
+
+    useEffect(() => {
+        if (quiz && !isTraining) {
+            setQuestionStartTime(Date.now());
+        }
+    }, [quiz, isTraining]);
+
 
 
 
@@ -128,23 +136,25 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, quiz }: AnswerModalProps) 
 
     const handleQuestionSwitch = (newIndex: number) => {
         if (questionStartTime !== null) {
-            // Save elapsed time of current question before switching away
             const now = Date.now();
             const timeSpent = Math.floor((now - questionStartTime) / 1000);
+
             setElapsedTimes(prev => {
-                const updated = [...prev];
-                updated[currentQuestionIndex] = (updated[currentQuestionIndex] || 0) + timeSpent;
+                const updated = new Map(prev);
+                updated.set(currentQuestionIndex, (updated.get(currentQuestionIndex) || 0) + timeSpent);
                 return updated;
             });
         }
 
         setCurrentQuestionIndex(newIndex);
 
-        // Resume timer for new question
-        setQuestionStartTime(Date.now());
+        // Resume timer only if not already completed
+        if (!submittedQuestions.has(newIndex)) {
+            setQuestionStartTime(Date.now());
+        } else {
+            setQuestionStartTime(null); // Don’t track time if question is already submitted
+        }
     };
-
-
 
 
     const handleNoTimeAnswer = (questionIndex: number, choice: string) => {
@@ -160,11 +170,11 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, quiz }: AnswerModalProps) 
     };
     const handleTimedComplete = () => {
         const questionId = currentQuestionIndex + 1;
-        const selectedAnswer = answersTimed[currentQuestionIndex]; // current answer
-        const now = Date.now();
-        let timeSpent;
-        if (questionStartTime) {
-            timeSpent = Math.floor((now - questionStartTime) / 1000);
+        const selectedAnswer = answersTimed[currentQuestionIndex];
+
+        if (!selectedAnswer) {
+            alert("Please select an answer before completing.");
+            return;
         }
 
         if (submittedQuestions.has(currentQuestionIndex)) {
@@ -172,69 +182,58 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, quiz }: AnswerModalProps) 
             return;
         }
 
-        if (!selectedAnswer) {
-            alert("Please select an answer before completing.");
-            return;
-        }
+        const now = Date.now();
+        const timeSpentNow = questionStartTime ? Math.floor((now - questionStartTime) / 1000) : 0;
 
-        // Submit answer
+        const totalTime = (elapsedTimes.get(currentQuestionIndex) || 0) + timeSpentNow;
+
         const answerPayload = {
             question_id: questionId,
             selected_answer: selectedAnswer,
-            time_taken: timeSpent,
+            time_taken: totalTime,
         };
 
         console.log("Submitting answer:", answerPayload);
 
-        // Mark question as submitted (locked)
         setSubmittedQuestions((prev) => new Set(prev).add(currentQuestionIndex));
 
-        // Log time
-        console.log(`Time spent on question ${questionId}: ${timeSpent} seconds`);
+        // lock answer and clear timer
+        setElapsedTimes(prev => {
+            const updated = new Map(prev);
+            updated.set(currentQuestionIndex, totalTime);
+            return updated;
+        });
+        setQuestionStartTime(null);
 
-        // Reset timer for next question when switching (optional)
-        setQuestionStartTime(Date.now());
+        // go to next unanswered question
+        setCurrentQuestionIndex((prev) => {
+            const next = Math.min(questions.length - 1, prev + 1);
+            if (!submittedQuestions.has(next)) {
+                setQuestionStartTime(Date.now());
+            }
+            return next;
+        });
     };
 
 
     const handleSkip = () => {
-        if (questionStartTime === null) {
-            // Timer already paused, just move on
-            setCurrentQuestionIndex(prev => {
-                const next = Math.min(questions.length - 1, prev + 1);
-                setQuestionStartTime(Date.now()); // start timer for next question
-                return next;
+        if (questionStartTime !== null) {
+            const now = Date.now();
+            const timeSpent = Math.floor((now - questionStartTime) / 1000);
+
+            setElapsedTimes(prev => {
+                const updated = new Map(prev);
+                updated.set(currentQuestionIndex, (updated.get(currentQuestionIndex) || 0) + timeSpent);
+                return updated;
             });
-            return;
+
+            setQuestionStartTime(null); // pause timer
         }
 
-        const now = Date.now();
-        const timeSpent = Math.floor((now - questionStartTime) / 1000);
-
-        // Add timeSpent to elapsedTimes for current question
-        setElapsedTimes(prev => {
-            const updated = [...prev];
-            updated[currentQuestionIndex] = (updated[currentQuestionIndex] || 0) + timeSpent;
-            return updated;
-        });
-
-        // Clear answer for current question
-        setAnswersTimed(prev => {
-            const updated = [...prev];
-            updated[currentQuestionIndex] = null;
-            return updated;
-        });
-
-        // Pause timer for current question
-        setQuestionStartTime(null);
-
-        // Move to next question & start its timer
-        setCurrentQuestionIndex(prev => {
-            const next = Math.min(questions.length - 1, prev + 1);
-            setQuestionStartTime(Date.now());
-            return next;
-        });
+        // move to next question but DO NOT resume timer
+        setCurrentQuestionIndex(prev => Math.min(questions.length - 1, prev + 1));
     };
+
 
 
     if (!isOpen) return null;
@@ -357,9 +356,7 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, quiz }: AnswerModalProps) 
                         {/* Question info */}
                         <div className="text-center text-base font-semibold">
                             კითხვა {currentQuestionIndex + 1} / {questions.length}
-                            <div className="text-center text-sm italic text-gray-600 mt-2">
-                                Time spent: {elapsedTimes[currentQuestionIndex]} seconds
-                            </div>
+
                         </div>
 
                         {/* Answers */}
