@@ -7,6 +7,7 @@ import { useAuthStore } from "../../stores/authStore";
 const Login = () => {
     const nav = useNavigate();
     const { login, loading, error, isAuth } = useAuthStore();
+    console.log(isAuth);
     if (isAuth) {
         nav('/')
     }
