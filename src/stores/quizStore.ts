@@ -11,6 +11,7 @@ interface QuizStore {
     fetchCategories: () => Promise<void>;
     fetchCategoryQuizzes: (categoryId: number) => Promise<void>;
     fetchQuizStart: (categoryId: string, quizId: string) => Promise<void>;
+    startQuiz: (categoryId: string, quizId: string) => Promise<void>;
 }
 
 export const useQuizStore = create<QuizStore>((set) => ({
@@ -47,6 +48,16 @@ export const useQuizStore = create<QuizStore>((set) => ({
         try {
             const res = await apiV2.get(`/quiz/category/${categoryId}/quizzes/${quizId}/`);
             set({ quizzStart: res.data, loading: false });
+        } catch (error) {
+            console.error('Failed to fetch quizzes:', error);
+            set({ loading: false })
+        }
+    },
+    startQuiz: async (categoryId: string, quizId: string) => {
+        set({ loading: true })
+        try {
+            await apiV2.get(`/quiz/category/${categoryId}/quizzes/${quizId}/start/`);
+            set({ loading: false });
         } catch (error) {
             console.error('Failed to fetch quizzes:', error);
             set({ loading: false })

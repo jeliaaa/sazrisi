@@ -16,7 +16,6 @@ const QuizStart = () => {
     if (loading) {
         return <Loader />
     }
-    console.log(quizzStart);
 
 
 
@@ -77,7 +76,7 @@ const QuizStart = () => {
                         className="w-full cursor-pointer bg-main-color plain-text hover:opacity-90 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                     >
                         <BookOpen className="h-5 w-5 mr-2" />
-
+                        {quizzStart?.attempt ? "სავარჯიშო ვერსიის გახსნა": "ტესტის დაწყება" }
                     </Link>
                 </div>
             </div>
