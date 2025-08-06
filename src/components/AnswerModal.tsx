@@ -2,7 +2,6 @@ import { MoveDiagonal2 } from "lucide-react";
 import { SetStateAction, Dispatch, useState, useRef, useEffect, useCallback } from "react";
 import { QuizStart } from "../types/types";
 
-const questions = Array.from({ length: 37 }, (_, i) => `Question ${i + 1}`);
 
 interface AnswerModalProps {
     isOpen: boolean;
@@ -13,10 +12,21 @@ interface AnswerModalProps {
 
 const AnswerModal = ({ isOpen, setIsOpen, isTraining, quiz }: AnswerModalProps) => {
     const [activeTab, setActiveTab] = useState<"no-time" | "timed">("no-time");
+    const [questions, setQuestions] = useState<string[]>([]);
     const [answersNoTime, setAnswersNoTime] = useState<(string | null)[]>(Array(quiz?.total_questions).fill(null));
     const [answersTimed, setAnswersTimed] = useState<(string | null)[]>(Array(quiz?.total_questions).fill(null));
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    console.log(isTraining)
+    const [questionStartTime, setQuestionStartTime] = useState<number>(Date.now());
+    const [timeTaken, setTimeTaken] = useState<number[]>([]);
+
+    useEffect(() => {
+        if (quiz?.total_questions) {
+            setQuestions(Array.from({ length: quiz.total_questions }, (_, i) => `Question ${i + 1}`));
+            setAnswersNoTime(Array(quiz.total_questions).fill(null));
+            setAnswersTimed(Array(quiz.total_questions).fill(null));
+            setTimeTaken(Array(quiz.total_questions).fill(0));
+        }
+    }, [quiz]);
     useEffect(() => {
         if (isTraining) {
             setActiveTab("no-time")
@@ -24,6 +34,10 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, quiz }: AnswerModalProps) 
             setActiveTab('timed')
         }
     }, [isTraining])
+
+
+
+
     // Position and size state
     const [position, setPosition] = useState({ x: 100, y: 100 });
     const [size, setSize] = useState({ width: 600, height: 400 });
@@ -109,6 +123,22 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, quiz }: AnswerModalProps) 
         setIsResizing(true);
     };
 
+
+    const handleQuestionSwitch = (newIndex: number) => {
+        // Save time spent on current question before switching
+        const now = Date.now();
+        const timeSpent = Math.floor((now - questionStartTime) / 1000);
+        const updatedTimes = [...timeTaken];
+        updatedTimes[currentQuestionIndex] = timeSpent;
+        setTimeTaken(updatedTimes);
+
+        // Switch question and reset timer
+        setCurrentQuestionIndex(newIndex);
+        setQuestionStartTime(Date.now());
+    };
+
+
+
     const handleNoTimeAnswer = (questionIndex: number, choice: string) => {
         const updated = [...answersNoTime];
         updated[questionIndex] = choice;
@@ -116,17 +146,37 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, quiz }: AnswerModalProps) 
     };
 
     const handleTimedAnswer = (choice: string) => {
-        const updated = [...answersTimed];
-        updated[currentQuestionIndex] = choice;
-        setAnswersTimed(updated);
+        const updatedAnswers = [...answersTimed];
+        updatedAnswers[currentQuestionIndex] = choice;
+        setAnswersTimed(updatedAnswers);
     };
+
 
     const handleSkip = () => {
+        const now = Date.now();
+        const timeSpent = Math.floor((now - questionStartTime) / 1000);
+        const updatedTimes = [...timeTaken];
+        updatedTimes[currentQuestionIndex] = timeSpent;
+        setTimeTaken(updatedTimes);
+
         setCurrentQuestionIndex((prev) => Math.min(questions.length - 1, prev + 1));
+        setQuestionStartTime(Date.now());
     };
 
-    const handleComplete = () => {
-        alert("Complete clicked");
+    const handleTimedComplete = () => {
+        const now = Date.now();
+        const timeSpent = Math.floor((now - questionStartTime) / 1000);
+        const updatedTimes = [...timeTaken];
+        updatedTimes[currentQuestionIndex] = timeSpent;
+        setTimeTaken(updatedTimes);
+
+        const results = answersTimed.map((answer, i) => ({
+            question_id: i + 1,
+            selected_answer: answer,
+            time_taken: updatedTimes[i],
+        }));
+
+        console.log("Submitted results:", results);
         setIsOpen(false);
     };
 
@@ -237,7 +287,7 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, quiz }: AnswerModalProps) 
                             {questions.map((_, i) => (
                                 <button
                                     key={i}
-                                    onClick={() => setCurrentQuestionIndex(i)}
+                                    onClick={() => handleQuestionSwitch(i)}
                                     className={`inline-block px-3 py-1 mx-1 border rounded-sm ${currentQuestionIndex === i ? "bg-gray-300" : ""
                                         }`}
                                     onMouseDown={(e) => e.stopPropagation()}
@@ -254,22 +304,25 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, quiz }: AnswerModalProps) 
 
                         {/* Answers */}
                         <div className="grid grid-cols-2 gap-4 justify-center max-w-sm mx-auto">
-                            {["ა", "ბ", "გ", "დ"].map((choice) => (
-                                <label
-                                    key={choice}
-                                    className="flex items-center gap-2 border p-2 rounded cursor-pointer"
-                                    onMouseDown={(e) => e.stopPropagation()}
-                                >
-                                    <input
-                                        type="radio"
-                                        name="timedAnswer"
-                                        value={choice}
-                                        checked={answersTimed[currentQuestionIndex] === choice}
-                                        onChange={() => handleTimedAnswer(choice)}
-                                    />
-                                    <span>{choice}</span>
-                                </label>
-                            ))}
+                            {["a", "b", "g", "d"].map((choice, index) => {
+                                const georgianChoices = ["ა", "ბ", "გ", "დ"];
+                                return (
+                                    <label
+                                        key={choice}
+                                        className="flex items-center gap-2 border p-2 rounded cursor-pointer"
+                                        onMouseDown={(e) => e.stopPropagation()}
+                                    >
+                                        <input
+                                            type="radio"
+                                            name="timedAnswer"
+                                            value={choice}
+                                            checked={answersTimed[currentQuestionIndex] === choice}
+                                            onChange={() => handleTimedAnswer(choice)}
+                                        />
+                                        <span>{georgianChoices[index]}</span>
+                                    </label>
+                                );
+                            })}
                         </div>
 
                         {/* Buttons */}
@@ -277,7 +330,7 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, quiz }: AnswerModalProps) 
                             <button onClick={handleSkip} className="border px-6 py-2 rounded" type="button">
                                 Skip
                             </button>
-                            <button onClick={handleComplete} className="border px-6 py-2 rounded" type="button">
+                            <button onClick={handleTimedComplete} className="border px-6 py-2 rounded" type="button">
                                 Complete
                             </button>
                         </div>
