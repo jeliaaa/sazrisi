@@ -6,12 +6,15 @@ import { useAuthStore } from "../../stores/authStore";
 
 const Login = () => {
     const nav = useNavigate();
-    const { login, loading, error } = useAuthStore();
-
+    const { login, loading, error, isAuth } = useAuthStore();
+    if (isAuth) {
+        nav('/')
+    }
     const [form, setForm] = useState({
         email: "",
         password: "",
     });
+
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
