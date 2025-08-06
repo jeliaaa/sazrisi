@@ -21,7 +21,7 @@ const QuizSingle = () => {
 
     return (
         <div className="h-screen overflow-hidden">
-            <PDFViewer fileUrl={quizzStart?.file} />
+            {quizzStart?.file && <PDFViewer fileUrl={quizzStart?.file} />}
             {answersModal &&
                 <AnswerModal isOpen={answersModal} setIsOpen={setAnswersModal} />
             }
