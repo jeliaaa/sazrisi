@@ -1,8 +1,7 @@
 import { MoveDiagonal2 } from "lucide-react";
-import { SetStateAction, Dispatch, useState, useRef, useEffect, useCallback } from "react";
+import { SetStateAction, Dispatch, useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { IAttempt, Question, QuestionWithAnswers } from "../types/types";
 import { useAttemptStore } from "../stores/attemptStore";
-
 
 interface AnswerModalProps {
     isOpen: boolean;
@@ -13,74 +12,64 @@ interface AnswerModalProps {
 }
 
 const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: AnswerModalProps) => {
-    const [activeTab, setActiveTab] = useState<"no-time" | "timed">("no-time");
-    const [answersNoTime, setAnswersNoTime] = useState<(string | null)[]>(Array(attempt?.total_questions).fill(null));
-    const [answersTimed, setAnswersTimed] = useState<(string | null)[]>(Array(attempt?.total_questions).fill(null));
-    const [currentQuestion, setCurrentQuestion] = useState<Question | QuestionWithAnswers | null>(null);
-    const [questionStartTime, setQuestionStartTime] = useState<number | null>(Date.now());
+    // Tab state - memoized to prevent unnecessary re-renders
+    const activeTab = useMemo(() => isTraining ? "no-time" : "timed", [isTraining]);
+
+    // Answer states
+    const [answersNoTime, setAnswersNoTime] = useState<(string | null)[]>([]);
+    const [answersTimed, setAnswersTimed] = useState<(string | null)[]>([]);
+
+    // Current question and timing
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const [questionStartTime, setQuestionStartTime] = useState<number | null>(null);
     const [submittedQuestions, setSubmittedQuestions] = useState<Set<number>>(new Set());
     const [elapsedTimes, setElapsedTimes] = useState<Map<number, number>>(new Map());
+
     const { loading, answerQuestion } = useAttemptStore();
 
-
-
-
-    useEffect(() => {
-        if (attempt?.total_questions) {
-            setAnswersNoTime(Array(attempt.total_questions).fill(null));
-            setAnswersTimed(Array(attempt.total_questions).fill(null));
-        }
-    }, [attempt]);
-    useEffect(() => {
-        if (isTraining) {
-            setActiveTab("no-time")
-        } else {
-            setActiveTab('timed')
-        }
-    }, [isTraining])
-
-    useEffect(() => {
-        if (attempt && !isTraining) {
-            setQuestionStartTime(Date.now());
-        }
-    }, [attempt, isTraining]);
-    useEffect(() => {
-        if (questions.length > 0) {
-            setCurrentQuestion(questions[0]);
-        }
-    }, [questions]);
-
-
-
-
-
-    // Position and size state
+    // Modal position and size
     const [position, setPosition] = useState({ x: 100, y: 100 });
     const [size, setSize] = useState({ width: 600, height: 400 });
 
-
-    // Dragging state
+    // Drag and resize states
     const [isDragging, setIsDragging] = useState(false);
-    const dragStart = useRef<{ mouseX: number; mouseY: number; divX: number; divY: number } | null>(null);
-
-    // Resizing state
     const [isResizing, setIsResizing] = useState(false);
-    const resizeStart = useRef<{ mouseX: number; mouseY: number; width: number; height: number } | null>(null);
 
-    // Ref to modal div for bounds calculations
+    // Refs for drag/resize calculations
+    const dragStart = useRef<{ mouseX: number; mouseY: number; divX: number; divY: number } | null>(null);
+    const resizeStart = useRef<{ mouseX: number; mouseY: number; width: number; height: number } | null>(null);
     const modalRef = useRef<HTMLDivElement>(null);
 
-    // Drag handlers
-    const onMouseDown = (e: React.MouseEvent) => {
-        // Only start drag if clicked outside resize handle
-        if ((e.target as HTMLElement).dataset.resizeHandle) return;
-        e.preventDefault();
-        dragStart.current = { mouseX: e.clientX, mouseY: e.clientY, divX: position.x, divY: position.y };
-        setIsDragging(true);
-    };
+    // Memoized current question to prevent unnecessary recalculations
+    const currentQuestion = useMemo(() => {
+        return questions[currentQuestionIndex] || null;
+    }, [questions, currentQuestionIndex]);
 
+    // Initialize answer arrays when attempt changes
+    useEffect(() => {
+        if (attempt?.total_questions) {
+            const initialAnswers = Array(attempt.total_questions).fill(null);
+            setAnswersNoTime(initialAnswers);
+            setAnswersTimed(initialAnswers);
+        }
+    }, [attempt?.total_questions]);
 
-    const onMouseMove = useCallback((e: MouseEvent) => {
+    // Initialize timing for timed mode
+    useEffect(() => {
+        if (attempt && !isTraining && isOpen) {
+            setQuestionStartTime(Date.now());
+        }
+    }, [attempt, isTraining, isOpen]);
+
+    // Reset current question when questions change
+    useEffect(() => {
+        if (questions.length > 0) {
+            setCurrentQuestionIndex(0);
+        }
+    }, [questions]);
+
+    // Memoized mouse move handler to prevent recreation on every render
+    const handleMouseMove = useCallback((e: MouseEvent) => {
         if (isDragging && dragStart.current) {
             const dx = e.clientX - dragStart.current.mouseX;
             const dy = e.clientY - dragStart.current.mouseY;
@@ -112,165 +101,175 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
         }
     }, [isDragging, isResizing, position.x, position.y, size.height, size.width]);
 
-    const onMouseUp = () => {
+    // Memoized mouse up handler
+    const handleMouseUp = useCallback(() => {
         setIsDragging(false);
         setIsResizing(false);
         dragStart.current = null;
         resizeStart.current = null;
-    };
+    }, []);
 
+    // Event listeners management
     useEffect(() => {
         if (isDragging || isResizing) {
-            window.addEventListener("mousemove", onMouseMove);
-            window.addEventListener("mouseup", onMouseUp);
-        } else {
-            window.removeEventListener("mousemove", onMouseMove);
-            window.removeEventListener("mouseup", onMouseUp);
+            document.addEventListener("mousemove", handleMouseMove);
+            document.addEventListener("mouseup", handleMouseUp);
+
+            return () => {
+                document.removeEventListener("mousemove", handleMouseMove);
+                document.removeEventListener("mouseup", handleMouseUp);
+            };
         }
-        return () => {
-            window.removeEventListener("mousemove", onMouseMove);
-            window.removeEventListener("mouseup", onMouseUp);
+    }, [isDragging, isResizing, handleMouseMove, handleMouseUp]);
+
+    // Event handlers
+    const handleMouseDown = useCallback((e: React.MouseEvent) => {
+        if ((e.target as HTMLElement).dataset.resizeHandle) return;
+        e.preventDefault();
+        dragStart.current = {
+            mouseX: e.clientX,
+            mouseY: e.clientY,
+            divX: position.x,
+            divY: position.y
         };
-    }, [isDragging, isResizing, onMouseMove]);
+        setIsDragging(true);
+    }, [position]);
 
-    const onResizeMouseDown = (e: React.MouseEvent) => {
+    const handleResizeMouseDown = useCallback((e: React.MouseEvent) => {
         e.stopPropagation();
-        resizeStart.current = { mouseX: e.clientX, mouseY: e.clientY, width: size.width, height: size.height };
+        resizeStart.current = {
+            mouseX: e.clientX,
+            mouseY: e.clientY,
+            width: size.width,
+            height: size.height
+        };
         setIsResizing(true);
-    };
+    }, [size]);
 
+    const handleQuestionSwitch = useCallback((newIndex: number) => {
+        if (newIndex < 0 || newIndex >= questions.length) return;
 
-    const handleQuestionSwitch = (newIndex: number) => {
-        const question = questions.find((q) => q.order === newIndex);
-        if (!question) return;
-
+        // Save current question time
         if (questionStartTime !== null && currentQuestion) {
             const now = Date.now();
             const timeSpent = Math.floor((now - questionStartTime) / 1000);
 
-            setElapsedTimes((prev) => {
+            setElapsedTimes(prev => {
                 const updated = new Map(prev);
                 updated.set(currentQuestion.order, (updated.get(currentQuestion.order) || 0) + timeSpent);
                 return updated;
             });
         }
 
-        setCurrentQuestion(question);
+        setCurrentQuestionIndex(newIndex);
 
-        if (!submittedQuestions.has(question.order)) {
+        // Set timer for new question if not submitted
+        const newQuestion = questions[newIndex];
+        if (newQuestion && !submittedQuestions.has(newQuestion.order)) {
             setQuestionStartTime(Date.now());
         } else {
             setQuestionStartTime(null);
         }
-    };
+    }, [questions, questionStartTime, currentQuestion, submittedQuestions]);
 
+    const handleNoTimeAnswer = useCallback((questionIndex: number, choice: string) => {
+        setAnswersNoTime(prev => {
+            const updated = [...prev];
+            updated[questionIndex] = choice;
+            return updated;
+        });
+    }, []);
 
-
-    const handleNoTimeAnswer = (questionIndex: number, choice: string) => {
-        const updated = [...answersNoTime];
-        updated[questionIndex] = choice;
-        setAnswersNoTime(updated);
-    };
-
-    const handleTimedAnswer = (choice: string) => {
+    const handleTimedAnswer = useCallback((choice: string) => {
         if (!currentQuestion) return;
 
-        const updatedAnswers = [...answersTimed];
-        updatedAnswers[currentQuestion.order] = choice;
-        setAnswersTimed(updatedAnswers);
-    };
+        setAnswersTimed(prev => {
+            const updated = [...prev];
+            updated[currentQuestion.order] = choice;
+            return updated;
+        });
+    }, [currentQuestion]);
 
-    const handleTimedComplete = () => {
-        if (!currentQuestion) return;
+    const handleTimedComplete = useCallback(async () => {
+        if (!currentQuestion || !attempt) return;
 
-        const questionId = currentQuestion.id;
-        const questionOrder = currentQuestion.order;
-        const selectedAnswer = answersTimed[questionOrder];
-
+        const selectedAnswer = answersTimed[currentQuestion.order];
         if (!selectedAnswer) {
             alert("Please select an answer before completing.");
             return;
         }
 
-        if (submittedQuestions.has(questionOrder)) {
+        if (submittedQuestions.has(currentQuestion.order)) {
             alert("You have already completed this question.");
             return;
         }
 
         const now = Date.now();
-        const timeSpentNow = questionStartTime ? now - questionStartTime : 0;
-
-        const totalTime = (elapsedTimes.get(questionOrder) || 0) + timeSpentNow;
+        const timeSpentNow = questionStartTime ? Math.floor((now - questionStartTime) / 1000) : 0;
+        const totalTime = (elapsedTimes.get(currentQuestion.order) || 0) + timeSpentNow;
 
         const answerPayload = {
-            question_id: questionId,
+            question_id: currentQuestion.id,
             selected_answer: selectedAnswer,
             time_taken: totalTime,
         };
 
-        console.log("Submitting answer:", answerPayload);
-        if (attempt) {
-            answerQuestion(attempt?.id.toString(), answerPayload)
+        try {
+            await answerQuestion(attempt.id.toString(), answerPayload);
 
+            setSubmittedQuestions(prev => new Set(prev).add(currentQuestion.order));
+            setElapsedTimes(prev => {
+                const updated = new Map(prev);
+                updated.set(currentQuestion.order, totalTime);
+                return updated;
+            });
+            setQuestionStartTime(null);
+
+            // Move to next unanswered question
+            const nextUnansweredIndex = questions.findIndex((q, index) =>
+                index > currentQuestionIndex && !submittedQuestions.has(q.order)
+            );
+
+            if (nextUnansweredIndex !== -1) {
+                handleQuestionSwitch(nextUnansweredIndex);
+            }
+        } catch (error) {
+            console.error("Failed to submit answer:", error);
         }
-        setSubmittedQuestions((prev) => new Set(prev).add(questionOrder));
+    }, [currentQuestion, attempt, answersTimed, submittedQuestions, questionStartTime, elapsedTimes, answerQuestion, questions, currentQuestionIndex, handleQuestionSwitch]);
 
-        setElapsedTimes((prev) => {
-            const updated = new Map(prev);
-            updated.set(questionOrder, totalTime);
-            return updated;
-        });
-
-        setQuestionStartTime(null);
-
-        // move to next unanswered
-        const unanswered = questions.filter(q => !submittedQuestions.has(q.order));
-        const nextQuestion = unanswered.find(q => q.order > questionOrder);
-
-        if (nextQuestion) {
-            setCurrentQuestion(nextQuestion);
-            setQuestionStartTime(Date.now());
-        } else {
-            setQuestionStartTime(null); // No more questions
-        }
-    };
-
-
-    const handleSkip = () => {
+    const handleSkip = useCallback(() => {
         if (!currentQuestion) return;
 
+        // Save elapsed time without submitting
         if (questionStartTime !== null) {
             const now = Date.now();
             const timeSpent = Math.floor((now - questionStartTime) / 1000);
 
-            setElapsedTimes((prev) => {
+            setElapsedTimes(prev => {
                 const updated = new Map(prev);
                 updated.set(currentQuestion.order, (updated.get(currentQuestion.order) || 0) + timeSpent);
                 return updated;
             });
-
             setQuestionStartTime(null);
         }
 
-        // Move to next question without resuming time
-        const next = questions.find(q => q.order > currentQuestion.order);
-        if (next) {
-            setCurrentQuestion(next);
+        // Move to next question
+        const nextIndex = currentQuestionIndex + 1;
+        if (nextIndex < questions.length) {
+            handleQuestionSwitch(nextIndex);
         }
-    };
+    }, [currentQuestion, questionStartTime, currentQuestionIndex, questions.length, handleQuestionSwitch]);
 
-
+    const stopPropagation = useCallback((e: React.MouseEvent) => e.stopPropagation(), []);
 
     if (!isOpen) return null;
-
-    // This function prevents clicks inside modal from closing it
-    const stopPropagation = (e: React.MouseEvent) => e.stopPropagation();
 
     return (
         <>
             {/* Backdrop */}
             <div
-                className="fixed inset-0 bg-opacity-40 z-40"
+                className="fixed inset-0 bg-black bg-opacity-40 z-40"
                 onClick={() => setIsOpen(false)}
             />
 
@@ -285,39 +284,25 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
                     height: size.height,
                     userSelect: isDragging || isResizing ? "none" : "auto",
                 }}
-                onMouseDown={onMouseDown}
+                onMouseDown={handleMouseDown}
                 onClick={stopPropagation}
             >
                 {/* Close Button */}
                 <button
                     onClick={() => setIsOpen(false)}
-                    className="absolute top-2 right-2 text-xl font-bold cursor-pointer z-10"
+                    className="absolute top-2 right-2 text-xl font-bold cursor-pointer z-10 hover:text-red-500"
                     aria-label="Close Modal"
-                    onMouseDown={(e) => e.stopPropagation()}
+                    onMouseDown={stopPropagation}
                 >
                     ×
                 </button>
 
-                {/* Tabs */}
+                {/* Header */}
                 <div className="flex flex-wrap gap-4 mb-4 justify-center select-none">
-                    პასუხების ფურცელი
-                    {/* <button
-                        onClick={() => setActiveTab("no-time")}
-                        className={`border px-4 py-1 text-sm sm:text-base ${activeTab === "no-time" ? "bg-gray-300" : ""}`}
-                        onMouseDown={(e) => e.stopPropagation()}
-                    >
-                        დროის გარეშე
-                    </button>
-                    <button
-                        onClick={() => setActiveTab("timed")}
-                        className={`border px-4 py-1 text-sm sm:text-base ${activeTab === "timed" ? "bg-gray-300" : ""}`}
-                        onMouseDown={(e) => e.stopPropagation()}
-                    >
-                        დროით
-                    </button> */}
+                    <h2 className="text-lg font-semibold">პასუხების ფურცელი</h2>
                 </div>
 
-                {/* Tab 1: No Time */}
+                {/* No Time Tab */}
                 {activeTab === "no-time" && (
                     <div className="overflow-auto max-h-[70vh]">
                         <table className="w-full text-sm sm:text-base table-fixed border">
@@ -344,7 +329,7 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
                                                     checked={answersNoTime[i] === choice}
                                                     onChange={() => handleNoTimeAnswer(i, choice)}
                                                     className="mx-auto"
-                                                    onMouseDown={(e) => e.stopPropagation()}
+                                                    onMouseDown={stopPropagation}
                                                 />
                                             </td>
                                         ))}
@@ -353,60 +338,68 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
                             </tbody>
                         </table>
                         <div className="mt-4 text-right">
-                            <button onClick={() => alert("Submit clicked (implement your logic)")} className="border px-6 py-2">
-                                Submit
+                            <button
+                                onClick={() => alert("Submit clicked (implement your logic)")}
+                                className="border px-6 py-2 hover:bg-gray-100 rounded"
+                                disabled={loading}
+                            >
+                                {loading ? "Submitting..." : "Submit"}
                             </button>
                         </div>
                     </div>
                 )}
 
-                {/* Tab 2: Timed */}
+                {/* Timed Tab */}
                 {activeTab === "timed" && (
                     <div className="flex flex-col gap-4">
-                        {/* Question numbers nav */}
+                        {/* Question Navigation */}
                         <div className="overflow-x-auto whitespace-nowrap border-b py-2">
-                            {questions.map((q) => (
+                            {questions.map((q, index) => (
                                 <button
                                     key={q.id}
-                                    onClick={() => handleQuestionSwitch(q.order)}
-                                    className={`inline-block px-3 py-1 mx-1 border rounded-sm ${currentQuestion?.order === q.order ? "bg-gray-300" : ""
+                                    onClick={() => handleQuestionSwitch(index)}
+                                    className={`inline-block px-3 py-1 mx-1 border rounded-sm transition-colors ${currentQuestionIndex === index
+                                            ? "bg-blue-300 border-blue-500"
+                                            : submittedQuestions.has(q.order)
+                                                ? "bg-green-200 border-green-400"
+                                                : "hover:bg-gray-100"
                                         }`}
-                                    onMouseDown={(e) => e.stopPropagation()}
+                                    onMouseDown={stopPropagation}
                                 >
                                     {q.order}
                                 </button>
                             ))}
                         </div>
 
-                        {/* Question info */}
+                        {/* Question Info */}
                         <div className="text-center text-base font-semibold">
                             კითხვა {currentQuestion?.order} / {questions.length}
-
+                            {currentQuestion && submittedQuestions.has(currentQuestion.order) && (
+                                <span className="ml-2 text-green-600 text-sm">(Completed)</span>
+                            )}
                         </div>
 
-                        {/* Answers */}
+                        {/* Answer Options */}
                         <div className="grid grid-cols-2 gap-4 justify-center max-w-sm mx-auto">
                             {["a", "b", "g", "d"].map((choice, index) => {
                                 const georgianChoices = ["ა", "ბ", "გ", "დ"];
+                                const isSelected = currentQuestion && answersTimed[currentQuestion.order] === choice;
+                                const isDisabled = currentQuestion ? submittedQuestions.has(currentQuestion.order) : false;
+
                                 return (
                                     <label
                                         key={choice}
-                                        className="flex items-center gap-2 border p-2 rounded cursor-pointer"
-                                        onMouseDown={(e) => e.stopPropagation()}
+                                        className={`flex items-center gap-2 border p-2 rounded cursor-pointer transition-colors ${isSelected ? "bg-blue-100 border-blue-300" : "hover:bg-gray-50"
+                                            } ${isDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
+                                        onMouseDown={stopPropagation}
                                     >
                                         <input
                                             type="radio"
                                             name="timedAnswer"
                                             value={choice}
-                                            checked={
-                                                'user_answer' in currentQuestion! && currentQuestion?.user_answer?.selected_answer === georgianChoices[index]
-                                            }
-                                            onChange={() => handleTimedAnswer(choice)}
-                                            disabled={
-                                                currentQuestion
-                                                    ? submittedQuestions.has(currentQuestion.order)
-                                                    : false
-                                            }
+                                            checked={isSelected}
+                                            onChange={() => !isDisabled && handleTimedAnswer(choice)}
+                                            disabled={isDisabled}
                                         />
                                         <span>{georgianChoices[index]}</span>
                                     </label>
@@ -414,27 +407,36 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
                             })}
                         </div>
 
-
-                        {/* Buttons */}
+                        {/* Action Buttons */}
                         <div className="flex justify-center gap-4 mt-4">
-                            <button onClick={handleSkip} className="border px-6 py-2 rounded" type="button">
+                            <button
+                                onClick={handleSkip}
+                                className="border px-6 py-2 rounded hover:bg-gray-100 transition-colors"
+                                type="button"
+                                disabled={loading}
+                            >
                                 Skip
                             </button>
-                            <button onClick={handleTimedComplete} className="border px-6 py-2 rounded" type="button">
-                                Complete
+                            <button
+                                onClick={handleTimedComplete}
+                                className="border px-6 py-2 rounded bg-blue-500 text-white hover:bg-blue-600 transition-colors"
+                                type="button"
+                                disabled={loading || (currentQuestion ? submittedQuestions.has(currentQuestion.order) : true)}
+                            >
+                                {loading ? "Submitting..." : "Complete"}
                             </button>
                         </div>
                     </div>
                 )}
 
-                {/* Resize handle top-left corner */}
+                {/* Resize Handle */}
                 <div
                     data-resize-handle="true"
-                    onMouseDown={onResizeMouseDown}
-                    className="w-8 h-8 bg-gray-100 flex items-center justify-center absolute top-1 left-1 cursor-se-resize rounded"
+                    onMouseDown={handleResizeMouseDown}
+                    className="w-8 h-8 bg-gray-100 flex items-center justify-center absolute top-1 left-1 cursor-se-resize rounded hover:bg-gray-200 transition-colors"
                     title="Resize"
                 >
-                    <MoveDiagonal2 />
+                    <MoveDiagonal2 size={16} />
                 </div>
             </div>
         </>
