@@ -15,7 +15,6 @@ const QuizSingle = () => {
         // 
         if (catId && id) {
             fetchQuizStart(catId, id);
-            console.log(quizzStart);
         }
         // 
     }, [fetchQuizStart, catId, id, quizzStart])
