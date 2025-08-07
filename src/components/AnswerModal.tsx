@@ -1,4 +1,4 @@
-import { MoveDiagonal2 } from "lucide-react";
+import { Check, MoveDiagonal2, X } from "lucide-react";
 import { SetStateAction, Dispatch, useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { IAttempt, Question, QuestionWithAnswers } from "../types/types";
 import { useAttemptStore } from "../stores/attemptStore";
@@ -379,7 +379,11 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
                                         title={hasSelectedAnswer ? `Answered: ${q.user_answer?.selected_answer?.toUpperCase()}` : "Not answered"}
                                     >
                                         {q.order}
-                                        {hasSelectedAnswer && <span className="ml-1 text-green-700">✓</span>}
+                                        {currentQuestion?.user_answer?.is_correct !== undefined && (
+                                            <span className={`ml-2 font-bold ${currentQuestion.user_answer.is_correct ? 'text-green-600' : 'text-red-600'}`}>
+                                                ({currentQuestion.user_answer.is_correct ? <Check /> : <X />})
+                                            </span>
+                                        )}
                                     </button>
                                 );
                             })}
