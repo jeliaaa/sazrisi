@@ -1,20 +1,20 @@
 import { MoveDiagonal2 } from "lucide-react";
 import { SetStateAction, Dispatch, useState, useRef, useEffect, useCallback } from "react";
-import { QuizStart } from "../types/types";
+import { IAttempt, Question, QuestionWithAnswers } from "../types/types";
 
 
 interface AnswerModalProps {
     isOpen: boolean;
     setIsOpen: Dispatch<SetStateAction<boolean>>;
     isTraining: boolean;
-    quiz: QuizStart | null;
+    attempt: IAttempt | null | undefined;
+    questions: Question[] | QuestionWithAnswers[] | [];
 }
 
-const AnswerModal = ({ isOpen, setIsOpen, isTraining, quiz }: AnswerModalProps) => {
+const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: AnswerModalProps) => {
     const [activeTab, setActiveTab] = useState<"no-time" | "timed">("no-time");
-    const [questions, setQuestions] = useState<string[]>([]);
-    const [answersNoTime, setAnswersNoTime] = useState<(string | null)[]>(Array(quiz?.total_questions).fill(null));
-    const [answersTimed, setAnswersTimed] = useState<(string | null)[]>(Array(quiz?.total_questions).fill(null));
+    const [answersNoTime, setAnswersNoTime] = useState<(string | null)[]>(Array(attempt?.total_questions).fill(null));
+    const [answersTimed, setAnswersTimed] = useState<(string | null)[]>(Array(attempt?.total_questions).fill(null));
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [questionStartTime, setQuestionStartTime] = useState<number | null>(Date.now());
     const [submittedQuestions, setSubmittedQuestions] = useState<Set<number>>(new Set());
@@ -24,12 +24,11 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, quiz }: AnswerModalProps) 
 
 
     useEffect(() => {
-        if (quiz?.total_questions) {
-            setQuestions(Array.from({ length: quiz.total_questions }, (_, i) => `Question ${i + 1}`));
-            setAnswersNoTime(Array(quiz.total_questions).fill(null));
-            setAnswersTimed(Array(quiz.total_questions).fill(null));
+        if (attempt?.total_questions) {
+            setAnswersNoTime(Array(attempt.total_questions).fill(null));
+            setAnswersTimed(Array(attempt.total_questions).fill(null));
         }
-    }, [quiz]);
+    }, [attempt]);
     useEffect(() => {
         if (isTraining) {
             setActiveTab("no-time")
@@ -39,10 +38,10 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, quiz }: AnswerModalProps) 
     }, [isTraining])
 
     useEffect(() => {
-        if (quiz && !isTraining) {
+        if (attempt && !isTraining) {
             setQuestionStartTime(Date.now());
         }
-    }, [quiz, isTraining]);
+    }, [attempt, isTraining]);
 
 
 

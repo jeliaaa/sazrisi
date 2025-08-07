@@ -6,26 +6,22 @@ import { Pen, Sheet } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { useQuizStore } from "../stores/quizStore";
 import Loader from "../components/reusables/Loader";
+import { useAttemptStore } from "../stores/attemptStore";
 const QuizSingle = () => {
     const [answersModal, setAnswersModal] = useState<boolean>(false);
     const [isTraining, setIsTraining] = useState<boolean>(false);
-    const { catId, id } = useParams();
-    const { loading, fetchQuizStart, quizzStart } = useQuizStore();
+    const { attemptId } = useParams();
+    const { loading, quizzStart } = useQuizStore();
+    const { questions, fetchQuestions } = useAttemptStore();
+
+
 
     useEffect(() => {
-        if (catId && id) {
-            fetchQuizStart(catId, id);
+        if (attemptId) {
+            fetchQuestions(attemptId);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    // useEffect(() => {
-    //     const seeAttemptAndStart = async () => {
-    //         const res = await apiV2.post(`/quiz/category/${catId}/quizzes/${id}/start/`);
-    //         console.log(res.data);
-    //     }
-    //     seeAttemptAndStart();
-    // }, [catId, id])
+        setIsTraining(false)
+    }, [attemptId, fetchQuestions]);
 
     if (loading) {
         return <Loader />
@@ -35,7 +31,7 @@ const QuizSingle = () => {
         <div className="h-screen overflow-hidden">
             {quizzStart?.file && <PDFViewer fileUrl={quizzStart?.file} />}
             {answersModal &&
-                <AnswerModal isOpen={answersModal} setIsOpen={setAnswersModal} isTraining={isTraining} quiz={quizzStart} />
+                <AnswerModal isOpen={answersModal} setIsOpen={setAnswersModal} isTraining={isTraining} attempt={quizzStart?.attempt} questions={questions} />
             }
             <div className="fixed z-50 right-5 md:bottom-5 gap-y-3 bottom-20 flex flex-col justify-center items-centershadow-2xl">
                 <div title="answers" onClick={() => setAnswersModal(true)} className="cursor-pointer hover:-translate-y-2 transition-all aspect-square bg-main-color w-20 flex justify-center items-center rounded-full">

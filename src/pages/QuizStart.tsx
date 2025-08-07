@@ -3,12 +3,14 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuizStore } from '../stores/quizStore';
 import Loader from '../components/reusables/Loader';
+import { useAttemptStore } from '../stores/attemptStore';
 
 const QuizStart = () => {
     const nav = useNavigate();
     const [questionModal, setQuestionModal] = useState<boolean>(false);
     const { catId, id } = useParams();
-    const { loading, fetchQuizStart, quizzStart, startQuiz, attempt } = useQuizStore();
+    const { loading, fetchQuizStart, quizzStart } = useQuizStore();
+    const { startQuiz, attempt } = useAttemptStore();
     useEffect(() => {
         if (catId && id) {
             fetchQuizStart(catId, id)

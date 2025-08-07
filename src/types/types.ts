@@ -58,7 +58,7 @@ export interface QuizStart {
     time_limit: number; // in minutes
     total_questions: number;
     total_score: number;
-    attempt: null | number; // if nullable
+    attempt: null | IAttempt | undefined; // if nullable
     category: number; // this might refer to a parent category ID
     created_at: string; // ISO date string
 }
@@ -75,4 +75,29 @@ export interface IAttempt {
     completed_at: string | null;
     time_taken: number | null;
     remaining_time: number;
+}
+
+
+export interface Question {
+    score: number
+    order: number
+    id: number
+}
+
+export interface QuestionWithAnswers {
+    id: number
+    explanation: string
+    score: number
+    order: number
+    answer: string
+    topic: string
+    user_answer: UserAnswer | null
+}
+
+export interface UserAnswer {
+    id: number
+    selected_answer: string
+    is_correct: boolean
+    answred_at: Date
+    time_taken: number
 }

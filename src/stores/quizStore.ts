@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { apiV2 } from '../utils/axios';
-import { Category, IAttempt, Quiz, QuizStart } from '../types/types';
+import { Category, IAttempt, Question, QuestionWithAnswers, Quiz, QuizStart } from '../types/types';
 
 
 interface QuizStore {
@@ -8,17 +8,20 @@ interface QuizStore {
     categories: Category[];
     quizzes: Quiz[];
     attempt: IAttempt | null;
+    questions: [] | Question[] | QuestionWithAnswers[];
     quizzStart: QuizStart | null;
     fetchCategories: () => Promise<void>;
     fetchCategoryQuizzes: (categoryId: number) => Promise<void>;
     fetchQuizStart: (categoryId: string, quizId: string) => Promise<void>;
     startQuiz: (categoryId: string, quizId: string) => Promise<void>;
+    fetchQuestions: (categoryId: string, quizId: string) => Promise<void>;
 }
 
 export const useQuizStore = create<QuizStore>((set) => ({
     loading: false,
     categories: [],
     quizzes: [],
+    questions: [],
     quizzStart: null,
     attempt: null,
     fetchCategories: async () => {
@@ -65,4 +68,14 @@ export const useQuizStore = create<QuizStore>((set) => ({
             set({ loading: false })
         }
     },
+    fetchQuestions: async (attemptId: string) => {
+        set({ loading: true })
+        try {
+            const res = await apiV2.post(`/quiz/attempts/${attemptId}/questions`);
+            set({ loading: false, questions: res.data });
+        } catch (error) {
+            console.error('Failed to fetch quizzes:', error);
+            set({ loading: false })
+        }
+    }
 }));
