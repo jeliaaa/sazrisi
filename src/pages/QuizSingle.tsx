@@ -10,21 +10,21 @@ import { apiV2 } from "../utils/axios";
 const QuizSingle = () => {
     const [answersModal, setAnswersModal] = useState<boolean>(false);
     const [isTraining, setIsTraining] = useState<boolean>(false);
-    const { catId, quizId } = useParams();
+    const { catId, id } = useParams();
     const { loading, quizzStart, fetchQuizStart, startQuiz } = useQuizStore();
     useEffect(() => {
         const seeAttemptAndStart = async () => {
-            const res = await apiV2.get(`/quiz/category/${catId}/quizzes/${quizId}/start/`);
+            const res = await apiV2.get(`/quiz/category/${catId}/quizzes/${id}/start/`);
             console.log(res.data);
         }
-        if (catId && quizId) {
-            startQuiz(catId, quizId);
-            // fetchQuizStart(catId, quizId);
+        if (catId && id) {
+            // startQuiz(catId, id);
+            fetchQuizStart(catId, id);
             setIsTraining(!!quizzStart?.attempt)
             seeAttemptAndStart();
         }
 
-    }, [fetchQuizStart, catId, quizId, startQuiz, quizzStart])
+    }, [fetchQuizStart, catId, id, startQuiz, quizzStart])
     if (loading) {
         return <Loader />
     }
