@@ -7,7 +7,7 @@ export const privateRoutes = {
   main: "/",
   quizs: "/quizs",
   quizStart: "/quiz/:catId/:id/",
-  quizSingle: "/quiz/:catId/:category/quiz",
+  quizSingle: "/quiz/:catId/:id/quiz",
   leaderboard: "/leaderboard",
   settings: "/settings",
   profile: "/profile",
