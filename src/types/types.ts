@@ -82,6 +82,10 @@ export interface Question {
     score: number
     order: number
     id: number
+    explanation: string | null
+    answer: string | null
+    topic: string | null
+    user_answer: UserAnswer | null
 }
 
 export interface QuestionWithAnswers {

@@ -45,6 +45,11 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
         return questions[currentQuestionIndex] || null;
     }, [questions, currentQuestionIndex]);
 
+    // Check if current question has been answered (has selected_answer property)
+    const isQuestionAnswered = useMemo(() => {
+        return !!(currentQuestion && 'user_answer' in currentQuestion && currentQuestion.user_answer?.selected_answer);
+    }, [currentQuestion]);
+
     // Initialize answer arrays when attempt changes
     useEffect(() => {
         if (attempt?.total_questions) {
@@ -149,8 +154,8 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
     const handleQuestionSwitch = useCallback((newIndex: number) => {
         if (newIndex < 0 || newIndex >= questions.length) return;
 
-        // Save current question time
-        if (questionStartTime !== null && currentQuestion) {
+        // Save current question time only if it's not already answered
+        if (questionStartTime !== null && currentQuestion && !isQuestionAnswered) {
             const now = Date.now();
             const timeSpent = Math.floor((now - questionStartTime) / 1000);
 
@@ -163,14 +168,16 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
 
         setCurrentQuestionIndex(newIndex);
 
-        // Set timer for new question if not submitted
+        // Set timer for new question only if it hasn't been answered
         const newQuestion = questions[newIndex];
-        if (newQuestion && !submittedQuestions.has(newQuestion.order)) {
+        const hasSelectedAnswer = newQuestion && 'answer' in newQuestion && newQuestion.user_answer?.selected_answer;
+
+        if (newQuestion && !hasSelectedAnswer && !submittedQuestions.has(newQuestion.order)) {
             setQuestionStartTime(Date.now());
         } else {
             setQuestionStartTime(null);
         }
-    }, [questions, questionStartTime, currentQuestion, submittedQuestions]);
+    }, [questions, questionStartTime, currentQuestion, submittedQuestions, isQuestionAnswered]);
 
     const handleNoTimeAnswer = useCallback((questionIndex: number, choice: string) => {
         setAnswersNoTime(prev => {
@@ -181,17 +188,17 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
     }, []);
 
     const handleTimedAnswer = useCallback((choice: string) => {
-        if (!currentQuestion) return;
+        if (!currentQuestion || isQuestionAnswered) return;
 
         setAnswersTimed(prev => {
             const updated = [...prev];
             updated[currentQuestion.order] = choice;
             return updated;
         });
-    }, [currentQuestion]);
+    }, [currentQuestion, isQuestionAnswered]);
 
     const handleTimedComplete = useCallback(async () => {
-        if (!currentQuestion || !attempt) return;
+        if (!currentQuestion || !attempt || isQuestionAnswered) return;
 
         const selectedAnswer = answersTimed[currentQuestion.order];
         if (!selectedAnswer) {
@@ -226,20 +233,22 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
             setQuestionStartTime(null);
 
             // Move to next unanswered question
-            const nextUnansweredIndex = questions.findIndex((q, index) =>
-                index > currentQuestionIndex && !submittedQuestions.has(q.order)
-            );
+            const nextUnansweredIndex = questions.findIndex((q, index) => {
+                const hasSelectedAnswer = 'answer' in q && q.user_answer?.selected_answer;
+                return index > currentQuestionIndex && !hasSelectedAnswer && !submittedQuestions.has(q.order);
+            });
 
             if (nextUnansweredIndex !== -1) {
                 handleQuestionSwitch(nextUnansweredIndex);
             }
         } catch (error) {
             console.error("Failed to submit answer:", error);
+            alert("Failed to submit answer. Please try again.");
         }
-    }, [currentQuestion, attempt, answersTimed, submittedQuestions, questionStartTime, elapsedTimes, answerQuestion, questions, currentQuestionIndex, handleQuestionSwitch]);
+    }, [currentQuestion, attempt, answersTimed, submittedQuestions, questionStartTime, elapsedTimes, answerQuestion, questions, currentQuestionIndex, handleQuestionSwitch, isQuestionAnswered]);
 
     const handleSkip = useCallback(() => {
-        if (!currentQuestion) return;
+        if (!currentQuestion || isQuestionAnswered) return;
 
         // Save elapsed time without submitting
         if (questionStartTime !== null) {
@@ -259,7 +268,7 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
         if (nextIndex < questions.length) {
             handleQuestionSwitch(nextIndex);
         }
-    }, [currentQuestion, questionStartTime, currentQuestionIndex, questions.length, handleQuestionSwitch]);
+    }, [currentQuestion, questionStartTime, currentQuestionIndex, questions.length, handleQuestionSwitch, isQuestionAnswered]);
 
     const stopPropagation = useCallback((e: React.MouseEvent) => e.stopPropagation(), []);
 
@@ -354,28 +363,45 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
                     <div className="flex flex-col gap-4">
                         {/* Question Navigation */}
                         <div className="overflow-x-auto whitespace-nowrap border-b py-2">
-                            {questions.map((q, index) => (
-                                <button
-                                    key={q.id}
-                                    onClick={() => handleQuestionSwitch(index)}
-                                    className={`inline-block px-3 py-1 mx-1 border rounded-sm transition-colors ${currentQuestionIndex === index
+                            {questions.map((q, index) => {
+                                const hasSelectedAnswer = 'answer' in q && q.user_answer?.selected_answer;
+                                return (
+                                    <button
+                                        key={q.id}
+                                        onClick={() => handleQuestionSwitch(index)}
+                                        className={`inline-block px-3 py-1 mx-1 border rounded-sm transition-colors ${currentQuestionIndex === index
                                             ? "bg-blue-300 border-blue-500"
-                                            : submittedQuestions.has(q.order)
+                                            : hasSelectedAnswer
                                                 ? "bg-green-200 border-green-400"
                                                 : "hover:bg-gray-100"
-                                        }`}
-                                    onMouseDown={stopPropagation}
-                                >
-                                    {q.order}
-                                </button>
-                            ))}
+                                            }`}
+                                        onMouseDown={stopPropagation}
+                                        title={hasSelectedAnswer ? `Answered: ${q.user_answer?.selected_answer?.toUpperCase()}` : "Not answered"}
+                                    >
+                                        {q.order}
+                                        {hasSelectedAnswer && <span className="ml-1 text-green-700">✓</span>}
+                                    </button>
+                                );
+                            })}
                         </div>
 
                         {/* Question Info */}
                         <div className="text-center text-base font-semibold">
                             კითხვა {currentQuestion?.order} / {questions.length}
-                            {currentQuestion && submittedQuestions.has(currentQuestion.order) && (
-                                <span className="ml-2 text-green-600 text-sm">(Completed)</span>
+                            {isQuestionAnswered && (
+                                <div className="mt-1">
+                                    <span className="text-green-600 text-sm">✓ Completed</span>
+                                    {currentQuestion && 'answer' in currentQuestion && currentQuestion.user_answer && (
+                                        <div className="text-sm text-gray-600 mt-1">
+                                            Your answer: <strong>{currentQuestion.user_answer.selected_answer.toUpperCase()}</strong>
+                                            {currentQuestion.user_answer.is_correct !== undefined && (
+                                                <span className={`ml-2 font-bold ${currentQuestion.user_answer.is_correct ? 'text-green-600' : 'text-red-600'}`}>
+                                                    ({currentQuestion.user_answer.is_correct ? 'Correct' : 'Incorrect'})
+                                                </span>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
                             )}
                         </div>
 
@@ -383,14 +409,27 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
                         <div className="grid grid-cols-2 gap-4 justify-center max-w-sm mx-auto">
                             {["a", "b", "g", "d"].map((choice, index) => {
                                 const georgianChoices = ["ა", "ბ", "გ", "დ"];
-                                const isSelected = currentQuestion && answersTimed[currentQuestion.order] === choice;
-                                const isDisabled = currentQuestion ? submittedQuestions.has(currentQuestion.order) : false;
+
+                                // Get the selected answer - either from server or local state
+                                let selectedAnswer = null;
+                                if (currentQuestion && 'answer' in currentQuestion && currentQuestion.user_answer?.selected_answer) {
+                                    selectedAnswer = currentQuestion.user_answer.selected_answer;
+                                } else if (currentQuestion) {
+                                    selectedAnswer = answersTimed[currentQuestion.order];
+                                }
+
+                                const isSelected = selectedAnswer === choice;
+                                const isDisabled = isQuestionAnswered;
 
                                 return (
                                     <label
                                         key={choice}
-                                        className={`flex items-center gap-2 border p-2 rounded cursor-pointer transition-colors ${isSelected ? "bg-blue-100 border-blue-300" : "hover:bg-gray-50"
-                                            } ${isDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
+                                        className={`flex items-center gap-2 border p-2 rounded cursor-pointer transition-colors ${isSelected
+                                            ? isQuestionAnswered
+                                                ? "bg-green-100 border-green-300"
+                                                : "bg-blue-100 border-blue-300"
+                                            : "hover:bg-gray-50"
+                                            } ${isDisabled ? "cursor-not-allowed" : ""}`}
                                         onMouseDown={stopPropagation}
                                     >
                                         <input
@@ -401,7 +440,12 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
                                             onChange={() => !isDisabled && handleTimedAnswer(choice)}
                                             disabled={isDisabled}
                                         />
-                                        <span>{georgianChoices[index]}</span>
+                                        <span className={isSelected && isQuestionAnswered ? "font-bold" : ""}>
+                                            {georgianChoices[index]}
+                                        </span>
+                                        {isSelected && isQuestionAnswered && (
+                                            <span className="ml-auto text-green-600">✓</span>
+                                        )}
                                     </label>
                                 );
                             })}
@@ -413,17 +457,20 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
                                 onClick={handleSkip}
                                 className="border px-6 py-2 rounded hover:bg-gray-100 transition-colors"
                                 type="button"
-                                disabled={loading}
+                                disabled={loading || isQuestionAnswered}
                             >
                                 Skip
                             </button>
                             <button
                                 onClick={handleTimedComplete}
-                                className="border px-6 py-2 rounded bg-blue-500 text-white hover:bg-blue-600 transition-colors"
+                                className={`border px-6 py-2 rounded transition-colors ${isQuestionAnswered
+                                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                                    : "bg-blue-500 text-white hover:bg-blue-600"
+                                    }`}
                                 type="button"
-                                disabled={loading || (currentQuestion ? submittedQuestions.has(currentQuestion.order) : true)}
+                                disabled={loading || isQuestionAnswered}
                             >
-                                {loading ? "Submitting..." : "Complete"}
+                                {loading ? "Submitting..." : isQuestionAnswered ? "Already Completed" : "Complete"}
                             </button>
                         </div>
                     </div>
