@@ -369,8 +369,8 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
                                     <button
                                         key={q.id}
                                         onClick={() => handleQuestionSwitch(index)}
-                                        className={`inline-block px-3 py-1 mx-1 border rounded-sm transition-colors ${currentQuestionIndex === index
-                                            ? "border-main-color/80"
+                                        className={`inline-block px-3 py-1 mx-1 rounded-sm transition-colors ${currentQuestionIndex === index
+                                            ? "border-2"
                                             : ""}  ${q.user_answer?.is_correct
                                                 ? "bg-green-400"
                                                 : "bg-red-400"
