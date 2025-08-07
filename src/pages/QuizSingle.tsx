@@ -17,6 +17,7 @@ const QuizSingle = () => {
             const res = await apiV2.get(`/quiz/category/${catId}/quizzes/${id}/start/`);
             console.log(res.data);
         }
+        console.log(catId, id)
         if (catId && id) {
             // startQuiz(catId, id);
             fetchQuizStart(catId, id);
