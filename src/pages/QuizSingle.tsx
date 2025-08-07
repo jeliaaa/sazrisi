@@ -17,7 +17,7 @@ const QuizSingle = () => {
             fetchQuizStart(catId, id);
         }
         // 
-    }, [fetchQuizStart, catId, id, quizzStart])
+    }, [fetchQuizStart, catId, id])
 
     // useEffect(() => {
     //     const seeAttemptAndStart = async () => {
