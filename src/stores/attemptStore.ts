@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { apiV2 } from '../utils/axios';
-import { IAttempt, Question, QuestionWithAnswers } from '../types/types';
+import { IAttempt, Question, QuestionWithAnswers, SubmittedAnswer } from '../types/types';
 
 
 interface AttemptStore {
@@ -9,6 +9,7 @@ interface AttemptStore {
     questions: [] | Question[] | QuestionWithAnswers[];
     startQuiz: (categoryId: string, quizId: string) => Promise<void>;
     fetchQuestions: (attemptId: string) => Promise<void>;
+    answerQuestion: (attemptId: string, answer: SubmittedAnswer) => Promise<void>;
 }
 
 export const useAttemptStore = create<AttemptStore>((set) => ({
@@ -31,6 +32,19 @@ export const useAttemptStore = create<AttemptStore>((set) => ({
         try {
             const res = await apiV2.get(`/quiz/attempts/${attemptId}/questions`);
             set({ loading: false, questions: res.data });
+        } catch (error) {
+            console.error('Failed to fetch quizzes:', error);
+            set({ loading: false })
+        }
+    },
+    answerQuestion: async (attemptId: string, answer: SubmittedAnswer) => {
+        set({ loading: true })
+        try {
+            const res = await apiV2.post(`/quiz/attempts/${attemptId}/answer`,
+                answer
+            );
+            console.log(res.data);
+            set({ loading: false });
         } catch (error) {
             console.error('Failed to fetch quizzes:', error);
             set({ loading: false })

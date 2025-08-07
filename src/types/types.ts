@@ -101,3 +101,8 @@ export interface UserAnswer {
     answred_at: Date
     time_taken: number
 }
+export interface SubmittedAnswer {
+    question_id: number
+    selected_answer: string
+    time_taken: number
+}

@@ -1,6 +1,7 @@
 import { MoveDiagonal2 } from "lucide-react";
 import { SetStateAction, Dispatch, useState, useRef, useEffect, useCallback } from "react";
 import { IAttempt, Question, QuestionWithAnswers } from "../types/types";
+import { useAttemptStore } from "../stores/attemptStore";
 
 
 interface AnswerModalProps {
@@ -19,6 +20,7 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
     const [questionStartTime, setQuestionStartTime] = useState<number | null>(Date.now());
     const [submittedQuestions, setSubmittedQuestions] = useState<Set<number>>(new Set());
     const [elapsedTimes, setElapsedTimes] = useState<Map<number, number>>(new Map());
+    const { loading, answerQuestion } = useAttemptStore();
 
 
 
@@ -207,7 +209,10 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
         };
 
         console.log("Submitting answer:", answerPayload);
+        if (attempt) {
+            answerQuestion(attempt?.id.toString(), answerPayload)
 
+        }
         setSubmittedQuestions((prev) => new Set(prev).add(questionOrder));
 
         setElapsedTimes((prev) => {
