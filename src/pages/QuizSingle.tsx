@@ -10,20 +10,21 @@ import { useAttemptStore } from "../stores/attemptStore";
 const QuizSingle = () => {
     const [answersModal, setAnswersModal] = useState<boolean>(false);
     const [isTraining, setIsTraining] = useState<boolean>(false);
-    const { attemptId } = useParams();
-    const { loading, quizzStart } = useQuizStore();
-    const { questions, fetchQuestions } = useAttemptStore();
+    const { catId, id, attemptId } = useParams();
+    const { loading, quizzStart, fetchQuizStart } = useQuizStore();
+    const { loading: questionLoading, questions, fetchQuestions } = useAttemptStore();
 
 
 
     useEffect(() => {
-        if (attemptId) {
+        if (attemptId && catId && id) {
+            fetchQuizStart(catId, id)
             fetchQuestions(attemptId);
         }
         setIsTraining(false)
-    }, [attemptId, fetchQuestions]);
+    }, [attemptId, fetchQuestions, catId, id, fetchQuizStart]);
 
-    if (loading) {
+    if (loading || questionLoading) {
         return <Loader />
     }
 

@@ -20,6 +20,30 @@ export default function Settings() {
     { id: 2, type: "MasterCard", last4: "5678", isDefault: false },
   ]);
 
+  const orderHistory = [
+    {
+      id: "ORD-001",
+      date: "2025-05-01",
+      total: "₾8.00",
+      status: "მიწოდებულია",
+      items: ["მათემატიკის ტესტები", "ვიდეო გაკვეთილები"],
+    },
+    {
+      id: "ORD-002",
+      date: "2025-04-20",
+      total: "₾10.00",
+      status: "მიმდინარეობს",
+      items: ["SAT მოსამზადებელი კურსი"],
+    },
+    {
+      id: "ORD-003",
+      date: "2025-04-01",
+      total: "₾6.00",
+      status: "გაუქმდა",
+      items: ["ტესტების პაკეტი"],
+    },
+  ];
+
   const handleDelete = (id: number) => {
     setPaymentMethods((prev) => prev.filter((method) => method.id !== id));
   };
@@ -81,11 +105,10 @@ export default function Settings() {
                   <div
                     key={color}
                     onClick={() => setThemeColor(color)}
-                    className={`w-8 h-8 rounded-lg cursor-pointer border-2 transition ${
-                      themeColor === color
+                    className={`w-8 h-8 rounded-lg cursor-pointer border-2 transition ${themeColor === color
                         ? "border-[3px] border-gray-500 scale-105"
                         : "border-transparent"
-                    }`}
+                      }`}
                     style={{ backgroundColor: color }}
                   />
                 ))}
@@ -154,9 +177,8 @@ export default function Settings() {
                 {paymentMethods.map((method) => (
                   <div
                     key={method.id}
-                    className={`flex items-center justify-between border p-4 rounded-xl ${
-                      method.isDefault ? "border-main-color" : "border-gray-200"
-                    }`}
+                    className={`flex items-center justify-between border p-4 rounded-xl ${method.isDefault ? "border-main-color" : "border-gray-200"
+                      }`}
                   >
                     <div className="flex items-center gap-3">
                       <img
@@ -164,8 +186,8 @@ export default function Settings() {
                           method.type === "Visa"
                             ? "/visa.svg"
                             : method.type === "MasterCard"
-                            ? "/mastercard.svg"
-                            : "/card.svg"
+                              ? "/mastercard.svg"
+                              : "/card.svg"
                         }
                         alt={method.type}
                         className="w-10"
@@ -197,70 +219,47 @@ export default function Settings() {
           </div>
         );
 
-        case "შეკვეთების ისტორია":
-          const orderHistory = [
-            {
-              id: "ORD-001",
-              date: "2025-05-01",
-              total: "₾8.00",
-              status: "მიწოდებულია",
-              items: ["მათემატიკის ტესტები", "ვიდეო გაკვეთილები"],
-            },
-            {
-              id: "ORD-002",
-              date: "2025-04-20",
-              total: "₾10.00",
-              status: "მიმდინარეობს",
-              items: ["SAT მოსამზადებელი კურსი"],
-            },
-            {
-              id: "ORD-003",
-              date: "2025-04-01",
-              total: "₾6.00",
-              status: "გაუქმდა",
-              items: ["ტესტების პაკეტი"],
-            },
-          ];
-        
-          return (
-            <div className="space-y-4">
-              {orderHistory.length > 0 ? (
-                orderHistory.map((order) => (
-                  <div
-                    key={order.id}
-                    className="border rounded-xl p-4 bg-gray-50 hover:shadow transition"
-                  >
-                    <div className="flex justify-between items-center mb-2">
-                      <p className="text-sm font-semibold">შეკვეთა #{order.id}</p>
-                      <span
-                        className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                          order.status === "მიწოდებულია"
-                            ? "bg-green-100 text-green-700"
-                            : order.status === "მიმდინარეობს"
+      case "შეკვეთების ისტორია":
+
+
+        return (
+          <div className="space-y-4">
+            {orderHistory.length > 0 ? (
+              orderHistory.map((order) => (
+                <div
+                  key={order.id}
+                  className="border rounded-xl p-4 bg-gray-50 hover:shadow transition"
+                >
+                  <div className="flex justify-between items-center mb-2">
+                    <p className="text-sm font-semibold">შეკვეთა #{order.id}</p>
+                    <span
+                      className={`text-xs font-medium px-2 py-0.5 rounded-full ${order.status === "მიწოდებულია"
+                          ? "bg-green-100 text-green-700"
+                          : order.status === "მიმდინარეობს"
                             ? "bg-yellow-100 text-yellow-700"
                             : "bg-red-100 text-red-700"
                         }`}
-                      >
-                        {order.status}
-                      </span>
-                    </div>
-                    <p className="text-sm text-gray-600">თარიღი: {order.date}</p>
-                    <p className="text-sm text-gray-600 mt-1">
-                      პროდუქტები: {order.items.join(", ")}
-                    </p>
-                    <p className="text-sm text-gray-800 mt-1 font-medium">
-                      ჯამური ღირებულება: {order.total}
-                    </p>
+                    >
+                      {order.status}
+                    </span>
                   </div>
-                ))
-              ) : (
-                <p className="text-sm text-gray-500">
-                  ჯერჯერობით შეკვეთების ისტორია არ მოიძებნა.
-                </p>
-              )}
-            </div>
-          );
-        
+                  <p className="text-sm text-gray-600">თარიღი: {order.date}</p>
+                  <p className="text-sm text-gray-600 mt-1">
+                    პროდუქტები: {order.items.join(", ")}
+                  </p>
+                  <p className="text-sm text-gray-800 mt-1 font-medium">
+                    ჯამური ღირებულება: {order.total}
+                  </p>
+                </div>
+              ))
+            ) : (
+              <p className="text-sm text-gray-500">
+                ჯერჯერობით შეკვეთების ისტორია არ მოიძებნა.
+              </p>
+            )}
+          </div>
+        );
+
 
       default:
         return null;
@@ -275,11 +274,10 @@ export default function Settings() {
             <p
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`cursor-pointer text-sm sm:text-base md:text-lg whitespace-nowrap ${
-                activeTab === tab
+              className={`cursor-pointer text-sm sm:text-base md:text-lg whitespace-nowrap ${activeTab === tab
                   ? "underline font-semibold text-main-color"
                   : "text-gray-700"
-              }`}
+                }`}
             >
               {tab}
             </p>
