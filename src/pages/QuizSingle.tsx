@@ -10,19 +10,13 @@ const QuizSingle = () => {
     const [answersModal, setAnswersModal] = useState<boolean>(false);
     const [isTraining, setIsTraining] = useState<boolean>(false);
     const { catId, id } = useParams();
-    const { fetchQuizStart, loading, quizzStart } = useQuizStore((state) => ({
-        fetchQuizStart: state.fetchQuizStart,
-        loading: state.loading,
-        quizzStart: state.quizzStart,
-    }));
+    const { loading, fetchQuizStart } = useQuizStore();
 
     useEffect(() => {
-        // 
         if (catId && id) {
-            fetchQuizStart(catId, id);
+            fetchQuizStart(catId, id)
         }
-        // 
-    }, [fetchQuizStart, catId, id])
+    }, [])
 
     // useEffect(() => {
     //     const seeAttemptAndStart = async () => {
