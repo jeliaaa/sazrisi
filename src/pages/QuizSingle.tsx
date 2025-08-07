@@ -22,7 +22,9 @@ const QuizSingle = () => {
             const res = await apiV2.get(`/quiz/category/${catId}/quizzes/${quizId}/start/`);
             console.log(res.data);
         }
-        seeAttemptAndStart();
+        if (catId && quizId) {
+            seeAttemptAndStart();
+        }
     }, [fetchQuizStart, catId, quizId, startQuiz, quizzStart])
     if (loading) {
         return <Loader />
