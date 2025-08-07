@@ -13,18 +13,17 @@ const QuizSingle = () => {
     const { catId, quizId } = useParams();
     const { loading, quizzStart, fetchQuizStart, startQuiz } = useQuizStore();
     useEffect(() => {
-        if (catId && quizId) {
-            startQuiz(catId, quizId);
-            // fetchQuizStart(catId, quizId);
-            setIsTraining(!!quizzStart?.attempt)
-        }
         const seeAttemptAndStart = async () => {
             const res = await apiV2.get(`/quiz/category/${catId}/quizzes/${quizId}/start/`);
             console.log(res.data);
         }
         if (catId && quizId) {
+            startQuiz(catId, quizId);
+            // fetchQuizStart(catId, quizId);
+            setIsTraining(!!quizzStart?.attempt)
             seeAttemptAndStart();
         }
+
     }, [fetchQuizStart, catId, quizId, startQuiz, quizzStart])
     if (loading) {
         return <Loader />
