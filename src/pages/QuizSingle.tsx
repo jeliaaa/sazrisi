@@ -14,7 +14,7 @@ const QuizSingle = () => {
     useEffect(() => {
         // 
         if (catId && id) {
-            startQuiz(catId, id);
+            // startQuiz(catId, id);
             fetchQuizStart(catId, id);
             setIsTraining(!!quizzStart?.attempt)
         }
