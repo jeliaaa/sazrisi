@@ -1,4 +1,4 @@
-import { Check, MoveDiagonal2, X } from "lucide-react";
+import { MoveDiagonal2 } from "lucide-react";
 import { SetStateAction, Dispatch, useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { IAttempt, Question, QuestionWithAnswers } from "../types/types";
 import { useAttemptStore } from "../stores/attemptStore";
@@ -370,20 +370,15 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
                                         key={q.id}
                                         onClick={() => handleQuestionSwitch(index)}
                                         className={`inline-block px-3 py-1 mx-1 border rounded-sm transition-colors ${currentQuestionIndex === index
-                                            ? "bg-blue-300 border-blue-500"
-                                            : hasSelectedAnswer
-                                                ? "bg-main-color/60 border-main-color/80"
-                                                : "hover:bg-gray-100"
+                                            ? "border-main-color/80"
+                                            : q.user_answer?.is_correct
+                                                ? "bg-green-400"
+                                                : "bg-red-400"
                                             }`}
                                         onMouseDown={stopPropagation}
                                         title={hasSelectedAnswer ? `Answered: ${q.user_answer?.selected_answer?.toUpperCase()}` : "Not answered"}
                                     >
                                         {q.order}
-                                        {currentQuestion?.user_answer?.is_correct !== undefined && (
-                                            <span className={`ml-2 font-bold ${currentQuestion.user_answer.is_correct ? 'text-green-600' : 'text-red-600'}`}>
-                                                ({currentQuestion.user_answer.is_correct ? <Check /> : <X />})
-                                            </span>
-                                        )}
                                     </button>
                                 );
                             })}
