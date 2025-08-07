@@ -29,7 +29,7 @@ export const useAttemptStore = create<AttemptStore>((set) => ({
     fetchQuestions: async (attemptId: string) => {
         set({ loading: true })
         try {
-            const res = await apiV2.post(`/quiz/attempts/${attemptId}/questions`);
+            const res = await apiV2.get(`/quiz/attempts/${attemptId}/questions`);
             set({ loading: false, questions: res.data });
         } catch (error) {
             console.error('Failed to fetch quizzes:', error);
