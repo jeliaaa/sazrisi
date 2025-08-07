@@ -399,9 +399,7 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
                                             name="timedAnswer"
                                             value={choice}
                                             checked={
-                                                currentQuestion
-                                                    ? answersTimed[currentQuestion.order] === choice
-                                                    : false
+                                                'user_answer' in currentQuestion! && currentQuestion?.user_answer?.selected_answer === georgianChoices[index]
                                             }
                                             onChange={() => handleTimedAnswer(choice)}
                                             disabled={

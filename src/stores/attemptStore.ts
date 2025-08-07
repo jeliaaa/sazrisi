@@ -38,16 +38,24 @@ export const useAttemptStore = create<AttemptStore>((set) => ({
         }
     },
     answerQuestion: async (attemptId: string, answer: SubmittedAnswer) => {
-        set({ loading: true })
+        set({ loading: true });
+
         try {
-            const res = await apiV2.post(`/quiz/attempts/${attemptId}/answer`,
-                answer
-            );
-            console.log(res.data);
-            set({ loading: false });
+            const res = await apiV2.post(`/quiz/attempts/${attemptId}/answer`, answer);
+
+            const updatedQuestion = res.data.updated_question;
+
+            set((state) => ({
+                loading: false,
+                attempt: res.data.updated_attempt,
+                questions: state.questions.map((q) =>
+                    q.id === updatedQuestion.id ? updatedQuestion : q
+                ),
+            }));
         } catch (error) {
             console.error('Failed to fetch quizzes:', error);
-            set({ loading: false })
+            set({ loading: false });
         }
     }
+
 }));
