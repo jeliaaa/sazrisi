@@ -15,7 +15,7 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
     const [activeTab, setActiveTab] = useState<"no-time" | "timed">("no-time");
     const [answersNoTime, setAnswersNoTime] = useState<(string | null)[]>(Array(attempt?.total_questions).fill(null));
     const [answersTimed, setAnswersTimed] = useState<(string | null)[]>(Array(attempt?.total_questions).fill(null));
-    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const [currentQuestion, setCurrentQuestion] = useState<Question | QuestionWithAnswers | null>(null);
     const [questionStartTime, setQuestionStartTime] = useState<number | null>(Date.now());
     const [submittedQuestions, setSubmittedQuestions] = useState<Set<number>>(new Set());
     const [elapsedTimes, setElapsedTimes] = useState<Map<number, number>>(new Map());
@@ -42,6 +42,11 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
             setQuestionStartTime(Date.now());
         }
     }, [attempt, isTraining]);
+    useEffect(() => {
+        if (questions.length > 0) {
+            setCurrentQuestion(questions[0]);
+        }
+    }, [questions]);
 
 
 
@@ -134,26 +139,29 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
 
 
     const handleQuestionSwitch = (newIndex: number) => {
-        if (questionStartTime !== null) {
+        const question = questions.find((q) => q.order === newIndex);
+        if (!question) return;
+
+        if (questionStartTime !== null && currentQuestion) {
             const now = Date.now();
             const timeSpent = Math.floor((now - questionStartTime) / 1000);
 
-            setElapsedTimes(prev => {
+            setElapsedTimes((prev) => {
                 const updated = new Map(prev);
-                updated.set(currentQuestionIndex, (updated.get(currentQuestionIndex) || 0) + timeSpent);
+                updated.set(currentQuestion.order, (updated.get(currentQuestion.order) || 0) + timeSpent);
                 return updated;
             });
         }
 
-        setCurrentQuestionIndex(newIndex);
+        setCurrentQuestion(question);
 
-        // Resume timer only if not already completed
-        if (!submittedQuestions.has(newIndex)) {
+        if (!submittedQuestions.has(question.order)) {
             setQuestionStartTime(Date.now());
         } else {
-            setQuestionStartTime(null); // Don’t track time if question is already submitted
+            setQuestionStartTime(null);
         }
     };
+
 
 
     const handleNoTimeAnswer = (questionIndex: number, choice: string) => {
@@ -163,20 +171,26 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
     };
 
     const handleTimedAnswer = (choice: string) => {
+        if (!currentQuestion) return;
+
         const updatedAnswers = [...answersTimed];
-        updatedAnswers[currentQuestionIndex] = choice;
+        updatedAnswers[currentQuestion.order] = choice;
         setAnswersTimed(updatedAnswers);
     };
+
     const handleTimedComplete = () => {
-        const questionId = currentQuestionIndex + 1;
-        const selectedAnswer = answersTimed[currentQuestionIndex];
+        if (!currentQuestion) return;
+
+        const questionId = currentQuestion.id;
+        const questionOrder = currentQuestion.order;
+        const selectedAnswer = answersTimed[questionOrder];
 
         if (!selectedAnswer) {
             alert("Please select an answer before completing.");
             return;
         }
 
-        if (submittedQuestions.has(currentQuestionIndex)) {
+        if (submittedQuestions.has(questionOrder)) {
             alert("You have already completed this question.");
             return;
         }
@@ -184,7 +198,7 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
         const now = Date.now();
         const timeSpentNow = questionStartTime ? now - questionStartTime : 0;
 
-        const totalTime = (elapsedTimes.get(currentQuestionIndex) || 0) + timeSpentNow;
+        const totalTime = (elapsedTimes.get(questionOrder) || 0) + timeSpentNow;
 
         const answerPayload = {
             question_id: questionId,
@@ -194,51 +208,50 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
 
         console.log("Submitting answer:", answerPayload);
 
-        setSubmittedQuestions((prev) => new Set(prev).add(currentQuestionIndex));
+        setSubmittedQuestions((prev) => new Set(prev).add(questionOrder));
 
-        // lock answer and clear timer
-        setElapsedTimes(prev => {
+        setElapsedTimes((prev) => {
             const updated = new Map(prev);
-            updated.set(currentQuestionIndex, totalTime);
+            updated.set(questionOrder, totalTime);
             return updated;
         });
+
         setQuestionStartTime(null);
 
-        // go to next unanswered question
-        const isLastQuestion = currentQuestionIndex >= questions.length - 1;
+        // move to next unanswered
+        const unanswered = questions.filter(q => !submittedQuestions.has(q.order));
+        const nextQuestion = unanswered.find(q => q.order > questionOrder);
 
-        if (!isLastQuestion) {
-            let next = currentQuestionIndex + 1;
-            while (submittedQuestions.has(next) && next < questions.length) next++;
-
-            if (next < questions.length) {
-                setCurrentQuestionIndex(next);
-                setQuestionStartTime(Date.now());
-            }
+        if (nextQuestion) {
+            setCurrentQuestion(nextQuestion);
+            setQuestionStartTime(Date.now());
         } else {
-            // Last question — stop timer
-            setQuestionStartTime(null);
+            setQuestionStartTime(null); // No more questions
         }
-
     };
 
 
     const handleSkip = () => {
+        if (!currentQuestion) return;
+
         if (questionStartTime !== null) {
             const now = Date.now();
             const timeSpent = Math.floor((now - questionStartTime) / 1000);
 
-            setElapsedTimes(prev => {
+            setElapsedTimes((prev) => {
                 const updated = new Map(prev);
-                updated.set(currentQuestionIndex, (updated.get(currentQuestionIndex) || 0) + timeSpent);
+                updated.set(currentQuestion.order, (updated.get(currentQuestion.order) || 0) + timeSpent);
                 return updated;
             });
 
-            setQuestionStartTime(null); // pause timer
+            setQuestionStartTime(null);
         }
 
-        // move to next question but DO NOT resume timer
-        setCurrentQuestionIndex(prev => Math.min(questions.length - 1, prev + 1));
+        // Move to next question without resuming time
+        const next = questions.find(q => q.order > currentQuestion.order);
+        if (next) {
+            setCurrentQuestion(next);
+        }
     };
 
 
@@ -347,22 +360,22 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
                     <div className="flex flex-col gap-4">
                         {/* Question numbers nav */}
                         <div className="overflow-x-auto whitespace-nowrap border-b py-2">
-                            {questions.map((_, i) => (
+                            {questions.map((q) => (
                                 <button
-                                    key={i}
-                                    onClick={() => handleQuestionSwitch(i)}
-                                    className={`inline-block px-3 py-1 mx-1 border rounded-sm ${currentQuestionIndex === i ? "bg-gray-300" : ""
+                                    key={q.id}
+                                    onClick={() => handleQuestionSwitch(q.order)}
+                                    className={`inline-block px-3 py-1 mx-1 border rounded-sm ${currentQuestion?.order === q.order ? "bg-gray-300" : ""
                                         }`}
                                     onMouseDown={(e) => e.stopPropagation()}
                                 >
-                                    {i + 1}
+                                    {q.order}
                                 </button>
                             ))}
                         </div>
 
                         {/* Question info */}
                         <div className="text-center text-base font-semibold">
-                            კითხვა {currentQuestionIndex + 1} / {questions.length}
+                            კითხვა {currentQuestion?.order} / {questions.length}
 
                         </div>
 
@@ -380,17 +393,24 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
                                             type="radio"
                                             name="timedAnswer"
                                             value={choice}
-                                            checked={answersTimed[currentQuestionIndex] === choice}
+                                            checked={
+                                                currentQuestion
+                                                    ? answersTimed[currentQuestion.order] === choice
+                                                    : false
+                                            }
                                             onChange={() => handleTimedAnswer(choice)}
-                                            disabled={submittedQuestions.has(currentQuestionIndex)}
+                                            disabled={
+                                                currentQuestion
+                                                    ? submittedQuestions.has(currentQuestion.order)
+                                                    : false
+                                            }
                                         />
-
-
                                         <span>{georgianChoices[index]}</span>
                                     </label>
                                 );
                             })}
                         </div>
+
 
                         {/* Buttons */}
                         <div className="flex justify-center gap-4 mt-4">
