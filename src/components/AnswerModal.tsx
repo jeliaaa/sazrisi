@@ -278,7 +278,7 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
         <>
             {/* Backdrop */}
             <div
-                className="fixed inset-0 bg-black bg-opacity-40 z-40"
+                className="fixed inset-0 bg-black/10 bg-opacity-40 z-40"
                 onClick={() => setIsOpen(false)}
             />
 
