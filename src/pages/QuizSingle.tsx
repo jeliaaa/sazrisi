@@ -14,9 +14,10 @@ const QuizSingle = () => {
 
     useEffect(() => {
         if (catId && id) {
-            fetchQuizStart(catId, id)
+            fetchQuizStart(catId, id);
         }
-    }, [])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     // useEffect(() => {
     //     const seeAttemptAndStart = async () => {
