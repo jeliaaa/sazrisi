@@ -14,12 +14,10 @@ const QuizSingle = () => {
     useEffect(() => {
         // 
         if (catId && id) {
-            // startQuiz(catId, id);
             fetchQuizStart(catId, id);
-            setIsTraining(!!quizzStart?.attempt)
         }
         // 
-    }, [fetchQuizStart, catId, id, quizzStart])
+    }, [fetchQuizStart, catId, id])
 
     // useEffect(() => {
     //     const seeAttemptAndStart = async () => {
