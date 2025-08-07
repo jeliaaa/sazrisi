@@ -8,7 +8,6 @@ interface QuizStore {
     categories: Category[];
     quizzes: Quiz[];
     quizzStart: QuizStart | null;
-    attempt: null;
     fetchCategories: () => Promise<void>;
     fetchCategoryQuizzes: (categoryId: number) => Promise<void>;
     fetchQuizStart: (categoryId: string, quizId: string) => Promise<void>;
@@ -58,8 +57,8 @@ export const useQuizStore = create<QuizStore>((set) => ({
     startQuiz: async (categoryId: string, quizId: string) => {
         set({ loading: true })
         try {
-            await apiV2.get(`/quiz/category/${categoryId}/quizzes/${quizId}/start/`);
-            set({ loading: false,  });
+            await apiV2.post(`/quiz/category/${categoryId}/quizzes/${quizId}/start/`);
+            set({ loading: false });
         } catch (error) {
             console.error('Failed to fetch quizzes:', error);
             set({ loading: false })

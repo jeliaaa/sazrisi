@@ -6,29 +6,28 @@ import { Pen, Sheet } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { useQuizStore } from "../stores/quizStore";
 import Loader from "../components/reusables/Loader";
-import { apiV2 } from "../utils/axios";
 const QuizSingle = () => {
     const [answersModal, setAnswersModal] = useState<boolean>(false);
     const [isTraining, setIsTraining] = useState<boolean>(false);
     const { catId, id } = useParams();
     const { loading, quizzStart, fetchQuizStart, startQuiz } = useQuizStore();
-    // useEffect(() => {
-
-    //     if (catId && id) {
-    //         // startQuiz(catId, id);
-    //         fetchQuizStart(catId, id);
-    //         setIsTraining(!!quizzStart?.attempt)
-    //     }
-
-    // }, [fetchQuizStart, catId, id, startQuiz, quizzStart])
-
     useEffect(() => {
-        const seeAttemptAndStart = async () => {
-            const res = await apiV2.post(`/quiz/category/${catId}/quizzes/${id}/start/`);
-            console.log(res.data);
+        // 
+        if (catId && id) {
+            startQuiz(catId, id);
+            fetchQuizStart(catId, id);
+            setIsTraining(!!quizzStart?.attempt)
         }
-        seeAttemptAndStart();
-    }, [catId, id])
+        // 
+    }, [fetchQuizStart, catId, id, startQuiz, quizzStart])
+
+    // useEffect(() => {
+    //     const seeAttemptAndStart = async () => {
+    //         const res = await apiV2.post(`/quiz/category/${catId}/quizzes/${id}/start/`);
+    //         console.log(res.data);
+    //     }
+    //     seeAttemptAndStart();
+    // }, [catId, id])
 
     if (loading) {
         return <Loader />
