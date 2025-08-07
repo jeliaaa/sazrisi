@@ -372,7 +372,7 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
                                         className={`inline-block px-3 py-1 mx-1 border rounded-sm transition-colors ${currentQuestionIndex === index
                                             ? "bg-blue-300 border-blue-500"
                                             : hasSelectedAnswer
-                                                ? "bg-green-200 border-green-400"
+                                                ? "bg-main-color/60 border-main-color/80"
                                                 : "hover:bg-gray-100"
                                             }`}
                                         onMouseDown={stopPropagation}
