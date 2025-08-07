@@ -389,13 +389,13 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
                             კითხვა {currentQuestion?.order} / {questions.length}
                             {isQuestionAnswered && (
                                 <div className="mt-1">
-                                    <span className="text-green-600 text-sm">✓ Completed</span>
+                                    <span className="text-main-color title">შესრულებულია</span>
                                     {currentQuestion && 'answer' in currentQuestion && currentQuestion.user_answer && (
                                         <div className="text-sm text-gray-600 mt-1">
-                                            Your answer: <strong>{currentQuestion.user_answer.selected_answer.toUpperCase()}</strong>
+                                            თქვენი პასუხი: <strong>{currentQuestion.user_answer.selected_answer.toUpperCase()}</strong>
                                             {currentQuestion.user_answer.is_correct !== undefined && (
                                                 <span className={`ml-2 font-bold ${currentQuestion.user_answer.is_correct ? 'text-green-600' : 'text-red-600'}`}>
-                                                    ({currentQuestion.user_answer.is_correct ? 'Correct' : 'Incorrect'})
+                                                    ({currentQuestion.user_answer.is_correct ? 'სწორია' : 'არასწორია'})
                                                 </span>
                                             )}
                                         </div>
@@ -409,26 +409,25 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
                             {["a", "b", "g", "d"].map((choice, index) => {
                                 const georgianChoices = ["ა", "ბ", "გ", "დ"];
 
-                                // Get the selected answer - either from server or local state
-                                let selectedAnswer = null;
-                                if (currentQuestion && 'answer' in currentQuestion && currentQuestion.user_answer?.selected_answer) {
-                                    selectedAnswer = currentQuestion.user_answer.selected_answer;
-                                } else if (currentQuestion) {
-                                    selectedAnswer = answersTimed[currentQuestion.order];
-                                }
+                                const selectedAnswer = currentQuestion?.user_answer?.selected_answer ?? answersTimed[currentQuestion?.order];
+                                const correctAnswer = currentQuestion?.answer;
 
                                 const isSelected = selectedAnswer === choice;
+                                const isCorrect = correctAnswer === choice;
                                 const isDisabled = isQuestionAnswered;
 
                                 return (
                                     <label
                                         key={choice}
-                                        className={`flex items-center gap-2 border p-2 rounded cursor-pointer transition-colors ${isSelected
-                                            ? isQuestionAnswered
+                                        className={`flex items-center gap-2 border p-2 rounded cursor-pointer transition-colors
+          ${isCorrect
                                                 ? "bg-green-100 border-green-300"
-                                                : "bg-blue-100 border-blue-300"
-                                            : "hover:bg-gray-50"
-                                            } ${isDisabled ? "cursor-not-allowed" : ""}`}
+                                                : isSelected
+                                                    ? "bg-main-color/10 border-main-color"
+                                                    : "hover:bg-gray-50"
+                                            }
+          ${isDisabled ? "cursor-not-allowed" : ""}
+        `}
                                         onMouseDown={stopPropagation}
                                     >
                                         <input
@@ -439,16 +438,17 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
                                             onChange={() => !isDisabled && handleTimedAnswer(choice)}
                                             disabled={isDisabled}
                                         />
-                                        <span className={isSelected && isQuestionAnswered ? "font-bold" : ""}>
+                                        <span className={`${isSelected ? "text-main-color font-bold" : ""}`}>
                                             {georgianChoices[index]}
                                         </span>
-                                        {isSelected && isQuestionAnswered && (
-                                            <span className="ml-auto text-green-600">✓</span>
+                                        {isSelected && isDisabled && (
+                                            <span className="ml-auto text-main-color">✓</span>
                                         )}
                                     </label>
                                 );
                             })}
                         </div>
+
 
                         {/* Action Buttons */}
                         <div className="flex justify-center gap-4 mt-4">
@@ -458,7 +458,7 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
                                 type="button"
                                 disabled={loading || isQuestionAnswered}
                             >
-                                Skip
+                                გამოტოვება
                             </button>
                             <button
                                 onClick={handleTimedComplete}
@@ -469,7 +469,7 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
                                 type="button"
                                 disabled={loading || isQuestionAnswered}
                             >
-                                {loading ? "Submitting..." : isQuestionAnswered ? "Already Completed" : "Complete"}
+                                {loading ? "ატვირთვა..." : isQuestionAnswered ? "უკვე შესრულებულია" : "შესრულება"}
                             </button>
                         </div>
                     </div>
