@@ -14,7 +14,7 @@ const QuizSingle = () => {
     const { loading, quizzStart, fetchQuizStart, startQuiz } = useQuizStore();
     useEffect(() => {
         const seeAttemptAndStart = async () => {
-            const res = await apiV2.get(`/quiz/category/${catId}/quizzes/${id}/start/`);
+            const res = await apiV2.post(`/quiz/category/${catId}/quizzes/${id}/start/`);
             console.log(res.data);
         }
         console.log(catId, id)
