@@ -10,7 +10,7 @@ const QuizSingle = () => {
     const [answersModal, setAnswersModal] = useState<boolean>(false);
     const [isTraining, setIsTraining] = useState<boolean>(false);
     const { catId, id } = useParams();
-    const { loading, fetchQuizStart } = useQuizStore();
+    const { loading, fetchQuizStart, quizzStart } = useQuizStore();
 
     useEffect(() => {
         if (catId && id) {
