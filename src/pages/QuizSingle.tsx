@@ -13,19 +13,23 @@ const QuizSingle = () => {
     const { catId, id } = useParams();
     const { loading, quizzStart, fetchQuizStart, startQuiz } = useQuizStore();
     useEffect(() => {
-        const seeAttemptAndStart = async () => {
-            const res = await apiV2.post(`/quiz/category/${catId}/quizzes/${id}/start/`);
-            console.log(res.data);
-        }
-        console.log(catId, id)
+
         if (catId && id) {
             // startQuiz(catId, id);
             fetchQuizStart(catId, id);
             setIsTraining(!!quizzStart?.attempt)
-            seeAttemptAndStart();
         }
 
     }, [fetchQuizStart, catId, id, startQuiz, quizzStart])
+
+    useEffect(() => {
+        const seeAttemptAndStart = async () => {
+            const res = await apiV2.post(`/quiz/category/${catId}/quizzes/${id}/start/`);
+            console.log(res.data);
+        }
+        seeAttemptAndStart();
+    }, [catId, id])
+
     if (loading) {
         return <Loader />
     }
