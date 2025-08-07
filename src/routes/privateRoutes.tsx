@@ -10,6 +10,7 @@ const SettingsPage = lazy(() => import("../pages/Settings"));
 const ProfilePage = lazy(() => import("../pages/Profile"));
 const VideoLessonsPage = lazy(() => import("../pages/VideoLessons"));
 const ChatPage = lazy(() => import("../pages/Chat"));
+const Test = lazy(() => import("../Test"));
 
 export const privateRoutes = [
   {
@@ -56,5 +57,10 @@ export const privateRoutes = [
     title: "chat",
     path: routes.chat,
     component: ChatPage,
+  },
+  {
+    title: "test",
+    path: routes.test,
+    component: Test,
   }
 ];
