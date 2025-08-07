@@ -6,6 +6,7 @@ import { Pen, Sheet } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { useQuizStore } from "../stores/quizStore";
 import Loader from "../components/reusables/Loader";
+import { apiV2 } from "../utils/axios";
 const QuizSingle = () => {
     const [answersModal, setAnswersModal] = useState<boolean>(false);
     const [isTraining, setIsTraining] = useState<boolean>(false);
@@ -14,9 +15,14 @@ const QuizSingle = () => {
     useEffect(() => {
         if (catId && quizId) {
             startQuiz(catId, quizId);
-            fetchQuizStart(catId, quizId);
+            // fetchQuizStart(catId, quizId);
             setIsTraining(!!quizzStart?.attempt)
         }
+        const seeAttemptAndStart = async () => {
+            const res = await apiV2.get(`/quiz/category/${catId}/quizzes/${quizId}/start/`);
+            console.log(res.data);
+        }
+        seeAttemptAndStart();
     }, [fetchQuizStart, catId, quizId, startQuiz, quizzStart])
     if (loading) {
         return <Loader />
