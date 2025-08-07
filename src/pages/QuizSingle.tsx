@@ -15,9 +15,10 @@ const QuizSingle = () => {
         // 
         if (catId && id) {
             fetchQuizStart(catId, id);
+            console.log(quizzStart);
         }
         // 
-    }, [fetchQuizStart, catId, id])
+    }, [fetchQuizStart, catId, id, quizzStart])
 
     // useEffect(() => {
     //     const seeAttemptAndStart = async () => {
