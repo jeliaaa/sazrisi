@@ -1,13 +1,14 @@
 import { Clock, Trophy, Target, Calendar, BookOpen, Star, FileQuestionMark, X } from 'lucide-react'
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useQuizStore } from '../stores/quizStore';
 import Loader from '../components/reusables/Loader';
 
 const QuizStart = () => {
+    const nav = useNavigate();
     const [questionModal, setQuestionModal] = useState<boolean>(false);
     const { catId, id } = useParams();
-    const { loading, fetchQuizStart, quizzStart } = useQuizStore();
+    const { loading, fetchQuizStart, quizzStart, startQuiz, attempt } = useQuizStore();
     useEffect(() => {
         if (catId && id) {
             fetchQuizStart(catId, id)
@@ -17,6 +18,14 @@ const QuizStart = () => {
         return <Loader />
     }
 
+    const handleStartQuiz = () => {
+        if (catId && id) {
+            startQuiz(catId, id);
+            if (attempt) {
+                nav(`${attempt?.id}`)
+            }
+        }
+    }
 
 
 
@@ -71,13 +80,13 @@ const QuizStart = () => {
 
                 {/* Start Button */}
                 <div className="pt-4 border-t border-gray-200">
-                    <Link
-                        to={'quiz'}
+                    <button
+                        onClick={() => handleStartQuiz()}
                         className="w-full cursor-pointer bg-main-color plain-text hover:opacity-90 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                     >
                         <BookOpen className="h-5 w-5 mr-2" />
-                        {quizzStart?.attempt ? "სავარჯიშო ვერსიის გახსნა": "ტესტის დაწყება" }
-                    </Link>
+                        {quizzStart?.attempt ? "სავარჯიშო ვერსიის გახსნა" : "ტესტის დაწყება"}
+                    </button>
                 </div>
             </div>
 

@@ -1,12 +1,13 @@
 import { create } from 'zustand';
 import { apiV2 } from '../utils/axios';
-import { Category, Quiz, QuizStart } from '../types/types';
+import { Category, IAttempt, Quiz, QuizStart } from '../types/types';
 
 
 interface QuizStore {
     loading: boolean;
     categories: Category[];
     quizzes: Quiz[];
+    attempt: IAttempt | null;
     quizzStart: QuizStart | null;
     fetchCategories: () => Promise<void>;
     fetchCategoryQuizzes: (categoryId: number) => Promise<void>;
@@ -57,8 +58,8 @@ export const useQuizStore = create<QuizStore>((set) => ({
     startQuiz: async (categoryId: string, quizId: string) => {
         set({ loading: true })
         try {
-            await apiV2.post(`/quiz/category/${categoryId}/quizzes/${quizId}/start/`);
-            set({ loading: false });
+            const res = await apiV2.post(`/quiz/category/${categoryId}/quizzes/${quizId}/start/`);
+            set({ loading: false, attempt: res.data });
         } catch (error) {
             console.error('Failed to fetch quizzes:', error);
             set({ loading: false })

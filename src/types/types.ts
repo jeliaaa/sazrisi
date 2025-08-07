@@ -41,24 +41,38 @@ export interface Category {
 }
 
 export interface Quiz {
-  id: number;
-  title: string;
-  description: string;
-  is_paid: boolean;
-  price: string;
-  has_access: boolean;
-  access_expires_at: string; // ISO date string, e.g., "2025-08-30T18:00:00Z"
+    id: number;
+    title: string;
+    description: string;
+    is_paid: boolean;
+    price: string;
+    has_access: boolean;
+    access_expires_at: string; // ISO date string, e.g., "2025-08-30T18:00:00Z"
 }
 
 export interface QuizStart {
-  id: number;
-  title: string;
-  description: string;
-  file: string; // URL to a PDF or similar
-  time_limit: number; // in minutes
-  total_questions: number;
-  total_score: number;
-  attempt: null | number; // if nullable
-  category: number; // this might refer to a parent category ID
-  created_at: string; // ISO date string
+    id: number;
+    title: string;
+    description: string;
+    file: string; // URL to a PDF or similar
+    time_limit: number; // in minutes
+    total_questions: number;
+    total_score: number;
+    attempt: null | number; // if nullable
+    category: number; // this might refer to a parent category ID
+    created_at: string; // ISO date string
+}
+
+export interface IAttempt {
+    id: number;
+    quiz: number;
+    status: 'started' | 'completed' | 'pending' | string; // you can extend or narrow this
+    score: number;
+    total_questions: number;
+    correct_answers: number;
+    percentage: string;
+    started_at: string | null; // ISO date string
+    completed_at: string | null;
+    time_taken: number | null;
+    remaining_time: number;
 }
