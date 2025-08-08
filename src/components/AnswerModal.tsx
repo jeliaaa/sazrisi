@@ -222,7 +222,7 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
     // --- Modal content JSX ---
 
     const ModalContent = (
-        <div className="z-100">
+        <div className="z-300">
             {/* Close Button */}
             <button
                 onClick={() => setIsOpen(false)}
