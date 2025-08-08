@@ -26,6 +26,14 @@ const QuizSingle = () => {
         setIsTraining(false)
     }, [attemptId, fetchQuestions, catId, id, fetchQuizStart]);
 
+    useEffect(() => {
+        if (noteModal === true) {
+            setAnswersModal(false)
+        } else if (answersModal === true) {
+            setNoteModal(false)
+        }
+    }, [noteModal, answersModal])
+
     if (loading || questionLoading) {
         return <Loader />
     }
