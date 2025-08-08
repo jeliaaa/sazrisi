@@ -37,7 +37,7 @@ const QuizSingle = () => {
                 <AnswerModal isOpen={answersModal} setIsOpen={setAnswersModal} isTraining={isTraining} attempt={quizzStart?.attempt} questions={questions} />
             }
             {noteModal &&
-                <NoteCanvas />
+                <NoteCanvas onClose={() => setNoteModal(false)} />
             }
             <div className="fixed z-50 right-5 md:bottom-5 gap-y-3 bottom-20 flex flex-col justify-center items-centershadow-2xl">
                 <div title="answers" onClick={() => setAnswersModal(true)} className="cursor-pointer hover:-translate-y-2 transition-all aspect-square bg-main-color w-20 flex justify-center items-center rounded-full">

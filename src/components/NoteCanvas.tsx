@@ -1,7 +1,9 @@
-// components/NoteCanvas.tsx
 import React, { useRef, useState } from "react";
-import { ReactSketchCanvas, ReactSketchCanvasRef } from "react-sketch-canvas";
-
+import {
+    CanvasPath,
+    ReactSketchCanvas,
+    ReactSketchCanvasRef
+} from "react-sketch-canvas";
 const canvasStyle = {
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -11,61 +13,83 @@ const canvasStyle = {
 
 interface Page {
     id: number;
-    data: string | null; // base64 or JSON
+    paths: CanvasPath[]; // stores the sketch paths
 }
 
-export const NoteCanvas: React.FC = () => {
+interface NoteCanvasProps {
+    onClose: () => void;
+}
+
+export const NoteCanvas: React.FC<NoteCanvasProps> = ({ onClose }) => {
     const canvasRef = useRef<ReactSketchCanvasRef>(null);
-    const [pages, setPages] = useState<Page[]>([{ id: 1, data: null }]);
+    const [pages, setPages] = useState<Page[]>([{ id: 1, paths: [] }]);
     const [currentPageIndex, setCurrentPageIndex] = useState(0);
 
-    const handleSave = async () => {
-        const data = await canvasRef.current?.exportImage("png");
-        if (data) {
-            const updatedPages = [...pages];
-            updatedPages[currentPageIndex].data = data;
-            setPages(updatedPages);
-            console.log("Saved Page", currentPageIndex + 1, data);
-            // Optionally, send to backend
+    // Save current canvas state into pages
+    const saveCurrentPagePaths = async () => {
+        const paths = await canvasRef.current?.exportPaths();
+        if (paths) {
+            const updated = [...pages];
+            updated[currentPageIndex].paths = paths;
+            setPages(updated);
         }
     };
 
-    const handleNewPage = () => {
-        setPages([...pages, { id: pages.length + 1, data: null }]);
-        setCurrentPageIndex(pages.length);
+    const switchPage = async (index: number) => {
+        await saveCurrentPagePaths(); // save current page
+        setCurrentPageIndex(index);
+        await canvasRef.current?.clearCanvas();
+        const pathsToLoad = pages[index].paths;
+        if (pathsToLoad?.length) {
+            await canvasRef.current?.loadPaths(pathsToLoad);
+        }
     };
 
-    const switchPage = async (index: number) => {
-        // Save current page before switching
-        const currentData = await canvasRef.current?.exportImage("png");
-        const updatedPages = [...pages];
-        updatedPages[currentPageIndex].data = currentData || null;
-        setPages(updatedPages);
+    const handleNewPage = async () => {
+        await saveCurrentPagePaths(); // save current before adding new
+        const newPage: Page = { id: pages.length + 1, paths: [] };
+        setPages([...pages, newPage]);
+        setCurrentPageIndex(pages.length);
+        await canvasRef.current?.clearCanvas();
+    };
 
-        // Clear canvas and load new page
-        setCurrentPageIndex(index);
-        canvasRef.current?.clearCanvas();
+    const handleSave = async () => {
+        await saveCurrentPagePaths();
+        console.log("All saved pages:", pages);
+        alert("Pages saved to console (JSON format)");
+        // You could POST `pages` to backend or save to localStorage here
     };
 
     return (
-        <div className="absolute w-screen h-screen bg-black/10 left-0 top-0 flex justify-center items-end ">
-            <div className="p-4 border w-3/5 h-3/5  rounded-md bg-white">
-                <div className="mb-4">
+        <div className="absolute w-screen h-screen bg-black/20 left-0 top-0 flex justify-center items-end z-50">
+            <div className="relative p-4 w-11/12 md:w-3/5 h-3/5 rounded-md bg-white shadow-lg">
+                {/* Close Button */}
+                <button
+                    onClick={onClose}
+                    className="absolute top-2 right-2 px-2 py-1 bg-red-500 text-white rounded"
+                >
+                    Close
+                </button>
+
+                <div className="mb-4 h-[400px]">
                     <ReactSketchCanvas
                         ref={canvasRef}
                         style={canvasStyle}
                         strokeWidth={3}
                         strokeColor="black"
+                        withTimestamp={false}
                     />
                 </div>
 
                 <div className="flex items-center justify-between gap-2">
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                         {pages.map((page, i) => (
                             <button
                                 key={page.id}
                                 onClick={() => switchPage(i)}
-                                className={`px-3 py-1 rounded ${i === currentPageIndex ? "bg-blue-500 text-white" : "bg-gray-200"
+                                className={`px-3 py-1 rounded ${i === currentPageIndex
+                                    ? "bg-blue-500 text-white"
+                                    : "bg-gray-200"
                                     }`}
                             >
                                 Page {page.id}

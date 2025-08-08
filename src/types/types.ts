@@ -1,5 +1,21 @@
 // src/types/types.ts
 
+
+//notes
+export type PathType = {
+    id: string;
+    path: {
+        x: number;
+        y: number;
+        pressure?: number;
+    }[];
+    strokeWidth: number;
+    strokeColor: string;
+};
+
+//
+
+
 export interface SignUpFormData {
     name: string;
     email: string;
