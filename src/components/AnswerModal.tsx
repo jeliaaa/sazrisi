@@ -428,7 +428,7 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
                     size={{ width: size.width, height: size.height }}
                     position={{ x: position.x, y: position.y }}
                     onDragStop={(_, d) => setPosition({ x: d.x, y: d.y })}
-                    onResizeStop={(_, __, ref, delta, position) => {
+                    onResizeStop={(_, __, ref, ___, position) => {
                         setSize({
                             width: parseInt(ref.style.width),
                             height: parseInt(ref.style.height),
