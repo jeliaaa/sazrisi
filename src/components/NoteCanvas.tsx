@@ -156,7 +156,7 @@ export const NoteCanvas: React.FC<NoteCanvasProps> = ({ onClose }) => {
     );
 
     return (
-        <div className="fixed inset-0 bg-black/30 z-50 flex justify-center items-end lg:items-center p-4">
+        <div className="fixed inset-0 bg-black/30 z-200 flex justify-center items-end lg:items-center p-4">
             {isLargeScreen ? (
                 <Rnd
                     default={{

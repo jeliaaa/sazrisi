@@ -410,7 +410,7 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
     return (
         <>
             {/* Backdrop */}
-            <div className="fixed inset-0 bg-black/10 bg-opacity-40 z-40" onClick={() => setIsOpen(false)} />
+            <div className="fixed inset-0 bg-black/10 bg-opacity-40 z-200" onClick={() => setIsOpen(false)} />
 
             {isSmallScreen ? (
                 // Small screen: fixed bottom, full width, height 60vh, no drag or resize
