@@ -285,17 +285,39 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
             {/* Modal */}
             <div
                 ref={modalRef}
-                className="z-50 fixed bg-white p-4 overflow-auto shadow-lg rounded-md cursor-move"
+                className={`
+                            z-50
+                            bg-white
+                            p-4
+                            overflow-auto
+                            shadow-lg
+                            rounded-t-md
+                            w-full
+                            fixed
+                            bottom-0
+                            left-0
+                            h-[60vh]
+                            cursor-default
+                            lg:rounded-md
+                            lg:cursor-move
+                            lg:w-auto
+                            lg:fixed
+                        `}
                 style={{
-                    top: position.y,
-                    left: position.x,
-                    width: size.width,
-                    height: size.height,
-                    userSelect: isDragging || isResizing ? "none" : "auto",
+                    ...(window.innerWidth >= 1024 // lg breakpoint
+                        ? {
+                            top: position.y,
+                            left: position.x,
+                            width: size.width,
+                            height: size.height,
+                            userSelect: isDragging || isResizing ? "none" : "auto",
+                        }
+                        : {}),
                 }}
-                onMouseDown={handleMouseDown}
+                onMouseDown={window.innerWidth >= 1024 ? handleMouseDown : undefined}
                 onClick={stopPropagation}
             >
+
                 {/* Close Button */}
                 <button
                     onClick={() => setIsOpen(false)}
@@ -484,7 +506,7 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
                 >
                     <MoveDiagonal2 size={16} />
                 </div>
-            </div>
+            </div >
         </>
     );
 };
