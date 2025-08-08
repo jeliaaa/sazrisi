@@ -127,9 +127,11 @@ export const NoteCanvas: React.FC<NoteCanvasProps> = ({ onClose }) => {
     const content = (
         <div
             ref={modalRef}
-            className="handle relative p-4 w-full h-full bg-white rounded-md shadow-lg flex flex-col"
+            className=" relative p-4 w-full h-full bg-white rounded-md shadow-lg flex flex-col"
         >
-
+            <div className="handle w-full h-[20px] bg-gray-400">
+                შავი ფურცელი
+            </div>
             {/* Close Button */}
             <button
                 onClick={onClose}
