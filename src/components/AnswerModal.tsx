@@ -278,14 +278,14 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
         <>
             {/* Backdrop */}
             <div
-                className="fixed inset-0 bg-black/10 bg-opacity-40 z-40"
+                className="fixed inset-0 bg-black/10 bg-opacity-40 z-200"
                 onClick={() => setIsOpen(false)}
             />
 
             {/* Modal */}
             <div
                 ref={modalRef}
-                className="z-50 fixed bg-white p-4 overflow-auto shadow-lg rounded-md cursor-move"
+                className="z-300 fixed bg-white p-4 overflow-auto shadow-lg rounded-md cursor-move"
                 style={{
                     top: position.y,
                     left: position.x,
