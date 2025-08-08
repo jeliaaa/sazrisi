@@ -8,6 +8,7 @@ import { useAttemptStore } from '../stores/attemptStore';
 const QuizStart = () => {
     const nav = useNavigate();
     const [questionModal, setQuestionModal] = useState<boolean>(false);
+    const [innerLoading, setInnerLoading] = useState<boolean>(false);
     const { catId, id } = useParams();
     const { loading, fetchQuizStart, quizzStart } = useQuizStore();
     const { startQuiz, attempt } = useAttemptStore();
@@ -16,11 +17,12 @@ const QuizStart = () => {
             fetchQuizStart(catId, id)
         }
     }, [fetchQuizStart, catId, id]);
-    if (loading) {
+    if (loading || innerLoading) {
         return <Loader />
     }
 
     const handleStartQuiz = () => {
+        setInnerLoading(true)
         if (catId && id) {
             startQuiz(catId, id);
             if (attempt) {
