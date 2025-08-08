@@ -28,6 +28,7 @@ export const NoteCanvas: React.FC<NoteCanvasProps> = ({ onClose }) => {
     const [pages, setPages] = useState<Page[]>([{ id: 1, paths: [] }]);
     const [currentPageIndex, setCurrentPageIndex] = useState(0);
     const [isLargeScreen, setIsLargeScreen] = useState(false);
+    const [isEraser, setIsEraser] = useState(false);
 
     // Resize detection
     useEffect(() => {
@@ -98,6 +99,20 @@ export const NoteCanvas: React.FC<NoteCanvasProps> = ({ onClose }) => {
         }
     };
 
+    const handleClear = async () => {
+        if (!canvasRef.current) return;
+        await canvasRef.current.clearCanvas();
+
+        // Also update current page paths to empty since canvas is cleared
+        const updated = [...pages];
+        updated[currentPageIndex].paths = [];
+        setPages(updated);
+    };
+
+    const toggleEraser = () => {
+        setIsEraser((prev) => !prev);
+    };
+
     const content = (
         <div
             ref={modalRef}
@@ -117,7 +132,7 @@ export const NoteCanvas: React.FC<NoteCanvasProps> = ({ onClose }) => {
                     ref={canvasRef}
                     style={canvasStyle}
                     strokeWidth={3}
-                    strokeColor="black"
+                    strokeColor={isEraser ? "white" : "black"}
                     withTimestamp={false}
                 />
             </div>
@@ -130,8 +145,8 @@ export const NoteCanvas: React.FC<NoteCanvasProps> = ({ onClose }) => {
                             key={page.id}
                             onClick={() => switchPage(i)}
                             className={`px-3 py-1 rounded ${i === currentPageIndex
-                                ? "bg-blue-500 text-white"
-                                : "bg-gray-200"
+                                    ? "bg-blue-500 text-white"
+                                    : "bg-gray-200"
                                 }`}
                         >
                             Page {page.id}
@@ -145,12 +160,29 @@ export const NoteCanvas: React.FC<NoteCanvasProps> = ({ onClose }) => {
                     </button>
                 </div>
 
-                <button
-                    onClick={handleSave}
-                    className="px-4 py-2 bg-blue-600 text-white rounded"
-                >
-                    Save
-                </button>
+                <div className="flex gap-2">
+                    <button
+                        onClick={handleClear}
+                        className="px-4 py-2 bg-red-600 text-white rounded"
+                    >
+                        Clear
+                    </button>
+
+                    <button
+                        onClick={toggleEraser}
+                        className={`px-4 py-2 rounded ${isEraser ? "bg-yellow-400 text-black" : "bg-gray-300"
+                            }`}
+                    >
+                        {isEraser ? "Eraser ON" : "Eraser OFF"}
+                    </button>
+
+                    <button
+                        onClick={handleSave}
+                        className="px-4 py-2 bg-blue-600 text-white rounded"
+                    >
+                        Save
+                    </button>
+                </div>
             </div>
         </div>
     );
