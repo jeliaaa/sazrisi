@@ -5,6 +5,7 @@ import {
     ReactSketchCanvasRef,
 } from "react-sketch-canvas";
 import { Rnd } from "react-rnd";
+import { Eraser, X } from "lucide-react";
 
 const canvasStyle = {
     border: "1px solid #ccc",
@@ -133,7 +134,7 @@ export const NoteCanvas: React.FC<NoteCanvasProps> = ({ onClose }) => {
                 onClick={onClose}
                 className="absolute top-2 right-2 px-2 py-1 bg-red-500 text-white rounded"
             >
-                Close
+                <X className="h-5 w-5" />
             </button>
 
             {/* Canvas */}
@@ -156,18 +157,18 @@ export const NoteCanvas: React.FC<NoteCanvasProps> = ({ onClose }) => {
                             key={page.id}
                             onClick={() => switchPage(i)}
                             className={`px-3 py-1 rounded ${i === currentPageIndex
-                                    ? "bg-blue-500 text-white"
+                                    ? "text-main-color"
                                     : "bg-gray-200"
                                 }`}
                         >
-                            Page {page.id}
+                            გვერდი {page.id}
                         </button>
                     ))}
                     <button
                         onClick={handleNewPage}
-                        className="px-3 py-1 bg-green-500 text-white rounded"
+                        className="px-3 py-1 bg- text-white rounded"
                     >
-                        + New Page
+                        + 
                     </button>
                 </div>
 
@@ -177,19 +178,19 @@ export const NoteCanvas: React.FC<NoteCanvasProps> = ({ onClose }) => {
                         onClick={handleClear}
                         className="px-4 py-2 bg-red-600 text-white rounded"
                     >
-                        Clear
+                        გასუფთავება
                     </button>
 
                     <button
                         onClick={toggleEraser}
-                        className={`px-4 py-2 rounded ${isEraser ? "bg-yellow-400 text-black" : "bg-gray-300"
+                        className={`px-4 py-2 rounded ${isEraser ? "bg-main-color" : "bg-gray-300"
                             }`}
                     >
-                        {isEraser ? "Eraser ON" : "Eraser OFF"}
+                        <Eraser className="w-5 h-5" />
                     </button>
 
                     <label className="flex items-center gap-2">
-                        <span className="whitespace-nowrap">Thickness:</span>
+                        <span className="whitespace-nowrap">სისქე:</span>
                         <input
                             type="range"
                             min={1}
@@ -202,7 +203,6 @@ export const NoteCanvas: React.FC<NoteCanvasProps> = ({ onClose }) => {
 
                     {!isEraser && (
                         <label className="flex items-center gap-2">
-                            <span>Color:</span>
                             <input
                                 type="color"
                                 value={strokeColor}
@@ -215,7 +215,7 @@ export const NoteCanvas: React.FC<NoteCanvasProps> = ({ onClose }) => {
                         onClick={handleSave}
                         className="px-4 py-2 bg-blue-600 text-white rounded"
                     >
-                        Save
+                        შენახვა
                     </button>
                 </div>
             </div>
