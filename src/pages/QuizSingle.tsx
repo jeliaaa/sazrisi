@@ -7,8 +7,10 @@ import { useParams } from "react-router-dom";
 import { useQuizStore } from "../stores/quizStore";
 import Loader from "../components/reusables/Loader";
 import { useAttemptStore } from "../stores/attemptStore";
+import { NoteCanvas } from "../components/NoteCanvas";
 const QuizSingle = () => {
     const [answersModal, setAnswersModal] = useState<boolean>(false);
+    const [noteModal, setNoteModal] = useState<boolean>(false);
     const [isTraining, setIsTraining] = useState<boolean>(false);
     const { catId, id, attemptId } = useParams();
     const { loading, quizzStart, fetchQuizStart } = useQuizStore();
@@ -34,11 +36,14 @@ const QuizSingle = () => {
             {answersModal &&
                 <AnswerModal isOpen={answersModal} setIsOpen={setAnswersModal} isTraining={isTraining} attempt={quizzStart?.attempt} questions={questions} />
             }
+            {noteModal &&
+                <NoteCanvas />
+            }
             <div className="fixed z-50 right-5 md:bottom-5 gap-y-3 bottom-20 flex flex-col justify-center items-centershadow-2xl">
                 <div title="answers" onClick={() => setAnswersModal(true)} className="cursor-pointer hover:-translate-y-2 transition-all aspect-square bg-main-color w-20 flex justify-center items-center rounded-full">
                     <Sheet fontSize={40} color="white" />
                 </div>
-                <div className="cursor-pointer hover:-translate-y-2 transition-all aspect-square bg-main-color w-20 flex justify-center items-center rounded-full">
+                <div onClick={() => setNoteModal(true)} className="cursor-pointer hover:-translate-y-2 transition-all aspect-square bg-main-color w-20 flex justify-center items-center rounded-full">
                     <Pen fontSize={40} color="white" />
                 </div>
             </div>
