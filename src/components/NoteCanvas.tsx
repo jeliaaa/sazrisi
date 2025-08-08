@@ -48,42 +48,44 @@ export const NoteCanvas: React.FC = () => {
     };
 
     return (
-        <div className="p-4 border rounded-md bg-white">
-            <div className="mb-4">
-                <ReactSketchCanvas
-                    ref={canvasRef}
-                    style={canvasStyle}
-                    strokeWidth={3}
-                    strokeColor="black"
-                />
-            </div>
-
-            <div className="flex items-center justify-between gap-2">
-                <div className="flex gap-2">
-                    {pages.map((page, i) => (
-                        <button
-                            key={page.id}
-                            onClick={() => switchPage(i)}
-                            className={`px-3 py-1 rounded ${i === currentPageIndex ? "bg-blue-500 text-white" : "bg-gray-200"
-                                }`}
-                        >
-                            Page {page.id}
-                        </button>
-                    ))}
-                    <button
-                        onClick={handleNewPage}
-                        className="px-3 py-1 bg-green-500 text-white rounded"
-                    >
-                        + New Page
-                    </button>
+        <div className="absolute bg-black/10 left-0 top-0 flex justify-center items-end ">
+            <div className="p-4 border w-3/5 h-3/5  rounded-md bg-white">
+                <div className="mb-4">
+                    <ReactSketchCanvas
+                        ref={canvasRef}
+                        style={canvasStyle}
+                        strokeWidth={3}
+                        strokeColor="black"
+                    />
                 </div>
 
-                <button
-                    onClick={handleSave}
-                    className="px-4 py-2 bg-blue-600 text-white rounded"
-                >
-                    Save
-                </button>
+                <div className="flex items-center justify-between gap-2">
+                    <div className="flex gap-2">
+                        {pages.map((page, i) => (
+                            <button
+                                key={page.id}
+                                onClick={() => switchPage(i)}
+                                className={`px-3 py-1 rounded ${i === currentPageIndex ? "bg-blue-500 text-white" : "bg-gray-200"
+                                    }`}
+                            >
+                                Page {page.id}
+                            </button>
+                        ))}
+                        <button
+                            onClick={handleNewPage}
+                            className="px-3 py-1 bg-green-500 text-white rounded"
+                        >
+                            + New Page
+                        </button>
+                    </div>
+
+                    <button
+                        onClick={handleSave}
+                        className="px-4 py-2 bg-blue-600 text-white rounded"
+                    >
+                        Save
+                    </button>
+                </div>
             </div>
         </div>
     );
