@@ -29,7 +29,7 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
 
     // Modal position and size
     const [position, setPosition] = useState({ x: 100, y: 100 });
-    const [size, setSize] = useState({ width: 600, height: 400 });
+    const [size, setSize] = useState({ width: 600, height: 600 });
 
     // Drag and resize states
     const [isDragging, setIsDragging] = useState(false);
