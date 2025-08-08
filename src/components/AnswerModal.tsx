@@ -222,7 +222,7 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
     // --- Modal content JSX ---
 
     const ModalContent = (
-        <>
+        <div className="z-100">
             {/* Close Button */}
             <button
                 onClick={() => setIsOpen(false)}
@@ -388,8 +388,8 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
                         <button
                             onClick={handleTimedComplete}
                             className={`border px-6 py-2 rounded transition-colors ${isQuestionAnswered
-                                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                                    : "bg-blue-500 text-white hover:bg-blue-600"
+                                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                                : "bg-blue-500 text-white hover:bg-blue-600"
                                 }`}
                             type="button"
                             disabled={loading || isQuestionAnswered}
@@ -399,7 +399,7 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
                     </div>
                 </div>
             )}
-        </>
+        </div>
     );
 
     // --- End ModalContent ---
@@ -410,7 +410,7 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
     return (
         <>
             {/* Backdrop */}
-            <div className="fixed inset-0 bg-black/10 bg-opacity-40 z-200" onClick={() => setIsOpen(false)} />
+            <div className="fixed inset-0 bg-black/10 bg-opacity-40 z-51" onClick={() => setIsOpen(false)} />
 
             {isSmallScreen ? (
                 // Small screen: fixed bottom, full width, height 60vh, no drag or resize
