@@ -32,6 +32,7 @@ export const NoteCanvas: React.FC<NoteCanvasProps> = ({ onClose }) => {
     const [isEraser, setIsEraser] = useState(false);
     const [strokeWidth, setStrokeWidth] = useState(3);
     const [strokeColor, setStrokeColor] = useState("#000000"); // default black
+    const [minSize, setMinSize] = useState({ width: 300, height: 300 });
 
     // Resize detection
     useEffect(() => {
@@ -42,6 +43,22 @@ export const NoteCanvas: React.FC<NoteCanvasProps> = ({ onClose }) => {
         window.addEventListener("resize", checkScreenSize);
         return () => window.removeEventListener("resize", checkScreenSize);
     }, []);
+    useEffect(() => {
+        const updateMinSize = () => {
+            if (modalRef.current) {
+                const rect = modalRef.current.getBoundingClientRect();
+                setMinSize({
+                    width: Math.ceil(rect.width),
+                    height: Math.ceil(rect.height),
+                });
+            }
+        };
+
+        updateMinSize(); // Initial
+        window.addEventListener("resize", updateMinSize); // Update on window resize
+        return () => window.removeEventListener("resize", updateMinSize);
+    }, []);
+
 
     // Outside click handler
     useEffect(() => {
@@ -235,8 +252,8 @@ export const NoteCanvas: React.FC<NoteCanvasProps> = ({ onClose }) => {
                         width: window.innerWidth / 2,
                         height: window.innerHeight / 1.5,
                     }}
-                    minWidth={300}
-                    minHeight={300}
+                    minWidth={minSize.width}
+                    minHeight={minSize.height}
                     bounds="window"
                     dragHandleClassName="handle"
                     className="rounded-md shadow-lg bg-white"
