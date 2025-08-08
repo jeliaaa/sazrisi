@@ -5,7 +5,7 @@ import {
     ReactSketchCanvasRef,
 } from "react-sketch-canvas";
 import { Rnd } from "react-rnd";
-import { Eraser, X } from "lucide-react";
+import { Eraser, Trash, X } from "lucide-react";
 
 const canvasStyle = {
     border: "1px solid #ccc",
@@ -176,9 +176,9 @@ export const NoteCanvas: React.FC<NoteCanvasProps> = ({ onClose }) => {
                 <div className="flex flex-wrap items-center gap-4">
                     <button
                         onClick={handleClear}
-                        className="px-4 py-2 bg-red-600 text-white rounded"
+                        className="px-4 py-2 rounded"
                     >
-                        გასუფთავება
+                        <Trash className="w-5 h-5" />
                     </button>
 
                     <button
