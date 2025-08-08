@@ -162,7 +162,7 @@ export const NoteCanvas: React.FC<NoteCanvasProps> = ({ onClose }) => {
                                 : "bg-gray-200"
                                 }`}
                         >
-                            <span>გვერდი {page.id}</span>
+                            <span>{page.id}</span>
                         </button>
                     ))}
                     <button
