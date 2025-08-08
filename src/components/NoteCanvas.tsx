@@ -152,7 +152,7 @@ export const NoteCanvas: React.FC<NoteCanvasProps> = ({ onClose }) => {
             {/* Controls */}
             <div className="flex flex-col gap-4">
                 {/* Page buttons */}
-                <div className="flex flex-wrap gap-2">
+                <div className="flex gap-2 overflow-x-scroll">
                     {pages.map((page, i) => (
                         <button
                             key={page.id}
