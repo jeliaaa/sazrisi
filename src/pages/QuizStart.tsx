@@ -28,6 +28,8 @@ const QuizStart = () => {
             if (attempt) {
                 setInnerLoading(false)
                 return <Navigate to={`${attempt.id}`} />
+            } else {
+                alert("Aaaa")
             }
         }
     }
