@@ -54,10 +54,21 @@ export const NoteCanvas: React.FC<NoteCanvasProps> = ({ onClose }) => {
     };
 
     const handleSave = async () => {
-        await saveCurrentPagePaths();
-        console.log("All saved pages:", pages);
-        alert("Pages saved to console (JSON format)");
-        // You could POST `pages` to backend or save to localStorage here
+        if (!canvasRef.current) return;
+
+        try {
+            const imageData = await canvasRef.current.exportImage("png");
+
+            // Create a download link
+            const link = document.createElement("a");
+            link.href = imageData;
+            link.download = "drawing.png";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } catch (error) {
+            console.error("Failed to export PNG", error);
+        }
     };
 
     return (
