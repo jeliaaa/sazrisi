@@ -157,8 +157,8 @@ export const NoteCanvas: React.FC<NoteCanvasProps> = ({ onClose }) => {
                             key={page.id}
                             onClick={() => switchPage(i)}
                             className={`px-3 py-1 rounded ${i === currentPageIndex
-                                ? "bg-gray-200"
-                                : "text-main-color bg-dark-color"
+                                ? "text-main-color bg-dark-color"
+                                : "bg-gray-200"
                                 }`}
                         >
                             გვერდი {page.id}
