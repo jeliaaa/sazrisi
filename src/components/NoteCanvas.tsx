@@ -48,7 +48,7 @@ export const NoteCanvas: React.FC = () => {
     };
 
     return (
-        <div className="absolute bg-black/10 left-0 top-0 flex justify-center items-end ">
+        <div className="absolute w-screen h-screen bg-black/10 left-0 top-0 flex justify-center items-end ">
             <div className="p-4 border w-3/5 h-3/5  rounded-md bg-white">
                 <div className="mb-4">
                     <ReactSketchCanvas
