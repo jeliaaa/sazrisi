@@ -26,6 +26,7 @@ const QuizStart = () => {
         if (catId && id) {
             startQuiz(catId, id);
             if (attempt) {
+                setInnerLoading(false)
                 nav(`${attempt?.id}`)
             }
         }
