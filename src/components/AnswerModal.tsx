@@ -416,7 +416,7 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
                 // Small screen: fixed bottom, full width, height 60vh, no drag or resize
                 <div
                     ref={modalRef}
-                    className="fixed bottom-0 left-0 w-full h-[60vh] bg-white p-4 overflow-auto shadow-lg rounded-t-md z-50 cursor-default"
+                    className="fixed bottom-0 left-0 w-full h-[60vh] bg-white p-4 overflow-auto shadow-lg rounded-t-md z-300 cursor-default"
                     onClick={stopPropagation}
                     style={{ userSelect: "auto" }}
                 >
@@ -448,7 +448,7 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
                         bottomLeft: true,
                         topLeft: true,
                     }}
-                    className="z-50 lg:cursor-move"
+                    className="z-300 lg:cursor-move"
                 >
                     <div
                         ref={modalRef}
