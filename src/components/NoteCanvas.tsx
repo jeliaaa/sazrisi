@@ -29,6 +29,8 @@ export const NoteCanvas: React.FC<NoteCanvasProps> = ({ onClose }) => {
     const [currentPageIndex, setCurrentPageIndex] = useState(0);
     const [isLargeScreen, setIsLargeScreen] = useState(false);
     const [isEraser, setIsEraser] = useState(false);
+    const [strokeWidth, setStrokeWidth] = useState(3);
+    const [strokeColor, setStrokeColor] = useState("#000000"); // default black
 
     // Resize detection
     useEffect(() => {
@@ -113,6 +115,14 @@ export const NoteCanvas: React.FC<NoteCanvasProps> = ({ onClose }) => {
         setIsEraser((prev) => !prev);
     };
 
+    const handleStrokeWidthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setStrokeWidth(Number(e.target.value));
+    };
+
+    const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setStrokeColor(e.target.value);
+    };
+
     const content = (
         <div
             ref={modalRef}
@@ -131,14 +141,15 @@ export const NoteCanvas: React.FC<NoteCanvasProps> = ({ onClose }) => {
                 <ReactSketchCanvas
                     ref={canvasRef}
                     style={canvasStyle}
-                    strokeWidth={3}
-                    strokeColor={isEraser ? "white" : "black"}
+                    strokeWidth={strokeWidth}
+                    strokeColor={isEraser ? "#FFFFFF" : strokeColor} // eraser white color
                     withTimestamp={false}
                 />
             </div>
 
             {/* Controls */}
-            <div className="flex items-center justify-between gap-2">
+            <div className="flex flex-col gap-4">
+                {/* Page buttons */}
                 <div className="flex flex-wrap gap-2">
                     {pages.map((page, i) => (
                         <button
@@ -160,7 +171,8 @@ export const NoteCanvas: React.FC<NoteCanvasProps> = ({ onClose }) => {
                     </button>
                 </div>
 
-                <div className="flex gap-2">
+                {/* Drawing tools controls */}
+                <div className="flex flex-wrap items-center gap-4">
                     <button
                         onClick={handleClear}
                         className="px-4 py-2 bg-red-600 text-white rounded"
@@ -175,6 +187,29 @@ export const NoteCanvas: React.FC<NoteCanvasProps> = ({ onClose }) => {
                     >
                         {isEraser ? "Eraser ON" : "Eraser OFF"}
                     </button>
+
+                    <label className="flex items-center gap-2">
+                        <span className="whitespace-nowrap">Thickness:</span>
+                        <input
+                            type="range"
+                            min={1}
+                            max={20}
+                            value={strokeWidth}
+                            onChange={handleStrokeWidthChange}
+                        />
+                        <span>{strokeWidth}</span>
+                    </label>
+
+                    {!isEraser && (
+                        <label className="flex items-center gap-2">
+                            <span>Color:</span>
+                            <input
+                                type="color"
+                                value={strokeColor}
+                                onChange={handleColorChange}
+                            />
+                        </label>
+                    )}
 
                     <button
                         onClick={handleSave}
