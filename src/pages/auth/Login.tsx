@@ -3,6 +3,7 @@ import Input from "../../components/reusables/Input";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import { useAuthStore } from "../../stores/authStore";
+import toast from "react-hot-toast";
 
 const Login = () => {
     const nav = useNavigate();
@@ -28,6 +29,8 @@ const Login = () => {
         const success = await login(form.email, form.password);
         if (success) {
             nav("/");
+        } else {
+            toast.error('დაფიქსირდა შეცდომა!')
         }
     };
 
