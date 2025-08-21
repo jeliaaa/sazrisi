@@ -5,7 +5,6 @@ import CustomOutlet from "./components/CustomOutlet"
 import Loader from "./components/reusables/Loader"
 import { privateRoutes } from "./routes/privateRoutes"
 import SafeRoute from "./components/SafeRouter"
-import AuthRoute from "./components/AuthRouter"
 // import Loader from "./components/reusables/Loader"
 
 function App() {
@@ -22,7 +21,7 @@ function App() {
             ))}
           </Route>
           {publicRoutes.map(({ path, component: Component }) => (
-            <Route key={path} path={path} element={<AuthRoute><Component /></AuthRoute>} />
+            <Route key={path} path={path} element={<Component />} />
           ))}
         </Routes>
       </Suspense>

@@ -11,6 +11,7 @@ import TikTok from "../../icons/brands/tiktok.svg?react";
 import Facebook from "../../icons/brands/facebook.svg?react";
 import Instagram from "../../icons/brands/instagram.svg?react";
 import { useAuthStore } from "../../stores/authStore";
+import AuthRoute from "../../components/AuthRouter";
 
 export default function SignUp() {
     const [currentStep, setCurrentStep] = useState<steps>(steps.info);
@@ -95,62 +96,64 @@ export default function SignUp() {
     };
 
     return (
-        <div className="w-full h-fit p-5 md:p-15">
-            <FormProvider {...methods}>
-                <div className="flex gap-x-3 flex-col md:flex-row">
-                    {/* Stepper on small screens at the top, on larger screens on the side */}
-                    <div className="w-full flex flex-col justify-between md:w-1/4 bg-dark-color md:h-[85dvh] text-texts-color p-6 rounded-t-3xl md:rounded-3xl">
-                        <Stepper step={currentStep} />
-                        <div className="hidden md:flex flex-col gap-y-3">
-                            <div className="flex gap-x-3 fill-white">
-                                <TikTok className="size-6" />
-                                <Facebook className="size-6" />
-                                <Instagram className="size-6" />
-                            </div>
-                            <div>
-                                <h1>Sazrisi / საზრისი</h1>
-                                <h1>ყველა უფლება დაცულია &copy;</h1>
+        <AuthRoute>
+            <div className="w-full h-fit p-5 md:p-15">
+                <FormProvider {...methods}>
+                    <div className="flex gap-x-3 flex-col md:flex-row">
+                        {/* Stepper on small screens at the top, on larger screens on the side */}
+                        <div className="w-full flex flex-col justify-between md:w-1/4 bg-dark-color md:h-[85dvh] text-texts-color p-6 rounded-t-3xl md:rounded-3xl">
+                            <Stepper step={currentStep} />
+                            <div className="hidden md:flex flex-col gap-y-3">
+                                <div className="flex gap-x-3 fill-white">
+                                    <TikTok className="size-6" />
+                                    <Facebook className="size-6" />
+                                    <Instagram className="size-6" />
+                                </div>
+                                <div>
+                                    <h1>Sazrisi / საზრისი</h1>
+                                    <h1>ყველა უფლება დაცულია &copy;</h1>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div className="flex-1 p-6 lg:p-10 min-h-fit h-[85dvh] bg-gray-100 rounded-b-3xl md:rounded-t-3xl">
-                        <form
-                            onSubmit={handleSubmit(handleStepSubmit)}
-                            className="max-w-xl mx-auto flex flex-col gap-6"
-                        >
-                            <h2 className="text-2xl font-bold text-main-color mb-2">
-                                Step {currentStep + 1}: {stepLabels[currentStep]}
-                            </h2>
+                        <div className="flex-1 p-6 lg:p-10 min-h-fit h-[85dvh] bg-gray-100 rounded-b-3xl md:rounded-t-3xl">
+                            <form
+                                onSubmit={handleSubmit(handleStepSubmit)}
+                                className="max-w-xl mx-auto flex flex-col gap-6"
+                            >
+                                <h2 className="text-2xl font-bold text-main-color mb-2">
+                                    Step {currentStep + 1}: {stepLabels[currentStep]}
+                                </h2>
 
-                            {currentStep === steps.info && <PersonalInfo />}
-                            {currentStep === steps.preferences && <Preferences />}
-                            {currentStep === steps.profile && <ProfilePicture />}
-                            {currentStep === steps.success && <AllSet />}
+                                {currentStep === steps.info && <PersonalInfo />}
+                                {currentStep === steps.preferences && <Preferences />}
+                                {currentStep === steps.profile && <ProfilePicture />}
+                                {currentStep === steps.success && <AllSet />}
 
-                            {currentStep < steps.success && (
-                                <div className="flex flex-col md:flex-row justify-between mt-6">
-                                    {currentStep > steps.info && (
+                                {currentStep < steps.success && (
+                                    <div className="flex flex-col md:flex-row justify-between mt-6">
+                                        {currentStep > steps.info && (
+                                            <button
+                                                type="button"
+                                                onClick={onBack}
+                                                className="px-4 py-2 cursor-pointer text-sm font-medium bg-gray-200 rounded hover:bg-gray-300 mb-2 md:mb-0"
+                                            >
+                                                უკან
+                                            </button>
+                                        )}
                                         <button
-                                            type="button"
-                                            onClick={onBack}
-                                            className="px-4 py-2 cursor-pointer text-sm font-medium bg-gray-200 rounded hover:bg-gray-300 mb-2 md:mb-0"
+                                            type="submit"
+                                            className="px-4 py-2 text-sm font-medium bg-dark-color text-white rounded cursor-pointer hover:bg-gray-800"
                                         >
-                                            უკან
+                                            {currentStep === steps.info ? "რეგისტრაცია" : "შემდეგ"}
                                         </button>
-                                    )}
-                                    <button
-                                        type="submit"
-                                        className="px-4 py-2 text-sm font-medium bg-dark-color text-white rounded cursor-pointer hover:bg-gray-800"
-                                    >
-                                        {currentStep === steps.info ? "რეგისტრაცია" : "შემდეგ"}
-                                    </button>
-                                </div>
-                            )}
-                        </form>
+                                    </div>
+                                )}
+                            </form>
+                        </div>
                     </div>
-                </div>
-            </FormProvider>
-        </div>
+                </FormProvider>
+            </div>
+        </AuthRoute>
     );
 }
