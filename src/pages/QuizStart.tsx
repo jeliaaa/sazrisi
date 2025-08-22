@@ -1,6 +1,6 @@
 import { Clock, Trophy, Target, Calendar, BookOpen, Star, FileQuestionMark, X } from 'lucide-react'
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useQuizStore } from '../stores/quizStore';
 import Loader from '../components/reusables/Loader';
 import { useAttemptStore } from '../stores/attemptStore';
@@ -11,29 +11,29 @@ const QuizStart = () => {
     const { loading, fetchQuizStart, quizzStart } = useQuizStore();
     const { startQuiz, attempt, loading: attemptLoading } = useAttemptStore();
     const nav = useNavigate();
-
-    useEffect(() => {
-        if (attempt && !attemptLoading) {
-            nav(`${attempt.id}`);
-        }
-    }, [attempt, attemptLoading, nav]);
-
     useEffect(() => {
         if (catId && id) {
             fetchQuizStart(catId, id)
         }
     }, [fetchQuizStart, catId, id]);
+
+    if (attempt && !attemptLoading) {
+        return <Navigate to={`/${attempt.id}`} />;
+    }
+
     if (loading || attemptLoading) {
-        return <Loader />
+        return <Loader />;
     }
 
-
-    const handleStartQuiz = () => {
+    // Case 2: student starts a new attempt
+    const handleStartQuiz = async () => {
         if (catId && id) {
-            startQuiz(catId, id);
+            const newAttempt = await startQuiz(catId, id); // return attempt from store
+            if (newAttempt) {
+                nav(`${newAttempt.id}`);
+            }
         }
-    }
-
+    };
 
 
     return (

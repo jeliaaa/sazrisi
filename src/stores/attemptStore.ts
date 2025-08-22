@@ -7,7 +7,7 @@ interface AttemptStore {
     loading: boolean;
     attempt: IAttempt | null;
     questions: [] | Question[] | QuestionWithAnswers[];
-    startQuiz: (categoryId: string, quizId: string) => Promise<void>;
+    startQuiz: (categoryId: string, quizId: string) => Promise<IAttempt | null>;
     fetchQuestions: (attemptId: string) => Promise<void>;
     answerQuestion: (attemptId: string, answer: SubmittedAnswer) => Promise<void>;
 }
@@ -22,6 +22,7 @@ export const useAttemptStore = create<AttemptStore>((set) => ({
         try {
             const res = await apiV2.post(`/quiz/category/${categoryId}/quizzes/${quizId}/start/`);
             set({ loading: false, attempt: res.data });
+            return res.data
         } catch (error) {
             console.error('Failed to fetch quizzes:', error);
             set({ loading: false })
