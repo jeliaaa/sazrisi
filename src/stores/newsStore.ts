@@ -31,7 +31,7 @@ export const useNewsStore = create<NewsStore>((set) => ({
     fetchNewsSingle: async (newsId: number) => {
         set({ loading: true })
         try {
-            const res = await apiV2.get(`/blog/detals/${newsId}`);
+            const res = await apiV2.get(`/blog/details/${newsId}`);
             set({ newsSingle: res.data, loading: false });
         } catch (error) {
             console.error('Failed to fetch quizzes:', error);
