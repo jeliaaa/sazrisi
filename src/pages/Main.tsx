@@ -5,8 +5,8 @@ const Main = () => {
       <header className="w-full bg-main-color/80 p-5 flex items-center justify-center">
         <span className="title text-texts-color">მოგესალმებით!</span>
       </header>
-      <div className="p-5 flex flex-col rounded-md">
-        <div className="w-full flex border border-dark-color">
+      <div className="p-5 flex flex-col ">
+        <div className="w-full flex border rounded-md border-dark-color">
           <div className="w-1/2 h-[400px] bg-center bg-no-repeat bg-cover rounded-md" style={{ backgroundImage: `url(${'https://picsum.photos/300/100'})` }} />
           <div className="w-1/2 flex-col">
             <div className="w-full flex items-center justify-between plain-text">
