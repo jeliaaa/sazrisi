@@ -19,7 +19,7 @@ const QuizStart = () => {
     }, [fetchQuizStart, catId, id]);
 
     if (attempt && !attemptLoading && !innerLoading) {
-        return <Navigate to={`/${attempt.id}`} />;
+        return <Navigate to={`${attempt.id}`} />;
     }
 
     if (loading || attemptLoading) {
