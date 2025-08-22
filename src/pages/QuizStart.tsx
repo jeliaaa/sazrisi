@@ -14,7 +14,7 @@ const QuizStart = () => {
 
     useEffect(() => {
         if (attempt && !attemptLoading) {
-            nav(`/${attempt.id}`);
+            nav(`${attempt.id}`);
         }
     }, [attempt, attemptLoading, nav]);
 
