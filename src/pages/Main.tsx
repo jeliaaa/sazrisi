@@ -11,14 +11,16 @@ const Main = () => {
           <img src={leaderboardImg} alt="..." />
         </div>
         <div className="flex gap-x-3 mt-10">
-          <div className="flex flex-col shadow-md">
-            <span>22.08.2025</span>
-            <img src="https://picsum.photos/300/200" className="w-full" />
-            <div className="p-3">
-              <span className="title text-dark-color">რა არის საზრისი?</span>
-              <Link to={'/news'} className="text-main-color flex  justify-end">იხ. სრულად</Link>
+          {[1, 2, 3, 4, 5, 6, 7].map(() => (
+            <div className="flex flex-col shadow-md">
+              <span>22.08.2025</span>
+              <img src="https://picsum.photos/300/200" className="w-full" />
+              <div className="p-3">
+                <span className="title text-dark-color">რა არის საზრისი?</span>
+                <Link to={'/news'} className="text-main-color flex  justify-end">იხ. სრულად</Link>
+              </div>
             </div>
-          </div>
+          ))}
         </div>
       </div>
 
