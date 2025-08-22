@@ -7,6 +7,7 @@ import { useAttemptStore } from '../stores/attemptStore';
 
 const QuizStart = () => {
     const [questionModal, setQuestionModal] = useState<boolean>(false);
+    const [innerLoading, setInnerLoading] = useState<boolean>(true);
     const { catId, id } = useParams();
     const { loading, fetchQuizStart, quizzStart } = useQuizStore();
     const { startQuiz, attempt, loading: attemptLoading } = useAttemptStore();
@@ -17,7 +18,7 @@ const QuizStart = () => {
         }
     }, [fetchQuizStart, catId, id]);
 
-    if (attempt && !attemptLoading) {
+    if (attempt && !attemptLoading && !innerLoading) {
         return <Navigate to={`/${attempt.id}`} />;
     }
 
@@ -27,6 +28,7 @@ const QuizStart = () => {
 
     // Case 2: student starts a new attempt
     const handleStartQuiz = async () => {
+        setInnerLoading(false)
         if (catId && id) {
             const newAttempt = await startQuiz(catId, id); // return attempt from store
             if (newAttempt) {
