@@ -7,25 +7,22 @@ import { useAttemptStore } from '../stores/attemptStore';
 
 const QuizStart = () => {
     const [questionModal, setQuestionModal] = useState<boolean>(false);
-    const [innerLoading, setInnerLoading] = useState<boolean>(false);
     const { catId, id } = useParams();
     const { loading, fetchQuizStart, quizzStart } = useQuizStore();
-    const { startQuiz, attempt } = useAttemptStore();
+    const { startQuiz, attempt, loading: attemptLoading } = useAttemptStore();
     useEffect(() => {
         if (catId && id) {
             fetchQuizStart(catId, id)
         }
     }, [fetchQuizStart, catId, id]);
-    if (loading || innerLoading) {
+    if (loading || attemptLoading) {
         return <Loader />
     }
 
     const handleStartQuiz = async () => {
-        setInnerLoading(true);
         if (catId && id) {
             await startQuiz(catId, id);
-            setInnerLoading(false);
-            if (attempt) {
+            if (attempt && !attemptLoading) {
                 return <Navigate to={`${attempt.id}`} />
             }
         }
