@@ -3,7 +3,7 @@ const Main = () => {
   return (
     <div className="w-full min-h-screen flex flex-col">
       <div className="p-5 flex flex-col ">
-        <div className="w-full flex flex-col items-center h-[400px] bg-main-color rounded-xl">
+        <div className="w-full flex flex-col py-5 items-center h-[400px] bg-main-color rounded-xl">
           <span className="text-7xl text-texts-color">გათამაშება უკვე დაიწყო!</span>
         </div>
       </div>
