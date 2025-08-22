@@ -14,6 +14,12 @@ interface AnswerModalProps {
 const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: AnswerModalProps) => {
     // Tab state - memoized to prevent unnecessary re-renders
     const activeTab = useMemo(() => isTraining ? "no-time" : "timed", [isTraining]);
+    const allAnswered = useMemo(() => {
+        return questions.length > 0 && questions.every(q =>
+            'user_answer' in q && q.user_answer?.selected_answer
+        );
+    }, [questions]);
+
 
     // Answer states
     const [answersNoTime, setAnswersNoTime] = useState<(string | null)[]>([]);
@@ -382,6 +388,13 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
                                     </button>
                                 );
                             })}
+                            {allAnswered && <button
+                                onClick={() => alert('დასრულდა')}
+                                className={`inline-block px-3 py-1 mx-1 rounded-sm transition-colors border-2`}
+                                onMouseDown={stopPropagation}
+                            >
+                                დასრულება
+                            </button>}
                         </div>
 
                         {/* Question Info */}
