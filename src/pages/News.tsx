@@ -40,7 +40,7 @@ const News = () => {
                         <div className="p-3 flex flex-col gap-y-3">
                             <span className="title text-dark-color">{news.title}</span>
                             <span className="plain-text text-dark-color">
-                                {shortenText(news.description, 7)}
+                                {shortenText(news.description, 10)}
                             </span>
                             <span className="text-main-color flex  justify-end hover:underline">იხ. სრულად</span>
                         </div>
