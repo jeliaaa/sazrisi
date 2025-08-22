@@ -131,5 +131,5 @@ export interface INews {
     id: number;
     title: string;
     description: string;
-    created_at: Date;
+    created_at: string;
 };
