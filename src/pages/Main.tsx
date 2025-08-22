@@ -1,11 +1,13 @@
-const Main = () => {
+import leaderboardImg from "../icons/leaderboard.png"
 
+const Main = () => {
   return (
     <div className="w-full min-h-screen flex flex-col">
       <div className="p-5 flex flex-col ">
-        <div className="w-full text-texts-color flex flex-col py-5 items-center h-[400px] bg-main-color rounded-xl hover:scale-102 transition-all delay-200">
+        <div className="w-full text-texts-color flex flex-col py-5 items-center h-[400px] bg-main-color cursor-pointer rounded-xl hover:scale-102 transition-all delay-200">
           <span className="text-7xl">გათამაშება უკვე დაიწყო!</span>
           <span className="title">დააჭირეთ ბანერს დამატებითი ინფორმაციის მისაღებად</span>
+          <img src={leaderboardImg} alt="..."  />
         </div>
       </div>
 
