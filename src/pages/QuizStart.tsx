@@ -1,32 +1,40 @@
 import { Clock, Trophy, Target, Calendar, BookOpen, Star, FileQuestionMark, X } from 'lucide-react'
 import { useEffect, useState } from 'react';
-import { Navigate,  useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useQuizStore } from '../stores/quizStore';
 import Loader from '../components/reusables/Loader';
 import { useAttemptStore } from '../stores/attemptStore';
+import { useNavigate } from "react-router-dom";
+
 
 const QuizStart = () => {
     const [questionModal, setQuestionModal] = useState<boolean>(false);
     const { catId, id } = useParams();
     const { loading, fetchQuizStart, quizzStart } = useQuizStore();
     const { startQuiz, attempt, loading: attemptLoading } = useAttemptStore();
+    const navigate = useNavigate();
+
     useEffect(() => {
         if (catId && id) {
-            fetchQuizStart(catId, id)
+            fetchQuizStart(catId, id);
         }
     }, [fetchQuizStart, catId, id]);
+
+    useEffect(() => {
+        if (attempt && !attemptLoading) {
+            navigate(`/${attempt.id}`);
+        }
+    }, [attempt, attemptLoading, navigate]);
+
     if (loading || attemptLoading) {
-        return <Loader />
+        return <Loader />;
     }
 
     const handleStartQuiz = () => {
         if (catId && id) {
             startQuiz(catId, id);
-            if (attempt && !attemptLoading) {
-                return <Navigate to={`${attempt.id}`} />
-            }
         }
-    }
+    };
 
 
 
