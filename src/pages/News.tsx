@@ -21,7 +21,7 @@ const News = () => {
             <div className="flex gap-x-3 mt-3 justify-around flex-wrap">
                 {news.map((news) => (
                     <Link to={`/news/${news.id}`} key={news.id} className="flex flex-col shadow-md w-[350px]">
-                        <span>{news.created_at.toString()}</span>
+                        <span>{news.created_at.toISOString().split("T")[0]}</span>
                         <img src="https://picsum.photos/350/200" className="w-full" />
                         <div className="p-3">
                             <span className="title text-dark-color">რა არის საზრისი?</span>
