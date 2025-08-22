@@ -32,7 +32,7 @@ const News = () => {
     return (
         <div className="min-h-screen w-full p-5">
             <h1 className="title text-dark-color">ახალი ამბები</h1>
-            <div className="flex gap-x-3 mt-3 justify-around flex-wrap">
+            <div className="flex gap-3 mt-3 justify-around flex-wrap">
                 {filteredNews.map((news) => (
                     <Link to={`/news/${news.id}`} key={news.id} className="flex flex-col shadow-md w-[320px]">
                         <span>{new Date(news.created_at).toISOString().split("T")[0]}</span>
