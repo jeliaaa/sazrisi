@@ -17,7 +17,7 @@ const NewsSingle = () => {
     }
 
     return (
-        newsSingle && <div className="w-full h-full p-6 space-y-6">
+        newsSingle && <div className="w-full min-h-screen p-6 space-y-6">
             <div className="flex justify-between gap-4 max-[500px]:flex-col max-[500px]:items-center max-[500px]:gap-5">
                 <img src={'https://picsum.photos/300/100'} alt="banner" className="w-[60%] max-[500px]:w-full" />
                 <div className="w-[38%] max-[500px]:w-full max-[500px]:text-center">
