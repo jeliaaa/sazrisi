@@ -6,7 +6,7 @@ import { INews } from "../types/types";
 
 const News = () => {
     const [page, setPage] = useState<number>(1);
-    const newsPerPage = 8;
+    const newsPerPage = 3;
     const [filteredNews, setFilteredNews] = useState<INews[] | []>([]);
     const { loading, fetchNews, news } = useNewsStore();
     const totalPages = Math.ceil(news.length / newsPerPage);
