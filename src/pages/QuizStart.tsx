@@ -22,7 +22,7 @@ const QuizStart = () => {
 
     useEffect(() => {
         if (attempt && !attemptLoading) {
-            navigate(`/${attempt.id}`);
+            navigate(`${attempt.id}`);
         }
     }, [attempt, attemptLoading, navigate]);
 
