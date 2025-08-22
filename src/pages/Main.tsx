@@ -1,41 +1,39 @@
-"use client";
-
-import { NavCard } from "../components/reusables/NavCard";
-import { StatCard } from "../components/reusables/StatCard";
-import { useUser } from "../hooks/useUser";
-
 const Main = () => {
-  const { profileImage, themeColor } = useUser();
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 md:pb-0 sm:px-6 lg:px-8 py-8 space-y-8">
-      <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-800">მოგესალმები!</h1>
-          <p className="text-gray-500 mt-1">სასიამოვნოა შენი ხილვა ჯელო.</p>
+    <div className="w-full flex flex-col">
+      <header className="w-full bg-main-color/80 p-5 flex items-center justify-center">
+        <span className="title text-texts-color">მოგესალმებით!</span>
+      </header>
+      <div className="w-full flex">
+        <div className="w-1/2 bg-center bg-no-repeat bg-cover rounded-md" style={{ backgroundImage: `url(${'https://picsum.photos/300/100'})` }} />
+        <div className="w-1/2 flex-col">
+          <div className="w-full flex items-center justify-between plain-text">
+            <span>გათამაშება</span>
+            <span>22.08.2025</span>
+          </div>
+          <h1 className="title">ჩაერთე გათამაშებაში და მოიგე პრიზი!</h1>
+          <div className="plain-text">
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolores, deserunt!</p>
+            <br />
+            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sequi at accusamus omnis eligendi excepturi tenetur nihil asperiores minima quas ea?</p>
+            <br />
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti asperiores officiis suscipit non optio eaque illo quaerat tempora. Voluptatem ad illo, ex placeat itaque ratione dolor commodi asperiores perferendis. Consequatur ipsa hic architecto officia ad.</p>
+          </div>
         </div>
-        <img
-          src={profileImage}
-          alt="Profile"
-          className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-4 shadow-md"
-          style={{ borderColor: themeColor }}
-        />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard label="შესრულებული ტესტები" value="12" color={themeColor} />
-        <StatCard label="საშუალო ქულა" value="87%" color={themeColor} />
-        <StatCard label="რანკი რეგიონში" value="#5" color={themeColor} />
-        <StatCard label="აქტიური ტესტები" value="3" color={themeColor} />
-      </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <NavCard title="ჩემი ტესტები" href="/tests" color={themeColor} />
-        <NavCard title="შედეგები" href="/results" color={themeColor} />
-        <NavCard title="პირადი კაბინეტი" href="/settings" color={themeColor} />
-      </div>
 
-{/* ჯიპიტას ნაყლევები */}
+
+
+
+
+
+
+
+
+      {/* ჯიპიტას ნაყლევები
 
       <div className="bg-white rounded-xl shadow-md p-6">
         <h2 className="text-lg font-semibold mb-4">ბოლო აქტივობები</h2>
@@ -53,8 +51,8 @@ const Main = () => {
             <span className="text-xs text-gray-400">1 დღის წინ</span>
           </li>
         </ul>
-      </div>
-    </div>
+      </div> */}
+    </div >
   );
 };
 
