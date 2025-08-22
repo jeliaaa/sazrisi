@@ -10,9 +10,9 @@ const Main = () => {
           <span className="text-center title">დააჭირეთ ბანერს დამატებითი ინფორმაციის მისაღებად</span>
           <img src={leaderboardImg} alt="..." />
         </div>
-        <div className="flex gap-x-3 mt-10">
+        <div className="flex gap-x-3 mt-10 justify-around flex-wrap">
           {[1, 2, 3, 4].map(() => (
-            <div className="flex flex-col shadow-md">
+            <div className="flex flex-col shadow-md w-[300px]">
               <span>22.08.2025</span>
               <img src="https://picsum.photos/300/200" className="w-full" />
               <div className="p-3">
