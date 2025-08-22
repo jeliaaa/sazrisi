@@ -6,7 +6,7 @@ const Main = () => {
         <span className="title text-texts-color">მოგესალმებით!</span>
       </header>
       <div className="w-full flex">
-        <div className="w-1/2 bg-center bg-no-repeat bg-cover rounded-md" style={{ backgroundImage: `url(${'https://picsum.photos/300/100'})` }} />
+        <div className="w-1/2 h-[300px] bg-center bg-no-repeat bg-cover rounded-md" style={{ backgroundImage: `url(${'https://picsum.photos/300/100'})` }} />
         <div className="w-1/2 flex-col">
           <div className="w-full flex items-center justify-between plain-text">
             <span>გათამაშება</span>
