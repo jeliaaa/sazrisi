@@ -13,7 +13,7 @@ const Main = () => {
         <div className="flex gap-x-3">
           <div className="flex flex-col">
             <span>22.08.2025</span>
-            <img src="picsum.photos/300/200" className="w-full" />
+            <img src="https://picsum.photos/300/200" className="w-full" />
             <span className="title">რა არის საზრისი?</span>
             <Link to={'/news'} className="text-gray-200 ">იხ. სრულად</Link>
           </div>
