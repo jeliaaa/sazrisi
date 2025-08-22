@@ -15,7 +15,7 @@ const Main = () => {
             <span>22.08.2025</span>
             <img src="https://picsum.photos/300/200" className="w-full" />
             <span className="title text-dark-color">რა არის საზრისი?</span>
-            <Link to={'/news'} className="text-main-color inline-block justify-self-end">იხ. სრულად</Link>
+            <Link to={'/news'} className="text-main-color block justify-self-end">იხ. სრულად</Link>
           </div>
         </div>
       </div>
