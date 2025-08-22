@@ -9,8 +9,11 @@ const LeaderboardPage = lazy(() => import("../pages/Leaderboard"));
 const SettingsPage = lazy(() => import("../pages/Settings"));
 const ProfilePage = lazy(() => import("../pages/Profile"));
 const VideoLessonsPage = lazy(() => import("../pages/VideoLessons"));
+const NewsPage = lazy(() => import("../pages/News"));
+const NewsSinglePage = lazy(() => import("../pages/NewsSingle"));
 const ChatPage = lazy(() => import("../pages/Chat"));
 const Test = lazy(() => import("../Test"));
+
 
 export const privateRoutes = [
   {
@@ -52,6 +55,16 @@ export const privateRoutes = [
     title: "videoLessons",
     path: routes.videoLessons,
     component: VideoLessonsPage,
+  },
+  {
+    title: "news",
+    path: routes.news,
+    component: NewsPage,
+  },
+  {
+    title: "newsSingle",
+    path: routes.newsSingle,
+    component: NewsSinglePage,
   },
   {
     title: "chat",

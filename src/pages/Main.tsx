@@ -12,15 +12,15 @@ const Main = () => {
         </div>
         <p className="mt-10 title text-dark-color">ახალი ამბები</p>
         <div className="flex gap-x-3 mt-3 justify-around flex-wrap">
-          {[1, 2, 3, 4].map(() => (
-            <div className="flex flex-col shadow-md w-[350px]">
+          {[1, 2, 3, 4].map((_id) => (
+            <Link to={`/news/${_id}`} key={_id} className="flex flex-col shadow-md w-[350px]">
               <span>22.08.2025</span>
               <img src="https://picsum.photos/350/200" className="w-full" />
               <div className="p-3">
                 <span className="title text-dark-color">რა არის საზრისი?</span>
-                <Link to={'/news'} className="text-main-color flex  justify-end hover:underline">იხ. სრულად</Link>
+                <span className="text-main-color flex  justify-end hover:underline">იხ. სრულად</span>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

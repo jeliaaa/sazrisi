@@ -13,7 +13,9 @@ export const privateRoutes = {
   profile: "/profile",
   videoLessons: "/videoLessons",
   chat: "/chat",
-  test: "/test"
+  test: "/test",
+  news: "/news",
+  newsSingle: "/news/:id"
 };
 
 export const routes = {
