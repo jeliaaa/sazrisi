@@ -126,3 +126,10 @@ export interface SubmittedAnswer {
     selected_answer: string
     time_taken: number
 }
+
+export interface INews {
+    id: number;
+    title: string;
+    description: string;
+    created_at: Date;
+};

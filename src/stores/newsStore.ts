@@ -1,10 +1,11 @@
 import { create } from 'zustand';
 import { apiV2 } from '../utils/axios';
+import { INews } from '../types/types';
 
 interface NewsStore {
     loading: boolean;
-    news: any;
-    newsSingle: any;
+    news: INews[] | [];
+    newsSingle: INews | null;
     fetchNews: () => Promise<void>;
     fetchNewsSingle: (newsId: number) => Promise<void>;
 }
@@ -12,7 +13,7 @@ interface NewsStore {
 export const useNewsStore = create<NewsStore>((set) => ({
     loading: false,
     news: [],
-    newsSingle: [],
+    newsSingle: null,
     fetchNews: async () => {
         set({ loading: true })
         try {
