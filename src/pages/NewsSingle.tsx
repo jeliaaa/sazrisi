@@ -21,7 +21,7 @@ const NewsSingle = () => {
             <div className="flex justify-between gap-4 max-[500px]:flex-col max-[500px]:items-center max-[500px]:gap-5">
                 <img src={'https://picsum.photos/300/100'} alt="banner" className="w-[60%] max-[500px]:w-full" />
                 <div className="w-[38%] max-[500px]:w-full max-[500px]:text-center">
-                    <h2 className="title font-semibold text-primary">{newsSingle.title}</h2>
+                    <h2 className="title font-semibold text-dark-color">{newsSingle.title}</h2>
                     <h6 className="text-gray-500 plain-text">{new Date(newsSingle.created_at).toISOString().split("T")[0]}</h6>
                 </div>
             </div>
