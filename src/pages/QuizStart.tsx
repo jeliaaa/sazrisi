@@ -1,12 +1,11 @@
 import { Clock, Trophy, Target, Calendar, BookOpen, Star, FileQuestionMark, X } from 'lucide-react'
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Navigate,  useParams } from 'react-router-dom';
 import { useQuizStore } from '../stores/quizStore';
 import Loader from '../components/reusables/Loader';
 import { useAttemptStore } from '../stores/attemptStore';
 
 const QuizStart = () => {
-    const nav = useNavigate();
     const [questionModal, setQuestionModal] = useState<boolean>(false);
     const [innerLoading, setInnerLoading] = useState<boolean>(false);
     const { catId, id } = useParams();
@@ -27,7 +26,7 @@ const QuizStart = () => {
             await startQuiz(catId, id);
             setInnerLoading(false);
             if (attempt) {
-                nav(`${attempt.id}`);
+                return <Navigate to={`${attempt.id}`} />
             }
         }
     }
