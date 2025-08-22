@@ -19,9 +19,9 @@ const QuizStart = () => {
         return <Loader />
     }
 
-    const handleStartQuiz = async () => {
+    const handleStartQuiz = () => {
         if (catId && id) {
-            await startQuiz(catId, id);
+            startQuiz(catId, id);
             if (attempt && !attemptLoading) {
                 return <Navigate to={`${attempt.id}`} />
             }
