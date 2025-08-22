@@ -3,7 +3,7 @@ const Main = () => {
   return (
     <div className="w-full min-h-screen flex flex-col">
       <div className="p-5 flex flex-col ">
-        <div className="w-full h-[500px] bg-main-color rounded-md">
+        <div className="w-full h-[500px] bg-main-color rounded-xl">
         </div>
       </div>
 
