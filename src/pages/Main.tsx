@@ -10,8 +10,8 @@ const Main = () => {
           <span className="text-center title">დააჭირეთ ბანერს დამატებითი ინფორმაციის მისაღებად</span>
           <img src={leaderboardImg} alt="..."  />
         </div>
-        <div className="flex gap-x-3">
-          <div className="flex flex-col">
+        <div className="flex gap-x-3 mt-10">
+          <div className="flex flex-col shadow-md">
             <span>22.08.2025</span>
             <img src="https://picsum.photos/300/200" className="w-full" />
             <span className="title text-dark-color">რა არის საზრისი?</span>
