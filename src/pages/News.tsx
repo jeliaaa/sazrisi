@@ -9,6 +9,7 @@ const News = () => {
     const newsPerPage = 8;
     const [filteredNews, setFilteredNews] = useState<INews[] | []>([]);
     const { loading, fetchNews, news } = useNewsStore();
+    const totalPages = Math.ceil(news.length / newsPerPage);
 
     function shortenText(text: string, wordLimit: number): string {
         const words = text.split(" ");
@@ -18,8 +19,12 @@ const News = () => {
 
     useEffect(() => {
         fetchNews();
-        setFilteredNews(news.slice((page - 1) * newsPerPage, page * newsPerPage))
-    }, [fetchNews, setFilteredNews, news, page])
+    }, [fetchNews]);
+
+    useEffect(() => {
+        setFilteredNews(news.slice((page - 1) * newsPerPage, page * newsPerPage));
+    }, [news, page]);
+
     if (loading) {
         return <Loader />
     }
@@ -42,12 +47,19 @@ const News = () => {
                     </Link>
                 ))}
             </div>
-            <div className="flex gap-x-4 justify-center items-center">
-                <button onClick={() => setPage(1)}>1</button>
-                <button onClick={() => setPage(2)}>2</button>
-                <button onClick={() => setPage(3)}>3</button>
-
+            <div className="flex gap-x-4 justify-center items-center mt-6">
+                {Array.from({ length: totalPages }, (_, i) => (
+                    <button
+                        key={i}
+                        onClick={() => setPage(i + 1)}
+                        className={`px-3 py-1 rounded ${page === i + 1 ? "bg-main-color text-white" : "bg-gray-200"
+                            }`}
+                    >
+                        {i + 1}
+                    </button>
+                ))}
             </div>
+
         </div>
     )
 }
