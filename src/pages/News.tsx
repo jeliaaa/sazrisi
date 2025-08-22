@@ -4,6 +4,12 @@ import Loader from "../components/reusables/Loader";
 import { Link } from "react-router-dom";
 import { INews } from "../types/types";
 
+function shortenText(text: string, wordLimit: number): string {
+    const words = text.split(" ");
+    if (words.length <= wordLimit) return text;
+    return words.slice(0, wordLimit).join(" ") + "...";
+}
+
 const News = () => {
     const [page, setPage] = useState<number>(1);
     const newsPerPage = 8;
@@ -11,11 +17,7 @@ const News = () => {
     const { loading, fetchNews, news } = useNewsStore();
     const totalPages = Math.ceil(news.length / newsPerPage);
 
-    function shortenText(text: string, wordLimit: number): string {
-        const words = text.split(" ");
-        if (words.length <= wordLimit) return text;
-        return words.slice(0, wordLimit).join(" ") + "...";
-    }
+
 
     useEffect(() => {
         fetchNews();
@@ -28,6 +30,8 @@ const News = () => {
     if (loading) {
         return <Loader />
     }
+
+
 
     return (
         <div className="min-h-screen w-full p-5">
@@ -63,5 +67,35 @@ const News = () => {
         </div>
     )
 }
-
 export default News
+
+export const MainNewsComponent = () => {
+    const { loading, fetchNews, news } = useNewsStore();
+
+    useEffect(() => {
+        fetchNews();
+    }, [fetchNews]);
+
+    if (loading) {
+        <Loader />
+    }
+
+    return (
+        <div className="flex gap-x-3 mt-3 justify-around flex-wrap">
+            {news.slice(0, 4).map((news) => (
+                <Link to={`/news/${news.id}`} key={news.id} className="flex flex-col shadow-md w-[320px]">
+                    <span>{new Date(news.created_at).toISOString().split("T")[0]}</span>
+                    <img src="https://picsum.photos/350/200" className="w-full" />
+                    <div className="p-3 flex flex-col gap-y-3">
+                        <span className="title text-dark-color">{news.title}</span>
+                        <span className="plain-text text-dark-color">
+                            {shortenText(news.description, 10)}
+                        </span>
+                        <span className="text-main-color flex  justify-end hover:underline">იხ. სრულად</span>
+                    </div>
+                </Link>
+            ))}
+        </div>
+    )
+
+}
