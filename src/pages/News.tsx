@@ -16,7 +16,7 @@ const News = () => {
     }
 
     return (
-        <div className="min-h-screen w-full">
+        <div className="min-h-screen w-full p-5">
             <h1 className="title text-dark-color">ახალი ამბები</h1>
             <div className="flex gap-x-3 mt-3 justify-around flex-wrap">
                 {news.map((news) => (
@@ -24,7 +24,7 @@ const News = () => {
                         <span>{new Date(news.created_at).toISOString().split("T")[0]}</span>
                         <img src="https://picsum.photos/350/200" className="w-full" />
                         <div className="p-3">
-                            <span className="title text-dark-color">რა არის საზრისი?</span>
+                            <span className="title text-dark-color">{news.title}</span>
                             <span className="text-main-color flex  justify-end hover:underline">იხ. სრულად</span>
                         </div>
                     </Link>
