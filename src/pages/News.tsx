@@ -81,7 +81,7 @@ export const MainNewsComponent = () => {
     }
 
     return (
-        <div className="flex gap-x-3 mt-3 justify-around flex-wrap">
+        <div className="flex gap-3 mt-3 justify-around flex-wrap">
             {news.slice(0, 4).map((news) => (
                 <Link to={`/news/${news.id}`} key={news.id} className="flex flex-col shadow-md w-[320px]">
                     <span>{new Date(news.created_at).toISOString().split("T")[0]}</span>
