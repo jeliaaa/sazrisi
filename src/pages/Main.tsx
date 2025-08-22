@@ -14,8 +14,8 @@ const Main = () => {
           <div className="flex flex-col">
             <span>22.08.2025</span>
             <img src="https://picsum.photos/300/200" className="w-full" />
-            <span className="title">რა არის საზრისი?</span>
-            <Link to={'/news'} className="text-gray-200 ">იხ. სრულად</Link>
+            <span className="title text-dark-color">რა არის საზრისი?</span>
+            <Link to={'/news'} className="text-main-color justify-self-end">იხ. სრულად</Link>
           </div>
         </div>
       </div>
