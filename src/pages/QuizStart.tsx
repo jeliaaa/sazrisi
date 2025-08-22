@@ -11,6 +11,13 @@ const QuizStart = () => {
     const { loading, fetchQuizStart, quizzStart } = useQuizStore();
     const { startQuiz, attempt, loading: attemptLoading } = useAttemptStore();
     const nav = useNavigate();
+
+    useEffect(() => {
+        if (attempt && !attemptLoading) {
+            nav(`/${attempt.id}`);
+        }
+    }, [attempt, attemptLoading, nav]);
+
     useEffect(() => {
         if (catId && id) {
             fetchQuizStart(catId, id)
@@ -20,12 +27,10 @@ const QuizStart = () => {
         return <Loader />
     }
 
+
     const handleStartQuiz = () => {
         if (catId && id) {
             startQuiz(catId, id);
-            if (attempt && !attemptLoading) {
-                return nav(`${attempt.id}`)
-            }
         }
     }
 
