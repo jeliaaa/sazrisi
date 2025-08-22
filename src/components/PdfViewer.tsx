@@ -1,4 +1,5 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+// import { ChevronLeft, ChevronRight } from 'lucide-react';
+import ChevronDown from "../icons/chevronDown.svg?react"
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/TextLayer.css';
@@ -53,13 +54,13 @@ const PDFViewer = ({ fileUrl }: PDFViewerProps) => {
         <div className="flex flex-col items-center gap-4" ref={containerRef}>
             <div className="flex justify-between w-full max-w-lg items-center pt-1 title">
                 <button onClick={goToPrevPage} className='flex text-main-color' disabled={pageNumber === 1}>
-                    <ChevronLeft className='w-10 h-8' /> <span className='mt-1'>უკან</span>
+                    <ChevronDown className='w-10 h-8 rotate-90' /> <span className='mt-1'>უკან</span>
                 </button>
                 <p>
                     გვერდი {pageNumber} / {numPages} -დან
                 </p>
                 <button onClick={goToNextPage} disabled={pageNumber === numPages} className='flex text-main-color'>
-                    <span className='mt-1'>შემდეგ</span> <ChevronRight className='w-10 h-8' />
+                    <span className='mt-1'>შემდეგ</span> <ChevronDown className='-rotate-90 w-10 h-8' />
                 </button>
             </div>
 
