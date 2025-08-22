@@ -1,7 +1,7 @@
 const Main = () => {
 
   return (
-    <div className="w-full h-full flex flex-col">
+    <div className="w-full min-h-screen flex flex-col">
       <header className="w-full bg-main-color/80 p-5 flex items-center justify-center">
         <span className="title text-texts-color">მოგესალმებით!</span>
       </header>
