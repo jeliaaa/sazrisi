@@ -54,7 +54,7 @@ const PDFViewer = ({ fileUrl }: PDFViewerProps) => {
         <div className="flex flex-col items-center gap-4" ref={containerRef}>
             <div className="flex justify-between w-full max-w-lg items-center pt-1 title">
                 <button onClick={goToPrevPage} className='flex text-main-color' disabled={pageNumber === 1}>
-                    <ChevronDown className='w-10 h-8 rotate-90' /> <span className='mt-1'>უკან</span>
+                    <ChevronDown className='w-10 h-8 rotate-90 fill-main-color' /> <span className='mt-1'>უკან</span>
                 </button>
                 <p>
                     გვერდი {pageNumber} / {numPages} -დან
