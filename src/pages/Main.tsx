@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import leaderboardImg from "../icons/leaderboard.png"
 
 const Main = () => {
@@ -8,6 +9,14 @@ const Main = () => {
           <span className="text-center text-7xl">გათამაშება უკვე დაიწყო!</span>
           <span className="text-center title">დააჭირეთ ბანერს დამატებითი ინფორმაციის მისაღებად</span>
           <img src={leaderboardImg} alt="..."  />
+        </div>
+        <div className="flex gap-x-3">
+          <div className="flex flex-col">
+            <span>22.08.2025</span>
+            <img src="picsum.photos/300/200" className="w-full" />
+            <span className="title">რა არის საზრისი?</span>
+            <Link to={'/news'} className="text-gray-200 ">იხ. სრულად</Link>
+          </div>
         </div>
       </div>
 
