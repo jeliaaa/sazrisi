@@ -30,7 +30,7 @@ const News = () => {
                     <Link to={`/news/${news.id}`} key={news.id} className="flex flex-col shadow-md w-[350px]">
                         <span>{new Date(news.created_at).toISOString().split("T")[0]}</span>
                         <img src="https://picsum.photos/350/200" className="w-full" />
-                        <div className="p-3">
+                        <div className="p-3 flex flex-col gap-y-3">
                             <span className="title text-dark-color">{news.title}</span>
                             <span className="plain-text text-dark-color">
                                 {shortenText(news.description, 7)}
