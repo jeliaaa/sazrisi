@@ -60,7 +60,7 @@ const PDFViewer = ({ fileUrl }: PDFViewerProps) => {
                     გვერდი {pageNumber} / {numPages} -დან
                 </p>
                 <button onClick={goToNextPage} disabled={pageNumber === numPages} className='flex text-main-color'>
-                    <span className='mt-1'>შემდეგ</span> <ChevronDown className='-rotate-90 w-10 h-8' />
+                    <span className='mt-1'>შემდეგ</span> <ChevronDown className='-rotate-90 w-10 h-8 fill-main-color' />
                 </button>
             </div>
 
