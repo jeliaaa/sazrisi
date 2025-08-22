@@ -12,9 +12,9 @@ const Main = () => {
         </div>
         <div className="flex gap-x-3 mt-10 justify-around flex-wrap">
           {[1, 2, 3, 4].map(() => (
-            <div className="flex flex-col shadow-md w-[300px]">
+            <div className="flex flex-col shadow-md w-[350px]">
               <span>22.08.2025</span>
-              <img src="https://picsum.photos/300/200" className="w-full" />
+              <img src="https://picsum.photos/350/200" className="w-full" />
               <div className="p-3">
                 <span className="title text-dark-color">რა არის საზრისი?</span>
                 <Link to={'/news'} className="text-main-color flex  justify-end">იხ. სრულად</Link>
