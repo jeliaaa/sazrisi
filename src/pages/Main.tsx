@@ -8,14 +8,16 @@ const Main = () => {
         <div className="w-full text-texts-color flex flex-col py-5 px-3 items-center gap-y-5 h-fit lg:h-[400px] bg-main-color cursor-pointer rounded-xl hover:scale-102 transition-all delay-200">
           <span className="text-center text-7xl">გათამაშება უკვე დაიწყო!</span>
           <span className="text-center title">დააჭირეთ ბანერს დამატებითი ინფორმაციის მისაღებად</span>
-          <img src={leaderboardImg} alt="..."  />
+          <img src={leaderboardImg} alt="..." />
         </div>
         <div className="flex gap-x-3 mt-10">
           <div className="flex flex-col shadow-md">
             <span>22.08.2025</span>
             <img src="https://picsum.photos/300/200" className="w-full" />
-            <span className="title text-dark-color">რა არის საზრისი?</span>
-            <Link to={'/news'} className="text-main-color flex w-fit justify-self-end">იხ. სრულად</Link>
+            <div className="p-3">
+              <span className="title text-dark-color">რა არის საზრისი?</span>
+              <Link to={'/news'} className="text-main-color flex  justify-end">იხ. სრულად</Link>
+            </div>
           </div>
         </div>
       </div>
