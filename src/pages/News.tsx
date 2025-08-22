@@ -1,9 +1,13 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNewsStore } from "../stores/newsStore"
 import Loader from "../components/reusables/Loader";
 import { Link } from "react-router-dom";
+import { INews } from "../types/types";
 
 const News = () => {
+    const [page, setPage] = useState<number>(1);
+    const newsPerPage = 8;
+    const [filteredNews, setFilteredNews] = useState<INews[] | []>([]);
     const { loading, fetchNews, news } = useNewsStore();
 
     function shortenText(text: string, wordLimit: number): string {
@@ -12,10 +16,10 @@ const News = () => {
         return words.slice(0, wordLimit).join(" ") + "...";
     }
 
-
     useEffect(() => {
         fetchNews();
-    }, [fetchNews])
+        setFilteredNews(news.slice((page - 1) * newsPerPage, page * newsPerPage))
+    }, [fetchNews, setFilteredNews, news, page])
 
     console.log(news);
     if (loading) {
@@ -26,8 +30,8 @@ const News = () => {
         <div className="min-h-screen w-full p-5">
             <h1 className="title text-dark-color">ახალი ამბები</h1>
             <div className="flex gap-x-3 mt-3 justify-around flex-wrap">
-                {news.map((news) => (
-                    <Link to={`/news/${news.id}`} key={news.id} className="flex flex-col shadow-md w-[350px]">
+                {filteredNews.map((news) => (
+                    <Link to={`/news/${news.id}`} key={news.id} className="flex flex-col shadow-md w-[320px]">
                         <span>{new Date(news.created_at).toISOString().split("T")[0]}</span>
                         <img src="https://picsum.photos/350/200" className="w-full" />
                         <div className="p-3 flex flex-col gap-y-3">
@@ -39,6 +43,12 @@ const News = () => {
                         </div>
                     </Link>
                 ))}
+            </div>
+            <div className="flex gap-x-4 justify-center items-center">
+                <button onClick={() => setPage(1)}>1</button>
+                <button onClick={() => setPage(2)}>2</button>
+                <button onClick={() => setPage(3)}>3</button>
+
             </div>
         </div>
     )
