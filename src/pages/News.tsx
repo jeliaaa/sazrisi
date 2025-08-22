@@ -20,8 +20,6 @@ const News = () => {
         fetchNews();
         setFilteredNews(news.slice((page - 1) * newsPerPage, page * newsPerPage))
     }, [fetchNews, setFilteredNews, news, page])
-
-    console.log(news);
     if (loading) {
         return <Loader />
     }
