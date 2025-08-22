@@ -21,10 +21,10 @@ const QuizStart = () => {
         return <Loader />
     }
 
-    const handleStartQuiz = () => {
+    const handleStartQuiz = async () => {
         setInnerLoading(true);
         if (catId && id) {
-            startQuiz(catId, id);
+            await startQuiz(catId, id);
             setInnerLoading(false);
             if (attempt) {
                 nav(`${attempt.id}`);
