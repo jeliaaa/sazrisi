@@ -2,6 +2,7 @@ import { MoveDiagonal2 } from "lucide-react";
 import { SetStateAction, Dispatch, useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { IAttempt, Question, QuestionWithAnswers } from "../types/types";
 import { useAttemptStore } from "../stores/attemptStore";
+import { Link } from "react-router-dom";
 
 interface AnswerModalProps {
     isOpen: boolean;
@@ -388,13 +389,13 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
                                     </button>
                                 );
                             })}
-                            {allAnswered && <button
-                                onClick={() => alert('დასრულდა')}
+                            {allAnswered && <Link
+                                to={`/quiz/result/${attempt?.id}`}
                                 className={`inline-block px-3 py-1 mx-1 rounded-sm transition-colors border-2`}
                                 onMouseDown={stopPropagation}
                             >
                                 დასრულება
-                            </button>}
+                            </Link>}
                         </div>
 
                         {/* Question Info */}

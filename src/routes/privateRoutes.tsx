@@ -5,6 +5,7 @@ const IndexPage = lazy(() => import("../pages/Main"));
 const QuizPage = lazy(() => import("../pages/Quizs"));
 const QuizStartPage = lazy(() => import("../pages/QuizStart"));
 const QuizSinglePage = lazy(() => import("../pages/QuizSingle"));
+const QuizResultPage = lazy(() => import("../pages/QuizResult"));
 const LeaderboardPage = lazy(() => import("../pages/Leaderboard"));
 const SettingsPage = lazy(() => import("../pages/Settings"));
 const ProfilePage = lazy(() => import("../pages/Profile"));
@@ -35,6 +36,11 @@ export const privateRoutes = [
     title: "quizSingle",
     path: routes.quizSingle,
     component: QuizSinglePage,
+  },
+  {
+    title: "quizResult",
+    path: routes.quizResult,
+    component: QuizResultPage,
   },
   {
     title: "leaderboard",

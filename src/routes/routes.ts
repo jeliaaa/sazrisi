@@ -8,6 +8,7 @@ export const privateRoutes = {
   quizs: "/quizs",
   quizStart: "/quiz/:catId/:id/",
   quizSingle: "/quiz/:catId/:id/:attemptId",
+  quizResult: "/quiz/result/:attemptId",
   leaderboard: "/leaderboard",
   settings: "/settings",
   profile: "/profile",
@@ -15,7 +16,7 @@ export const privateRoutes = {
   chat: "/chat",
   test: "/test",
   news: "/news",
-  newsSingle: "/news/:id"
+  newsSingle: "/news/:id",
 };
 
 export const routes = {

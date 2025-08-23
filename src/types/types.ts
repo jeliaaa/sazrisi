@@ -91,6 +91,7 @@ export interface IAttempt {
     completed_at: string | null;
     time_taken: number | null;
     remaining_time: number;
+    detailed_answers: [];
 }
 
 
