@@ -23,7 +23,7 @@ const Navigation = () => {
   return (
     <>
       {/* Sidebar for desktop */}
-      <div className="top-0 left-0 h-screen w-[5dvw] bg-gray-900 text-white flex-col items-center py-4 gap-6 hidden md:flex">
+      <div className="top-0 left-0 h-screen w-[5dvw] bg-gray-900 text-white flex-col items-center py-4 gap-6 hidden md:fixed md:flex">
         <Link to="/">
           <img src={logo} className="w-8" alt="Logo" />
         </Link>
