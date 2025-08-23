@@ -10,6 +10,7 @@ interface AttemptStore {
     startQuiz: (categoryId: string, quizId: string) => Promise<IAttempt | null>;
     fetchQuestions: (attemptId: string) => Promise<void>;
     answerQuestion: (attemptId: string, answer: SubmittedAnswer) => Promise<void>;
+    fetchResults: (attemptId: number) => Promise<void>;
 }
 
 export const useAttemptStore = create<AttemptStore>((set) => ({
@@ -57,6 +58,17 @@ export const useAttemptStore = create<AttemptStore>((set) => ({
             console.error('Failed to fetch quizzes:', error);
             set({ loading: false });
         }
-    }
-
+    },
+    fetchResults: async (attemptId) => {
+        try {
+            set({ loading: true });
+            const res = await apiV2.get(`/quiz/attempts/${attemptId}/results`);
+            set({ attempt: res.data });
+        } catch (error) {
+            console.error('Failed to fetch quizzes:', error);
+            throw error;
+        } finally {
+            set({ loading: false });
+        }
+    },
 }));

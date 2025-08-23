@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { CheckCircle, XCircle, Clock, Trophy, Target, Calendar, Timer, Loader } from 'lucide-react';
-import { useQuizStore } from '../stores/quizStore';
 import { useNavigate, useParams } from 'react-router-dom';
 import CkeditorContentViewer from '../components/CkEditorContentViewer';
+import { useAttemptStore } from '../stores/attemptStore';
 
 const QuizResultPage = () => {
     const { attemptId } = useParams()
     const [selectedQuestion, setSelectedQuestion] = useState(0);
-    const { attempt, fetchResults, loading } = useQuizStore()
+    const { attempt, fetchResults, loading } = useAttemptStore()
     const navigate = useNavigate()
 
     useEffect(() => {
