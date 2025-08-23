@@ -5,7 +5,7 @@ import CkeditorContentViewer from '../components/CkEditorContentViewer';
 import { useAttemptStore } from '../stores/attemptStore';
 import { Question } from '../types/types';
 import PDFViewer from '../components/PdfViewer'; // 👈 import your PDF viewer
-import test from '../../public/test.pdf'
+import test from '../assets/test.pdf'
 
 const QuizResultPage = () => {
     const { attemptId } = useParams();
