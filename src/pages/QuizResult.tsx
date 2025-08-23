@@ -209,7 +209,7 @@ const QuizResultPage = () => {
                                                 {!item.user_answer?.is_correct && item.explanation && (
                                                     <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                                                         <h5 className="font-medium text-yellow-800 mb-1">განმარტება</h5>
-                                                        <CkeditorContentViewer html={item.explanation} />
+                                                        <CkeditorContentViewer  html={item.explanation} />
                                                     </div>
                                                 )}
 

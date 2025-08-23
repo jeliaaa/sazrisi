@@ -12,6 +12,7 @@ interface PDFViewerProps {
 
 const PDFViewer = ({ fileUrl, page }: PDFViewerProps) => {
     const [containerWidth, setContainerWidth] = useState<number>(0);
+    const [numPages, setNumPages] = useState<number>(0);
     const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -31,11 +32,18 @@ const PDFViewer = ({ fileUrl, page }: PDFViewerProps) => {
 
     return (
         <div className="flex flex-col items-center gap-4" ref={containerRef}>
-            <Document file={fileUrl}>
-                <Page
-                    pageNumber={page ?? 1}   // if no page passed, default to 1
-                    width={containerWidth * 0.95}
-                />
+            <Document file={fileUrl} onLoadSuccess={({ numPages }) => setNumPages(numPages)}>
+                {page ? (
+                    <Page pageNumber={page} width={containerWidth * 0.95} />
+                ) : (
+                    Array.from(new Array(numPages), (_, index) => (
+                        <Page
+                            key={`page_${index + 1}`}
+                            pageNumber={index + 1}
+                            width={containerWidth * 0.95}
+                        />
+                    ))
+                )}
             </Document>
         </div>
     );
