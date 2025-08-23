@@ -92,6 +92,7 @@ export interface IAttempt {
     time_taken: number | null;
     remaining_time: number;
     questions : Question[];
+    quiz_file? : string | null;
 }
 
 
