@@ -5,6 +5,7 @@ import CkeditorContentViewer from '../components/CkEditorContentViewer';
 import { useAttemptStore } from '../stores/attemptStore';
 import { Question } from '../types/types';
 import PDFViewer from '../components/PdfViewer'; // 👈 import your PDF viewer
+import test from '../../public/test.pdf'
 
 const QuizResultPage = () => {
     const { attemptId } = useParams();
@@ -211,7 +212,7 @@ const QuizResultPage = () => {
 
                                                 {/* PDF Page */}
                                                 <div className="mt-4">
-                                                    <PDFViewer fileUrl={'/test.pdf'} page={item.order + 1} />
+                                                    <PDFViewer fileUrl={test} page={item.order + 1} />
                                                 </div>
                                             </div>
                                         )}
