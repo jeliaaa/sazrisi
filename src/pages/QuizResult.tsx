@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
-import { Clock, Trophy, Target, Calendar, Timer, Loader } from 'lucide-react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Clock, Trophy, Target, Calendar, Timer, Loader, ChevronDown } from 'lucide-react';
+import { useParams } from 'react-router-dom';
 import CkeditorContentViewer from '../components/CkEditorContentViewer';
 import { useAttemptStore } from '../stores/attemptStore';
 import { Question } from '../types/types';
+import PDFViewer from '../components/PdfViewer'; // 👈 import your PDF viewer
 
 const QuizResultPage = () => {
     const { attemptId } = useParams();
     const [activeTab, setActiveTab] = useState<'correct' | 'incorrect'>('correct');
+    const [expanded, setExpanded] = useState<number | null>(null); // 👈 track which question is open
     const { attempt, fetchResult, loading } = useAttemptStore();
-    const navigate = useNavigate();
 
     useEffect(() => {
         if (attemptId) {
@@ -45,13 +46,12 @@ const QuizResultPage = () => {
 
     if (loading) return <Loader />;
 
-    // Split questions into correct and incorrect
-    const correctQuestions = attempt?.questions?.filter(
-        (q: Question) => q.user_answer?.is_correct
-    );
-    const incorrectQuestions = attempt?.questions?.filter(
-        (q: Question) => !q.user_answer?.is_correct
-    );
+    const correctQuestions = attempt?.questions?.filter((q: Question) => q.user_answer?.is_correct);
+    const incorrectQuestions = attempt?.questions?.filter((q: Question) => !q.user_answer?.is_correct);
+
+    const toggleAccordion = (id: number) => {
+        setExpanded(prev => (prev === id ? null : id));
+    };
 
     return (
         attempt && (
@@ -63,7 +63,6 @@ const QuizResultPage = () => {
                         <p className="text-gray-600">დეტალური შესრულების ანალიზი</p>
                     </div>
 
-                    {/* Summary Cards */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                         <div
                             className={`p-6 rounded-xl border-2 ${getScoreBgColor(
@@ -152,8 +151,8 @@ const QuizResultPage = () => {
                             <button
                                 onClick={() => setActiveTab('correct')}
                                 className={`px-6 py-3 text-sm font-medium ${activeTab === 'correct'
-                                        ? 'border-b-2 border-green-500 text-green-600 bg-green-50'
-                                        : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
+                                    ? 'border-b-2 border-green-500 text-green-600 bg-green-50'
+                                    : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
                                     }`}
                             >
                                 სწორი პასუხები ({correctQuestions?.length || 0})
@@ -161,8 +160,8 @@ const QuizResultPage = () => {
                             <button
                                 onClick={() => setActiveTab('incorrect')}
                                 className={`px-6 py-3 text-sm font-medium ${activeTab === 'incorrect'
-                                        ? 'border-b-2 border-red-500 text-red-600 bg-red-50'
-                                        : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
+                                    ? 'border-b-2 border-red-500 text-red-600 bg-red-50'
+                                    : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
                                     }`}
                             >
                                 არასწორი პასუხები ({incorrectQuestions?.length || 0})
@@ -170,55 +169,56 @@ const QuizResultPage = () => {
                         </div>
 
                         {/* Tab Content */}
-                        <div className="p-6 space-y-6">
-                            {activeTab === 'correct' &&
-                                correctQuestions?.map((item, idx) => (
-                                    <div key={idx} className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                                        <div className="flex items-center justify-between mb-2">
-                                            <span className="font-medium">შეკითხვა {item.order}</span>
-                                            <span className="text-sm text-gray-500">
-                                                დრო: {item.user_answer?.time_taken}s
+                        <div className="p-6 space-y-4">
+                            {(activeTab === 'correct' ? correctQuestions : incorrectQuestions)?.map((item, idx) => {
+                                const isOpen = expanded === item.order;
+                                return (
+                                    <div
+                                        key={idx}
+                                        className={`border rounded-lg ${item.user_answer?.is_correct ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200"
+                                            }`}
+                                    >
+                                        <div className="flex justify-between items-center p-4 cursor-pointer" onClick={() => toggleAccordion(item.order)}>
+                                            <div>
+                                                <span className="font-medium">შეკითხვა {item.order}</span>
+                                                <span className="ml-4 text-sm text-gray-500">
+                                                    დრო: {item.user_answer?.time_taken}s
+                                                </span>
+                                            </div>
+                                            <span className="flex items-center text-sm text-main-color">
+                                                დეტალურად
+                                                <ChevronDown className={`ml-1 h-4 w-4 transition-transform ${isOpen ? "rotate-180" : ""}`} />
                                             </span>
                                         </div>
-                                    </div>
-                                ))}
 
-                            {activeTab === 'incorrect' &&
-                                incorrectQuestions?.map((item, idx) => (
-                                    <div key={idx} className="p-4 bg-red-50 border border-red-200 rounded-lg">
-                                        <div className="flex items-center justify-between mb-2">
-                                            <span className="font-medium">შეკითხვა {item.order}</span>
-                                            <span className="text-sm text-gray-500">
-                                                დრო: {item.user_answer?.time_taken}s
-                                            </span>
-                                        </div>
+                                        {isOpen && (
+                                            <div className="p-4 space-y-4 border-t bg-white">
+                                                {/* Correct answer (for incorrect questions) */}
+                                                {!item.user_answer?.is_correct && (
+                                                    <div>
+                                                        <p className="text-sm font-medium text-gray-700">სწორი პასუხი:</p>
+                                                        <CkeditorContentViewer html={item.answer ?? ''} />
+                                                    </div>
+                                                )}
 
-                                        {/* Correct answers */}
-                                        <div className="mt-2">
-                                            <p className="text-sm font-medium text-gray-700">სწორი პასუხი:</p>
-                                            <CkeditorContentViewer html={item.answer ?? ''} />
-                                        </div>
+                                                {/* Explanation */}
+                                                {item.explanation && (
+                                                    <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                                                        <h5 className="font-medium text-yellow-800 mb-1">განმარტება</h5>
+                                                        <CkeditorContentViewer html={item.explanation} />
+                                                    </div>
+                                                )}
 
-                                        {/* Explanation */}
-                                        {item.explanation && (
-                                            <div className="mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                                                <h5 className="font-medium text-yellow-800 mb-1">განმარტება</h5>
-                                                <CkeditorContentViewer html={item.explanation} />
+                                                {/* PDF Page */}
+                                                <div className="mt-4">
+                                                    <PDFViewer fileUrl={'/test.pdf'} page={item.order + 1} />
+                                                </div>
                                             </div>
                                         )}
                                     </div>
-                                ))}
+                                );
+                            })}
                         </div>
-                    </div>
-
-                    {/* Action Buttons */}
-                    <div className="mt-8 text-center space-x-4">
-                        <button
-                            onClick={() => navigate('/categories')}
-                            className="px-8 py-3 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300 transition-colors"
-                        >
-                            კატეგორიები
-                        </button>
                     </div>
                 </div>
             </div>

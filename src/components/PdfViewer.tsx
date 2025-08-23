@@ -1,6 +1,4 @@
-// import { ChevronLeft, ChevronRight } from 'lucide-react';
-import ChevronDown from "../icons/chevronDown.svg?react"
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/TextLayer.css';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
@@ -9,21 +7,12 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/b
 
 interface PDFViewerProps {
     fileUrl: string | undefined;
+    page?: number; // optional: specific page to render
 }
 
-const PDFViewer = ({ fileUrl }: PDFViewerProps) => {
-    const [numPages, setNumPages] = useState<number>(0);
-    const [pageNumber, setPageNumber] = useState<number>(1);
+const PDFViewer = ({ fileUrl, page }: PDFViewerProps) => {
     const [containerWidth, setContainerWidth] = useState<number>(0);
     const containerRef = useRef<HTMLDivElement>(null);
-
-    const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
-        setNumPages(numPages);
-        setPageNumber(1);
-    };
-
-    const goToPrevPage = () => setPageNumber((prev) => Math.max(prev - 1, 1));
-    const goToNextPage = useCallback(() => setPageNumber((prev) => Math.min(prev + 1, numPages)), [numPages])
 
     useEffect(() => {
         const resizeObserver = new ResizeObserver(() => {
@@ -40,32 +29,13 @@ const PDFViewer = ({ fileUrl }: PDFViewerProps) => {
         return () => resizeObserver.disconnect();
     }, []);
 
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === 'ArrowRight') goToNextPage();
-            else if (e.key === 'ArrowLeft') goToPrevPage();
-        };
-
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [pageNumber, numPages, goToNextPage]);
-
     return (
         <div className="flex flex-col items-center gap-4" ref={containerRef}>
-            <div className="flex justify-between w-full max-w-lg items-center pt-1 title">
-                <button onClick={goToPrevPage} className='flex text-main-color' disabled={pageNumber === 1}>
-                    <ChevronDown className='w-10 h-8 rotate-90 fill-main-color' /> <span className='mt-1'>უკან</span>
-                </button>
-                <p>
-                    გვერდი {pageNumber} / {numPages} -დან
-                </p>
-                <button onClick={goToNextPage} disabled={pageNumber === numPages} className='flex text-main-color'>
-                    <span className='mt-1'>შემდეგ</span> <ChevronDown className='-rotate-90 w-10 h-8 fill-main-color' />
-                </button>
-            </div>
-
-            <Document file={fileUrl} onLoadSuccess={onDocumentLoadSuccess}>
-                <Page pageNumber={pageNumber} width={containerWidth * 0.95} />
+            <Document file={fileUrl}>
+                <Page
+                    pageNumber={page ?? 1}   // if no page passed, default to 1
+                    width={containerWidth * 0.95}
+                />
             </Document>
         </div>
     );
