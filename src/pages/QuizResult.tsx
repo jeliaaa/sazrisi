@@ -7,14 +7,14 @@ import { useAttemptStore } from '../stores/attemptStore';
 const QuizResultPage = () => {
     const { attemptId } = useParams()
     const [selectedQuestion, setSelectedQuestion] = useState(0);
-    const { attempt, fetchAttempt, loading } = useAttemptStore()
+    const { attempt, fetchResult, loading } = useAttemptStore()
     const navigate = useNavigate()
 
     useEffect(() => {
         if (attemptId) {
-            fetchAttempt(parseInt(attemptId!))
+            fetchResult(parseInt(attemptId!))
         }
-    }, [attemptId, fetchAttempt])
+    }, [attemptId, fetchResult])
 
     const formatDate = (dateString: string | null) => {
         if (dateString) {
