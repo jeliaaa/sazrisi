@@ -30,7 +30,7 @@ export const useNotesStore = create<NotesStore>((set) => ({
     addNotes: async (attemptId: string, formData: FormData) => {
         set({ loading: true })
         try {
-            const res = await apiV2.post<Note[]>(`/attempts/${attemptId}/notes/`, formData);
+            const res = await apiV2.post<Note[]>(`/quiz/attempts/${attemptId}/notes/`, formData);
             set({ notes: res.data });
             set({ loading: false })
         } catch (error) {
@@ -41,7 +41,7 @@ export const useNotesStore = create<NotesStore>((set) => ({
     updateNotes: async (noteId: string, formData: FormData) => {
         set({ loading: true })
         try {
-            const res = await apiV2.patch<Note[]>(`/notes/${noteId}`, formData);
+            const res = await apiV2.patch<Note[]>(`/quiz/notes/${noteId}`, formData);
             set({ notes: res.data });
             set({ loading: false })
         } catch (error) {
@@ -52,7 +52,7 @@ export const useNotesStore = create<NotesStore>((set) => ({
     deleteNotes: async (noteId: string) => {
         set({ loading: true })
         try {
-            await apiV2.delete<Note[]>(`/notes/${noteId}`);
+            await apiV2.delete<Note[]>(`/quiz/notes/${noteId}`);
             set({ loading: false })
         } catch (error) {
             console.error('Failed to fetch categories:', error);
