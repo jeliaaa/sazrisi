@@ -1,51 +1,57 @@
-import React, { useState } from "react";
-import { toast } from "react-hot-toast";
-import { useAuthStore } from "../stores/authStore";
+import React, { useState, useEffect } from "react";
+import { toast } from "react-hot-toast";import { useAuthStore } from "../stores/authStore";
+; // adjust path
+
 const ChangePassword = () => {
     const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [internalError, setError] = useState<string | null>(null);
+    const [localError, setLocalError] = useState<string | null>(null);
+
     const { resetPassword, loading, error } = useAuthStore();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError(null);
+        setLocalError(null);
 
-        // basic validation
+        // client-side validation
         if (!currentPassword || !newPassword || !confirmPassword) {
-            setError("გთხოვთ, შეავსოთ ყველა ველი");
+            setLocalError("გთხოვთ, შეავსოთ ყველა ველი");
             toast.error("გთხოვთ, შეავსოთ ყველა ველი");
             return;
         }
 
         if (newPassword !== confirmPassword) {
-            setError("პაროლები არ ემთხვევა");
+            setLocalError("პაროლები არ ემთხვევა");
             toast.error("პაროლები არ ემთხვევა");
             return;
         }
 
         if (newPassword.length < 8) {
-            setError("პაროლი უნდა იყოს მინიმუმ 8 სიმბოლო");
+            setLocalError("პაროლი უნდა იყოს მინიმუმ 8 სიმბოლო");
             toast.error("პაროლი უნდა იყოს მინიმუმ 8 სიმბოლო");
             return;
         }
-        if (error) {
-            toast.error('დაფიქსირდა შეცდომა' + error)
-        }
 
-        try {
-            await resetPassword({ currentPassword, newPassword });
+        // call store action
+        await resetPassword({ currentPassword, newPassword });
+
+        if (!error) {
             toast.success("პაროლი წარმატებით შეიცვალა");
-            // optionally clear fields
             setCurrentPassword("");
             setNewPassword("");
             setConfirmPassword("");
-        } catch (err) {
-            // error handled in store
-            toast.error(err as string || "შეცდომა მოხდა");
+        } else {
+            toast.error(error);
         }
     };
+
+    // optional: show backend error inline
+    useEffect(() => {
+        if (error) {
+            setLocalError(error);
+        }
+    }, [error]);
 
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -90,7 +96,7 @@ const ChangePassword = () => {
                 </div>
             </div>
 
-            {internalError && <p className="text-red-500 text-sm">{internalError}</p>}
+            {localError && <p className="text-red-500 text-sm">{localError}</p>}
 
             <div className="flex justify-end">
                 <button
