@@ -6,10 +6,12 @@ import LeaveIcon from "../icons/leave.svg?react";
 import VideoLessons from "../icons/video-lessons.svg?react";
 import logo from "../assets/logo.png";
 import { useUser } from "../hooks/useUser";
+import { useAuthStore } from "../stores/authStore";
 
 const Navigation = () => {
   const { pathname } = useLocation();
   const { profileImage } = useUser();
+  const { logout } = useAuthStore();
 
   const navigationList = [
     { to: "/quizs", name: "ტესტები", Icon: TestsIcon },
@@ -19,6 +21,10 @@ const Navigation = () => {
   ];
 
   const isActive = (to: string) => pathname.startsWith(to);
+  const handleLogOut = () => {
+    logout();
+    window.location.reload(); 
+  }
 
   return (
     <>
@@ -33,9 +39,8 @@ const Navigation = () => {
         {navigationList.map(({ Icon, name, to }) => (
           <Link key={to} to={to} className="relative group w-fit">
             <Icon
-              className={`w-8 h-8 trans1ition-colors duration-200 ${
-                isActive(to) ? "fill-main-color" : "fill-texts-color"
-              }`}
+              className={`w-8 h-8 trans1ition-colors duration-200 ${isActive(to) ? "fill-main-color" : "fill-texts-color"
+                }`}
             />
             <span className="hidden absolute left-12 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white text-xs px-2 py-1 rounded z-10 group-hover:block transition-opacity">
               {name}
@@ -51,12 +56,12 @@ const Navigation = () => {
               alt="Profile"
             />
           </Link>
-          <Link to="/" className="group">
+          <button onClick={() => handleLogOut()} className="group">
             <LeaveIcon className="w-8 h-8 fill-texts-color" />
             <span className="absolute left-12 bottom-0 transform -translate-y-1/2 bg-gray-700 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
               გამოსვლა
             </span>
-          </Link>
+          </button>
         </div>
       </div>
 
@@ -64,9 +69,8 @@ const Navigation = () => {
         {navigationList.map(({ Icon, name, to }) => (
           <Link key={to} to={to} className="relative group">
             <Icon
-              className={`w-8 h-8 ${
-                isActive(to) ? "fill-main-color" : "fill-texts-color"
-              }`}
+              className={`w-8 h-8 ${isActive(to) ? "fill-main-color" : "fill-texts-color"
+                }`}
             />
             <span className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-1 bg-gray-700 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
               {name}
