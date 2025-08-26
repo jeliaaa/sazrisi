@@ -14,7 +14,6 @@ const ChangePassword = () => {
         e.preventDefault();
         setLocalError(null);
 
-        // client-side validation
         if (!currentPassword || !newPassword || !confirmPassword) {
             setLocalError("გთხოვთ, შეავსოთ ყველა ველი");
             toast.error("გთხოვთ, შეავსოთ ყველა ველი");
@@ -33,7 +32,6 @@ const ChangePassword = () => {
             return;
         }
 
-        // call store action
         const result = await resetPassword({ currentPassword, newPassword });
 
         if (result.success) {
@@ -41,18 +39,10 @@ const ChangePassword = () => {
             setCurrentPassword("");
             setNewPassword("");
             setConfirmPassword("");
-        } else if (result.message) {
-            toast.error(result.message);
-            setLocalError(result.message);
-        }
-
-        if (!error) {
-            toast.success("პაროლი წარმატებით შეიცვალა");
-            setCurrentPassword("");
-            setNewPassword("");
-            setConfirmPassword("");
         } else {
-            toast.error(error);
+            const message = typeof result.message === "string" ? result.message : "Something went wrong";
+            setLocalError(message);
+            toast.error(message);
         }
     };
 

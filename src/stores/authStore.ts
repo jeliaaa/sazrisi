@@ -42,7 +42,7 @@ interface AuthState {
     login: (email: string, password: string) => Promise<boolean>;
     logout: () => Promise<void>;
     fetchMe: () => Promise<void>;
-    resetPassword: (params: { currentPassword: string; newPassword: string }) => Promise<{success: boolean, message?: string}>;
+    resetPassword: (params: { currentPassword: string; newPassword: string }) =>  Promise<{ success: true } | { success: false; message: string }>;
     update: (params: { email?: string | null; theme_color?: string }) => Promise<void>;
 
     // Register
@@ -105,16 +105,24 @@ export const useAuthStore = create<AuthState>()(
             resetPassword: async ({ currentPassword, newPassword }) => {
                 try {
                     set({ loading: true, error: null });
+
+                    // call backend
                     await apiV1.post('/user/change-password/', {
                         prev_password: currentPassword,
                         new_password: newPassword,
                     });
-                    set({ loading: false });
+
+                    set({ loading: false, error: null });
                     return { success: true };
-                } catch (error) {
-                    const err = error as AxiosError<{ detail?: string }>;
-                    set({ error: err.response?.data?.detail || 'Something went wrong', loading: false });
-                    return { success: false, message: err.response?.data?.detail || 'Something went wrong' };
+                } catch (err) {
+                    let message = 'Something went wrong';
+
+                    if (err instanceof AxiosError && err.response?.data?.detail) {
+                        message = err.response.data.detail;
+                    }
+
+                    set({ error: message, loading: false });
+                    return { success: false, message };
                 }
             },
             update: async ({ email, theme_color }) => {
