@@ -121,7 +121,7 @@ export const useAuthStore = create<AuthState>()(
                             prev_password: string[]
                         }
                     }>
-                    set({ error: err.response?.data?.detail?.new_password[0] + " " + err.response?.data?.detail?.prev_password[0] || 'დაფიქსირდა შეცდომა', loading: false })
+                    set({ error: err.response?.data?.detail?.new_password[0] || 'დაფიქსირდა შეცდომა', loading: false })
                     return { success: false };
                 }
             },
