@@ -40,9 +40,8 @@ const ChangePassword = () => {
             setNewPassword("");
             setConfirmPassword("");
         } else {
-            const message = typeof result.message === "string" ? result.message : "Something went wrong";
-            setLocalError(message);
-            toast.error(message);
+            setLocalError(error);
+            toast.error(error);
         }
     };
 
