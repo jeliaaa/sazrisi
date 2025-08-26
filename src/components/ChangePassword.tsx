@@ -5,8 +5,8 @@ const ChangePassword = () => {
     const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [error, setError] = useState<string | null>(null);
-    const { resetPassword, loading } = useAuthStore();
+    const [internalError, setError] = useState<string | null>(null);
+    const { resetPassword, loading, error } = useAuthStore();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -29,6 +29,9 @@ const ChangePassword = () => {
             setError("პაროლი უნდა იყოს მინიმუმ 8 სიმბოლო");
             toast.error("პაროლი უნდა იყოს მინიმუმ 8 სიმბოლო");
             return;
+        }
+        if (error) {
+            toast.error('დაფიქსირდა შეცდომა' + error)
         }
 
         try {
@@ -87,7 +90,7 @@ const ChangePassword = () => {
                 </div>
             </div>
 
-            {error && <p className="text-red-500 text-sm">{error}</p>}
+            {internalError && <p className="text-red-500 text-sm">{internalError}</p>}
 
             <div className="flex justify-end">
                 <button
