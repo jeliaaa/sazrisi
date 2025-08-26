@@ -105,7 +105,7 @@ export const useAuthStore = create<AuthState>()(
             resetPassword: async ({ currentPassword, newPassword }) => {
                 try {
                     set({ loading: true, error: null });
-                    await apiV1.post('/user/change-password', {
+                    await apiV1.post('/user/change-password/', {
                         prev_password: currentPassword,
                         new_password: newPassword,
                     });
