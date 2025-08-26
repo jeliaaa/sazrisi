@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { toast } from "react-hot-toast"; import { useAuthStore } from "../stores/authStore";
 ; // adjust path
 
@@ -46,11 +46,11 @@ const ChangePassword = () => {
     };
 
     // optional: show backend error inline
-    useEffect(() => {
-        if (error) {
-            setLocalError(error);
-        }
-    }, [error]);
+    // useEffect(() => {
+    //     if (error) {
+    //         setLocalError(error);
+    //     }
+    // }, [error]);
 
     return (
         <form onSubmit={handleSubmit} className="space-y-6">

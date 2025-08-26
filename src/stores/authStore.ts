@@ -115,8 +115,13 @@ export const useAuthStore = create<AuthState>()(
                     set({ loading: false, error: null });
                     return { success: true };
                 } catch (error) {
-                    const err = error as AxiosError<{ detail?: string }>
-                    set({ error: err.response?.data?.detail || 'დაფიქსირდა შეცდომა', loading: false })
+                    const err = error as AxiosError<{
+                        detail?: {
+                            new_password: string[],
+                            prev_password: string[]
+                        }
+                    }>
+                    set({ error: err.response?.data?.detail?.new_password[0] + " " + err.response?.data?.detail?.prev_password[0] || 'დაფიქსირდა შეცდომა', loading: false })
                     return { success: false };
                 }
             },
