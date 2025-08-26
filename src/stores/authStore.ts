@@ -42,7 +42,7 @@ interface AuthState {
     login: (email: string, password: string) => Promise<boolean>;
     logout: () => Promise<void>;
     fetchMe: () => Promise<void>;
-    resetPassword: (params: { currentPassword: string; newPassword: string }) => Promise<{success: boolean}>;
+    resetPassword: (params: { currentPassword: string; newPassword: string }) => Promise<{success: boolean, message?: string}>;
     update: (params: { email?: string | null; theme_color?: string }) => Promise<void>;
 
     // Register

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { toast } from "react-hot-toast";import { useAuthStore } from "../stores/authStore";
+import { toast } from "react-hot-toast"; import { useAuthStore } from "../stores/authStore";
 ; // adjust path
 
 const ChangePassword = () => {
@@ -34,7 +34,17 @@ const ChangePassword = () => {
         }
 
         // call store action
-        await resetPassword({ currentPassword, newPassword });
+        const result = await resetPassword({ currentPassword, newPassword });
+
+        if (result.success) {
+            toast.success("პაროლი წარმატებით შეიცვალა");
+            setCurrentPassword("");
+            setNewPassword("");
+            setConfirmPassword("");
+        } else if (result.message) {
+            toast.error(result.message);
+            setLocalError(result.message);
+        }
 
         if (!error) {
             toast.success("პაროლი წარმატებით შეიცვალა");
