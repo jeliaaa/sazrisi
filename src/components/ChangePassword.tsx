@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { toast } from "react-hot-toast"; import { useAuthStore } from "../stores/authStore";
-; // adjust path
+import { toast } from "react-hot-toast";
+import { useAuthStore } from "../stores/authStore"; // adjust path
 
 const ChangePassword = () => {
     const [currentPassword, setCurrentPassword] = useState("");
@@ -8,30 +8,21 @@ const ChangePassword = () => {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [localError, setLocalError] = useState<string | null>(null);
 
-    const { resetPassword, loading, error } = useAuthStore();
+    const { resetPassword, loading } = useAuthStore();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLocalError(null);
 
-        if (!currentPassword || !newPassword || !confirmPassword) {
-            setLocalError("გთხოვთ, შეავსოთ ყველა ველი");
-            toast.error("გთხოვთ, შეავსოთ ყველა ველი");
-            return;
-        }
-
+        // Only frontend check: new password matches confirm password
         if (newPassword !== confirmPassword) {
-            setLocalError("პაროლები არ ემთხვევა");
-            toast.error("პაროლები არ ემთხვევა");
+            const msg = "პაროლები არ ემთხვევა";
+            setLocalError(msg);
+            toast.error(msg);
             return;
         }
 
-        if (newPassword.length < 8) {
-            setLocalError("პაროლი უნდა იყოს მინიმუმ 8 სიმბოლო");
-            toast.error("პაროლი უნდა იყოს მინიმუმ 8 სიმბოლო");
-            return;
-        }
-
+        // Call backend
         const result = await resetPassword({ currentPassword, newPassword });
 
         if (result.success) {
@@ -40,22 +31,13 @@ const ChangePassword = () => {
             setNewPassword("");
             setConfirmPassword("");
         } else {
-            setLocalError(error);
-            toast.error(error);
+            setLocalError(result.message || "დაფიქსირდა შეცდომა");
+            toast.error(result.message || "დაფიქსირდა შეცდომა");
         }
     };
 
-    console.log(error)
-
-    // optional: show backend error inline
-    // useEffect(() => {
-    //     if (error) {
-    //         setLocalError(error);
-    //     }
-    // }, [error]);
-
     return (
-        <form onSubmit={(e) => handleSubmit(e)} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid gap-4 sm:grid-cols-2">
                 <div className="sm:col-span-2">
                     <label className="block text-sm font-semibold mb-1">
@@ -97,7 +79,9 @@ const ChangePassword = () => {
                 </div>
             </div>
 
-            {localError && <p className="text-red-500 text-sm">{localError}</p>}
+            {localError && (
+                <p className="text-red-500 text-sm">{localError}</p>
+            )}
 
             <div className="flex justify-end">
                 <button

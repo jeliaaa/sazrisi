@@ -42,7 +42,8 @@ interface AuthState {
     login: (email: string, password: string) => Promise<boolean>;
     logout: () => Promise<void>;
     fetchMe: () => Promise<void>;
-    resetPassword: (params: { currentPassword: string; newPassword: string }) => Promise<{ success: boolean }>;
+    resetPassword: (params: { currentPassword: string; newPassword: string }) =>
+        Promise<{ success: boolean; message?: string }>;
     update: (params: { email?: string | null; theme_color?: string }) => Promise<void>;
 
     // Register
@@ -106,7 +107,6 @@ export const useAuthStore = create<AuthState>()(
                 try {
                     set({ loading: true, error: null });
 
-                    // call backend
                     await apiV1.post('/user/change-password/', {
                         prev_password: currentPassword,
                         new_password: newPassword,
@@ -117,14 +117,28 @@ export const useAuthStore = create<AuthState>()(
                 } catch (error) {
                     const err = error as AxiosError<{
                         detail?: {
-                            new_password: string[],
-                            prev_password: string[]
+                            new_password?: string[];
+                            prev_password?: string[];
                         }
-                    }>
-                    set({ error: err.response?.data?.detail?.new_password[0] || 'დაფიქსირდა შეცდომა', loading: false })
-                    return { success: false };
+                    }>;
+
+                    // combine all messages from backend into one string
+                    const messages: string[] = [];
+                    if (err.response?.data?.detail?.prev_password) {
+                        messages.push(...err.response.data.detail.prev_password);
+                    }
+                    if (err.response?.data?.detail?.new_password) {
+                        messages.push(...err.response.data.detail.new_password);
+                    }
+
+                    const message = messages.join(" | ") || 'დაფიქსირდა შეცდომა';
+
+                    set({ error: message, loading: false });
+
+                    return { success: false, message };
                 }
             },
+
             update: async ({ email, theme_color }) => {
                 try {
                     set({ loading: true, error: null });
