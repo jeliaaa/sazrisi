@@ -19,7 +19,7 @@ export const useNotesStore = create<NotesStore>((set) => ({
     fetchNotes: async (attemptId: string) => {
         set({ loading: true })
         try {
-            const res = await apiV2.get<Note[]>(`/attempts/${attemptId}/notes/`);
+            const res = await apiV2.get<Note[]>(`/quiz/attempts/${attemptId}/notes/`);
             set({ notes: res.data });
             set({ loading: false })
         } catch (error) {
