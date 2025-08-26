@@ -42,7 +42,7 @@ interface AuthState {
     login: (email: string, password: string) => Promise<boolean>;
     logout: () => Promise<void>;
     fetchMe: () => Promise<void>;
-    resetPassword: (params: { currentPassword: string; newPassword: string }) => Promise<void>;
+    resetPassword: (params: { currentPassword: string; newPassword: string }) => Promise<{success: boolean}>;
     update: (params: { email?: string | null; theme_color?: string }) => Promise<void>;
 
     // Register
@@ -109,14 +109,14 @@ export const useAuthStore = create<AuthState>()(
                         prev_password: currentPassword,
                         new_password: newPassword,
                     });
-                } catch (error) {
-                    const err = error as AxiosError<{ detail?: string }>
-                    set({ error: err.response?.data?.detail || 'Something went wrong' });
-                } finally {
                     set({ loading: false });
+                    return { success: true };
+                } catch (error) {
+                    const err = error as AxiosError<{ detail?: string }>;
+                    set({ error: err.response?.data?.detail || 'Something went wrong', loading: false });
+                    return { success: false, message: err.response?.data?.detail || 'Something went wrong' };
                 }
             },
-
             update: async ({ email, theme_color }) => {
                 try {
                     set({ loading: true, error: null });
