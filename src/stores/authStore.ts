@@ -80,7 +80,7 @@ export const useAuthStore = create<AuthState>()(
             logout: async () => {
                 try {
                     set({ loading: true });
-                    await apiV1.post('/user/logout');
+                    await apiV1.post('/user/logout/');
                 } catch (error) {
                     const err = error as AxiosError<{ detail?: string }>
                     console.warn('Logout request failed' + err);
