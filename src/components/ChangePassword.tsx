@@ -45,6 +45,8 @@ const ChangePassword = () => {
         }
     };
 
+    console.log(error)
+
     // optional: show backend error inline
     // useEffect(() => {
     //     if (error) {
