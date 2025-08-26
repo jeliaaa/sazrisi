@@ -23,7 +23,6 @@ const Navigation = () => {
   const isActive = (to: string) => pathname.startsWith(to);
   const handleLogOut = () => {
     logout();
-    // window.location.reload(); 
   }
 
   return (

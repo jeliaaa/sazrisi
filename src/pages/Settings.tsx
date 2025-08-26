@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useUser } from "../hooks/useUser";
+import ChangePassword from "../components/ChangePassword";
 
 const tabs = [
   "პროფილი",
@@ -106,8 +107,8 @@ export default function Settings() {
                     key={color}
                     onClick={() => setThemeColor(color)}
                     className={`w-8 h-8 rounded-lg cursor-pointer border-2 transition ${themeColor === color
-                        ? "border-[3px] border-gray-500 scale-105"
-                        : "border-transparent"
+                      ? "border-[3px] border-gray-500 scale-105"
+                      : "border-transparent"
                       }`}
                     style={{ backgroundColor: color }}
                   />
@@ -122,48 +123,7 @@ export default function Settings() {
 
       case "უსაფრთხოება და კონფიდენციალურობა":
         return (
-          <div className="space-y-6">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="sm:col-span-2">
-                <label className="block text-sm font-semibold mb-1">
-                  შენი არსებული პაროლი
-                </label>
-                <input
-                  type="password"
-                  className="w-full bg-gray-100 p-3 rounded-xl outline-none text-sm"
-                  placeholder="არსებული პაროლი"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold mb-1">
-                  შეცვალე პაროლი
-                </label>
-                <input
-                  type="password"
-                  className="w-full bg-gray-100 p-3 rounded-xl outline-none text-sm"
-                  placeholder="ახალი პაროლი"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold mb-1">
-                  დაადასტურე პაროლი
-                </label>
-                <input
-                  type="password"
-                  className="w-full bg-gray-100 p-3 rounded-xl outline-none text-sm"
-                  placeholder="დაადასტურე"
-                />
-              </div>
-            </div>
-
-            <div className="flex justify-end">
-              <button className="w-48 bg-main-color text-white font-semibold py-3 rounded-xl hover:opacity-90 transition">
-                შენახვა
-              </button>
-            </div>
-          </div>
+          <ChangePassword />
         );
 
       case "გადახდები":
@@ -234,10 +194,10 @@ export default function Settings() {
                     <p className="text-sm font-semibold">შეკვეთა #{order.id}</p>
                     <span
                       className={`text-xs font-medium px-2 py-0.5 rounded-full ${order.status === "მიწოდებულია"
-                          ? "bg-green-100 text-green-700"
-                          : order.status === "მიმდინარეობს"
-                            ? "bg-yellow-100 text-yellow-700"
-                            : "bg-red-100 text-red-700"
+                        ? "bg-green-100 text-green-700"
+                        : order.status === "მიმდინარეობს"
+                          ? "bg-yellow-100 text-yellow-700"
+                          : "bg-red-100 text-red-700"
                         }`}
                     >
                       {order.status}
@@ -275,8 +235,8 @@ export default function Settings() {
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`cursor-pointer text-sm sm:text-base md:text-lg whitespace-nowrap ${activeTab === tab
-                  ? "underline font-semibold text-main-color"
-                  : "text-gray-700"
+                ? "underline font-semibold text-main-color"
+                : "text-gray-700"
                 }`}
             >
               {tab}
