@@ -6,6 +6,7 @@ import {
 } from "react-sketch-canvas";
 import { Rnd } from "react-rnd";
 import { Eraser, Trash, X } from "lucide-react";
+import { useNotesStore } from "../stores/notesStore";
 
 const canvasStyle = {
     border: "1px solid #ccc",
@@ -21,9 +22,10 @@ interface Page {
 
 interface NoteCanvasProps {
     onClose: () => void;
+    attemptId: number;
 }
 
-export const NoteCanvas: React.FC<NoteCanvasProps> = ({ onClose }) => {
+export const NoteCanvas: React.FC<NoteCanvasProps> = ({ onClose, attemptId }) => {
     const canvasRef = useRef<ReactSketchCanvasRef>(null);
     const modalRef = useRef<HTMLDivElement>(null);
     const [pages, setPages] = useState<Page[]>([{ id: 1, paths: [] }]);
@@ -32,7 +34,20 @@ export const NoteCanvas: React.FC<NoteCanvasProps> = ({ onClose }) => {
     const [isEraser, setIsEraser] = useState(false);
     const [strokeWidth, setStrokeWidth] = useState(3);
     const [strokeColor, setStrokeColor] = useState("#000000"); // default black
+    const { notes, fetchNotes, addNotes } = useNotesStore();
 
+
+    useEffect(() => {
+        fetchNotes(attemptId.toString())
+            .then(() => {
+                if (notes.length === 0) {
+                    handleSaveNote();
+                }
+            })
+
+    }, [attemptId, fetchNotes, notes.length])
+
+    console.log(notes)
     // Resize detection
     useEffect(() => {
         const checkScreenSize = () => {
@@ -57,6 +72,40 @@ export const NoteCanvas: React.FC<NoteCanvasProps> = ({ onClose }) => {
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [onClose]);
+
+    const handleSaveNote = async () => {
+        if (!canvasRef.current) return;
+
+        try {
+            // export image as base64 string (default = "png")
+            const base64 = await canvasRef.current.exportImage("png");
+
+            // convert base64 to blob
+            const byteString = atob(base64.split(",")[1]);
+            const mimeString = base64.split(",")[0].split(":")[1].split(";")[0];
+            const ab = new ArrayBuffer(byteString.length);
+            const ia = new Uint8Array(ab);
+            for (let i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
+            }
+            const blob = new Blob([ab], { type: mimeString });
+
+            // prepare FormData
+            const formData = new FormData();
+            formData.append("note", blob, `note-${Date.now()}.png`);
+
+            // post it
+            await addNotes(attemptId.toString(), formData);
+
+            console.log("Note saved successfully!");
+        } catch (err) {
+            console.error("Error exporting canvas:", err);
+        }
+    };
+
+
+
+
 
     const saveCurrentPagePaths = async () => {
         const paths = await canvasRef.current?.exportPaths();

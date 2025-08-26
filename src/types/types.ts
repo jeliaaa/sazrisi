@@ -91,8 +91,8 @@ export interface IAttempt {
     completed_at: string | null;
     time_taken: number | null;
     remaining_time: number;
-    questions : Question[];
-    quiz_file? : string | null;
+    questions: Question[];
+    quiz_file?: string | null;
 }
 
 
@@ -135,3 +135,14 @@ export interface INews {
     description: string;
     created_at: string;
 };
+
+export interface Note {
+    attempt: number;
+    note: string;
+    created_at: string;
+    id: number;
+}
+
+export interface NoteBody {
+    note: FormData;
+}
