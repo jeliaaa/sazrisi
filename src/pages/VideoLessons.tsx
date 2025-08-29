@@ -41,18 +41,21 @@ const videoLessons = [
 
 const VideoLessons = () => {
   const [selectedSubject, setSelectedSubject] = useState<Subject>("მათემატიკა");
+  const isLocked = true;
 
   const filteredLessons = videoLessons.filter(
     (lesson) => lesson.subject === selectedSubject
   );
-      {/* აიქონები ტექსტში როა ჩასმული თუ არ გეზარება ჩასვი წესიერად */}
-      {/* აიქონები ტექსტში როა ჩასმული თუ არ გეზარება ჩასვი წესიერად */}
-      {/* აიქონები ტექსტში როა ჩასმული თუ არ გეზარება ჩასვი წესიერად */}
-      {/* აიქონები ტექსტში როა ჩასმული თუ არ გეზარება ჩასვი წესიერად */}
-      {/* აიქონები ტექსტში როა ჩასმული თუ არ გეზარება ჩასვი წესიერად */}
+  {/* აიქონები ტექსტში როა ჩასმული თუ არ გეზარება ჩასვი წესიერად */ }
+  {/* აიქონები ტექსტში როა ჩასმული თუ არ გეზარება ჩასვი წესიერად */ }
+  {/* აიქონები ტექსტში როა ჩასმული თუ არ გეზარება ჩასვი წესიერად */ }
+  {/* აიქონები ტექსტში როა ჩასმული თუ არ გეზარება ჩასვი წესიერად */ }
+  {/* აიქონები ტექსტში როა ჩასმული თუ არ გეზარება ჩასვი წესიერად */ }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6 md:p-12 font-sans">
+    isLocked ? <div className="w-dvw h-dvh absolute bg-white/70 flex items-center justify-center">
+      <p className="title text-dark-color">ეს გვერდი დროებით მიუწვდომელია! დაგველოდეთ!</p>
+    </div> : <div className="min-h-screen bg-gray-50 p-6 md:p-12 font-sans">
       <h1 className="text-3xl font-bold text-dark-color mb-8">
         ვიდეო გაკვეთილები
       </h1>
@@ -62,11 +65,10 @@ const VideoLessons = () => {
           <button
             key={subject}
             onClick={() => setSelectedSubject(subject)}
-            className={`px-4 py-2 rounded-xl font-medium transition shadow-sm ${
-              selectedSubject === subject
+            className={`px-4 py-2 rounded-xl font-medium transition shadow-sm ${selectedSubject === subject
                 ? "bg-main-color text-white"
                 : "bg-white text-gray-700 hover:bg-gray-200"
-            }`}
+              }`}
           >
             {subject}
           </button>
