@@ -39,9 +39,29 @@ export default function SignUp() {
         setError
     } = methods;
 
-    const watchAuth = watch(["firstname", "lastname", "email", "password", "rePassword"]);
+    const watchAuth = watch([
+        "firstname",
+        "lastname",
+        "email",
+        "password",
+        "rePassword",
+    ]);
+
+    const password = watchAuth[3] || "";
+    const rePassword = watchAuth[4] || "";
+
+    const isPasswordValid =
+        password.length >= 8 &&
+        /[@!?.]/.test(password) &&
+        password === rePassword;
+
     const isAuthNextDisabled =
-        !watchAuth[0] || !watchAuth[1] || !watchAuth[2] || !watchAuth[3] || !watchAuth[4];
+        !watchAuth[0] ||
+        !watchAuth[1] ||
+        !watchAuth[2] ||
+        !password ||
+        !rePassword ||
+        !isPasswordValid;
 
     const onBack = () => {
         if (currentStep > steps.info) setCurrentStep((prev) => prev - 1);
@@ -143,10 +163,15 @@ export default function SignUp() {
                                         )}
                                         <button
                                             type="submit"
-                                            className="px-4 py-2 text-sm font-medium bg-dark-color text-white rounded cursor-pointer hover:bg-gray-800"
+                                            disabled={isAuthNextDisabled}
+                                            className={`px-4 py-2 text-sm font-medium rounded cursor-pointer 
+    ${isAuthNextDisabled
+                                                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                                                    : "bg-dark-color text-white hover:bg-gray-800"}`}
                                         >
                                             {currentStep === steps.info ? "რეგისტრაცია" : "შემდეგ"}
                                         </button>
+
                                     </div>
                                 )}
                             </form>
