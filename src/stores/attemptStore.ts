@@ -5,6 +5,7 @@ import { IAttempt, Question, QuestionWithAnswers, SubmittedAnswer } from '../typ
 
 interface AttemptStore {
     loading: boolean;
+    answerLoading: boolean;
     attempt: IAttempt | null;
     questions: [] | Question[] | QuestionWithAnswers[];
     startQuiz: (categoryId: string, quizId: string) => Promise<IAttempt | null>;
@@ -17,7 +18,7 @@ export const useAttemptStore = create<AttemptStore>((set) => ({
     loading: false,
     questions: [],
     attempt: null,
-
+    answerLoading: false,
     startQuiz: async (categoryId: string, quizId: string) => {
         set({ loading: true })
         try {
@@ -40,7 +41,7 @@ export const useAttemptStore = create<AttemptStore>((set) => ({
         }
     },
     answerQuestion: async (attemptId: string, answer: SubmittedAnswer) => {
-        set({ loading: true });
+        set({ answerLoading: true });
 
         try {
             const res = await apiV2.post(`/quiz/attempts/${attemptId}/answer`, answer);
@@ -48,7 +49,7 @@ export const useAttemptStore = create<AttemptStore>((set) => ({
             const updatedQuestion = res.data.updated_question;
 
             set((state) => ({
-                loading: false,
+                answerLoading: false,
                 attempt: res.data.updated_attempt,
                 questions: state.questions.map((q) =>
                     q.id === updatedQuestion.id ? updatedQuestion : q
@@ -56,7 +57,7 @@ export const useAttemptStore = create<AttemptStore>((set) => ({
             }));
         } catch (error) {
             console.error('Failed to fetch quizzes:', error);
-            set({ loading: false });
+            set({ answerLoading: false });
         }
     },
     fetchResult: async (attemptId) => {
