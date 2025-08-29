@@ -131,8 +131,8 @@ export default function Settings() {
                     key={color}
                     onClick={() => setThemeColor(color)}
                     className={`w-8 h-8 rounded-lg cursor-pointer border-2 transition ${themeColor === color
-                        ? "border-[3px] border-gray-500 scale-105"
-                        : "border-transparent"
+                      ? "border-[3px] border-gray-500 scale-105"
+                      : "border-transparent"
                       }`}
                     style={{ backgroundColor: color }}
                   />
@@ -151,6 +151,9 @@ export default function Settings() {
       case "გადახდები":
         return (
           <div className="space-y-6">
+            <div className="absolute flex items-center justify-center left-0 top-0 w-full h-full bg-white/60">
+              <p className="title text-dark-color">ეს გვერდი დროებით მიუწვდომელია.</p>
+            </div>
             <h3 className="text-sm font-semibold mb-2">
               შენახული გადახდის მეთოდები
             </h3>
@@ -201,7 +204,10 @@ export default function Settings() {
 
       case "შეკვეთების ისტორია":
         return (
-          <div className="space-y-4">
+          <div className="space-y-4 relative">
+            <div className="absolute flex items-center justify-center left-0 top-0 w-full h-full bg-white/60">
+              <p className="title text-dark-color">ეს გვერდი დროებით მიუწვდომელია.</p>
+            </div>
             {orderHistory.length > 0 ? (
               orderHistory.map((order) => (
                 <div
@@ -214,10 +220,10 @@ export default function Settings() {
                     </p>
                     <span
                       className={`text-xs font-medium px-2 py-0.5 rounded-full ${order.status === "მიწოდებულია"
-                          ? "bg-green-100 text-green-700"
-                          : order.status === "მიმდინარეობს"
-                            ? "bg-yellow-100 text-yellow-700"
-                            : "bg-red-100 text-red-700"
+                        ? "bg-green-100 text-green-700"
+                        : order.status === "მიმდინარეობს"
+                          ? "bg-yellow-100 text-yellow-700"
+                          : "bg-red-100 text-red-700"
                         }`}
                     >
                       {order.status}
@@ -254,8 +260,8 @@ export default function Settings() {
               key={tab}
               onClick={() => handleTabClick(tab)}
               className={`cursor-pointer text-sm sm:text-base md:text-lg whitespace-nowrap ${activeTab === tab
-                  ? "underline font-semibold text-main-color"
-                  : "text-gray-700"
+                ? "underline font-semibold text-main-color"
+                : "text-gray-700"
                 }`}
             >
               {tab}
