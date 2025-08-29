@@ -53,7 +53,7 @@ const VideoLessons = () => {
   {/* აიქონები ტექსტში როა ჩასმული თუ არ გეზარება ჩასვი წესიერად */ }
 
   return (
-    isLocked ? <div className="w-dvw h-dvh absolute bg-white/70 flex items-center justify-center top-0 left-0">
+    isLocked ? <div className="w-[95dvw] h-dvh absolute bg-white/70 flex items-center justify-center top-0 right-0">
       <p className="title text-dark-color">ეს გვერდი დროებით მიუწვდომელია! დაგველოდეთ!</p>
     </div> : <div className="min-h-screen bg-gray-50 p-6 md:p-12 font-sans">
       <h1 className="text-3xl font-bold text-dark-color mb-8">
