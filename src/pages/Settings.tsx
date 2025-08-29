@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useUser } from "../hooks/useUser";
 import ChangePassword from "../components/ChangePassword";
 
@@ -12,9 +12,13 @@ const tabs = [
 ];
 
 export default function Settings() {
-  const [activeTab, setActiveTab] = useState("პროფილი");
-  const { profileImage, setProfileImage, themeColor, setThemeColor } =
-    useUser();
+  // Get current query params
+  const params = new URLSearchParams(window.location.search);
+  const tabFromQuery = params.get("tab");
+
+  const [activeTab, setActiveTab] = useState<string>(tabFromQuery || "პროფილი");
+
+  const { profileImage, setProfileImage, themeColor, setThemeColor } = useUser();
 
   const [paymentMethods, setPaymentMethods] = useState([
     { id: 1, type: "Visa", last4: "1234", isDefault: true },
@@ -44,6 +48,24 @@ export default function Settings() {
       items: ["ტესტების პაკეტი"],
     },
   ];
+
+  // Sync tab with query on mount
+  useEffect(() => {
+    if (tabFromQuery && tabs.includes(tabFromQuery)) {
+      setActiveTab(tabFromQuery);
+    }
+  }, [tabFromQuery]);
+
+  // Update query string when tab changes
+  const handleTabClick = (tab: string) => {
+    setActiveTab(tab);
+
+    const params = new URLSearchParams(window.location.search);
+    params.set("tab", tab);
+    const newUrl = `${window.location.pathname}?${params.toString()}`;
+
+    window.history.replaceState({}, "", newUrl);
+  };
 
   const handleDelete = (id: number) => {
     setPaymentMethods((prev) => prev.filter((method) => method.id !== id));
@@ -92,7 +114,9 @@ export default function Settings() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-1">ელ.ფოსტა</label>
+              <label className="block text-sm font-semibold mb-1">
+                ელ.ფოსტა
+              </label>
               <input
                 className="w-full bg-gray-100 p-3 rounded-xl outline-none text-sm"
                 placeholder="შეიყვანე ელ.ფოსტა"
@@ -107,8 +131,8 @@ export default function Settings() {
                     key={color}
                     onClick={() => setThemeColor(color)}
                     className={`w-8 h-8 rounded-lg cursor-pointer border-2 transition ${themeColor === color
-                      ? "border-[3px] border-gray-500 scale-105"
-                      : "border-transparent"
+                        ? "border-[3px] border-gray-500 scale-105"
+                        : "border-transparent"
                       }`}
                     style={{ backgroundColor: color }}
                   />
@@ -122,66 +146,60 @@ export default function Settings() {
         );
 
       case "უსაფრთხოება და კონფიდენციალურობა":
-        return (
-          <ChangePassword />
-        );
+        return <ChangePassword />;
 
       case "გადახდები":
         return (
           <div className="space-y-6">
-            <div>
-              <h3 className="text-sm font-semibold mb-2">
-                შენახული გადახდის მეთოდები
-              </h3>
-              <div className="space-y-4">
-                {paymentMethods.map((method) => (
-                  <div
-                    key={method.id}
-                    className={`flex items-center justify-between border p-4 rounded-xl ${method.isDefault ? "border-main-color" : "border-gray-200"
-                      }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <img
-                        src={
-                          method.type === "Visa"
-                            ? "/visa.svg"
-                            : method.type === "MasterCard"
-                              ? "/mastercard.svg"
-                              : "/card.svg"
-                        }
-                        alt={method.type}
-                        className="w-10"
-                      />
-                      <p className="text-sm">
-                        {method.type} **** {method.last4}
-                        {method.isDefault && (
-                          <span className="ml-2 text-xs bg-main-color text-white px-2 py-0.5 rounded">
-                            ძირითადი
-                          </span>
-                        )}
-                      </p>
-                    </div>
-                    <button
-                      className="text-sm text-red-600 hover:underline"
-                      onClick={() => handleDelete(method.id)}
-                    >
-                      წაშლა
-                    </button>
+            <h3 className="text-sm font-semibold mb-2">
+              შენახული გადახდის მეთოდები
+            </h3>
+            <div className="space-y-4">
+              {paymentMethods.map((method) => (
+                <div
+                  key={method.id}
+                  className={`flex items-center justify-between border p-4 rounded-xl ${method.isDefault ? "border-main-color" : "border-gray-200"
+                    }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={
+                        method.type === "Visa"
+                          ? "/visa.svg"
+                          : method.type === "MasterCard"
+                            ? "/mastercard.svg"
+                            : "/card.svg"
+                      }
+                      alt={method.type}
+                      className="w-10"
+                    />
+                    <p className="text-sm">
+                      {method.type} **** {method.last4}
+                      {method.isDefault && (
+                        <span className="ml-2 text-xs bg-main-color text-white px-2 py-0.5 rounded">
+                          ძირითადი
+                        </span>
+                      )}
+                    </p>
                   </div>
-                ))}
-                {paymentMethods.length === 0 && (
-                  <p className="text-sm text-gray-500">
-                    არ გაქვს გადახდის მეთოდები დამატებული
-                  </p>
-                )}
-              </div>
+                  <button
+                    className="text-sm text-red-600 hover:underline"
+                    onClick={() => handleDelete(method.id)}
+                  >
+                    წაშლა
+                  </button>
+                </div>
+              ))}
+              {paymentMethods.length === 0 && (
+                <p className="text-sm text-gray-500">
+                  არ გაქვს გადახდის მეთოდები დამატებული
+                </p>
+              )}
             </div>
           </div>
         );
 
       case "შეკვეთების ისტორია":
-
-
         return (
           <div className="space-y-4">
             {orderHistory.length > 0 ? (
@@ -191,13 +209,15 @@ export default function Settings() {
                   className="border rounded-xl p-4 bg-gray-50 hover:shadow transition"
                 >
                   <div className="flex justify-between items-center mb-2">
-                    <p className="text-sm font-semibold">შეკვეთა #{order.id}</p>
+                    <p className="text-sm font-semibold">
+                      შეკვეთა #{order.id}
+                    </p>
                     <span
                       className={`text-xs font-medium px-2 py-0.5 rounded-full ${order.status === "მიწოდებულია"
-                        ? "bg-green-100 text-green-700"
-                        : order.status === "მიმდინარეობს"
-                          ? "bg-yellow-100 text-yellow-700"
-                          : "bg-red-100 text-red-700"
+                          ? "bg-green-100 text-green-700"
+                          : order.status === "მიმდინარეობს"
+                            ? "bg-yellow-100 text-yellow-700"
+                            : "bg-red-100 text-red-700"
                         }`}
                     >
                       {order.status}
@@ -220,7 +240,6 @@ export default function Settings() {
           </div>
         );
 
-
       default:
         return null;
     }
@@ -233,10 +252,10 @@ export default function Settings() {
           {tabs.map((tab) => (
             <p
               key={tab}
-              onClick={() => setActiveTab(tab)}
+              onClick={() => handleTabClick(tab)}
               className={`cursor-pointer text-sm sm:text-base md:text-lg whitespace-nowrap ${activeTab === tab
-                ? "underline font-semibold text-main-color"
-                : "text-gray-700"
+                  ? "underline font-semibold text-main-color"
+                  : "text-gray-700"
                 }`}
             >
               {tab}
