@@ -13,6 +13,7 @@ const PersonalInfo = () => {
         return {
             length: password.length >= 8,
             special: /[@!?.]/.test(password),
+            letter: /[a-zA-Z]/.test(password),
             match: password.length > 0 && password === rePassword,
         };
     }, [password, rePassword]);
@@ -55,6 +56,9 @@ const PersonalInfo = () => {
                 </p>
                 <p className={requirements.special ? "text-green-600" : "text-red-600"}>
                     • უნდა შეიცავდეს სპეციალურ სიმბოლოს (@, !, ., ?)
+                </p>
+                <p className={requirements.letter ? "text-green-600" : "text-red-600"}>
+                    • უნდა შეიცავდეს ერთ ასოს
                 </p>
                 <p className={requirements.match ? "text-green-600" : "text-red-600"}>
                     • პაროლები უნდა ემთხვეოდეს

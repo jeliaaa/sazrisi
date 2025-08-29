@@ -51,7 +51,8 @@ export default function SignUp() {
     const rePassword = watchAuth[4] || "";
 
     const isPasswordValid =
-        password.length >= 8 &&
+        password.length >= 8 && 
+        /[a-zA-Z]/.test(password) &&
         /[@!?.]/.test(password) &&
         password === rePassword;
 
