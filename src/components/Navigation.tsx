@@ -41,7 +41,7 @@ const Navigation = () => {
               className={`w-8 h-8 trans1ition-colors duration-200 ${isActive(to) ? "fill-main-color" : "fill-texts-color"
                 }`}
             />
-            <span className="hidden absolute left-12 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white text-xs px-2 py-1 rounded z-50 group-hover:block transition-opacity">
+            <span className="hidden absolute left-12 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white text-xs px-2 py-1 rounded z-50 group-hover:block ">
               {name}
             </span>
           </Link>
