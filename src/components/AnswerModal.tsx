@@ -298,7 +298,7 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
     ${window.innerWidth < 1024 ? "left-1/2 -translate-x-1/2 bottom-0 cursor-default" : "cursor-move"}`}
                     style={{
                         top: window.innerWidth < 1024 ? "auto" : position.y,
-                        left: window.innerWidth < 1024 ? "auto" : position.x,
+                        left: window.innerWidth < 1024 ? "50%" : position.x,
                         width: window.innerWidth < 1024 ? "90%" : size.width,
                         height: window.innerWidth < 1024 ? "60%" : size.height,
                         userSelect: isDragging || isResizing ? "none" : "auto",
