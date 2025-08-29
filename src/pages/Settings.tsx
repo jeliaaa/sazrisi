@@ -151,7 +151,7 @@ export default function Settings() {
       case "გადახდები":
         return (
           <div className="space-y-6 relative">
-            <div className="absolute flex items-center justify-center left-0 top-0 w-full h-full bg-white/60">
+            <div className="absolute flex items-center justify-center left-0 top-0 w-full h-full bg-white/75">
               <p className="title text-dark-color">ეს გვერდი დროებით მიუწვდომელია.</p>
             </div>
             <h3 className="text-sm font-semibold mb-2">
@@ -205,7 +205,7 @@ export default function Settings() {
       case "შეკვეთების ისტორია":
         return (
           <div className="space-y-4 relative">
-            <div className="absolute flex items-center justify-center left-0 top-0 w-full h-full bg-white/60">
+            <div className="absolute flex items-center justify-center left-0 top-0 w-full h-full bg-white/75">
               <p className="title text-dark-color">ეს გვერდი დროებით მიუწვდომელია.</p>
             </div>
             {orderHistory.length > 0 ? (
