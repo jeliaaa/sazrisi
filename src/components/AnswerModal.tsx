@@ -294,17 +294,19 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
             {answerLoading ? <Loader /> :
                 <div
                     ref={modalRef}
-                    className="z-300 fixed bg-white p-4 overflow-auto shadow-lg rounded-md cursor-move"
+                    className={`z-[300] fixed bg-white p-4 overflow-auto shadow-lg rounded-md 
+    ${window.innerWidth < 1024 ? "left-1/2 -translate-x-1/2 bottom-0 cursor-default" : "cursor-move"}`}
                     style={{
-                        top: position.y,
-                        left: position.x,
-                        width: size.width,
-                        height: size.height,
+                        top: window.innerWidth < 1024 ? "auto" : position.y,
+                        left: window.innerWidth < 1024 ? "auto" : position.x,
+                        width: window.innerWidth < 1024 ? "90%" : size.width,
+                        height: window.innerWidth < 1024 ? "60%" : size.height,
                         userSelect: isDragging || isResizing ? "none" : "auto",
                     }}
                     onMouseDown={handleMouseDown}
                     onClick={stopPropagation}
                 >
+
                     {/* Close Button */}
                     <button
                         onClick={() => setIsOpen(false)}
@@ -369,15 +371,7 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
 
                     {/* Timed Tab */}
                     {activeTab === "timed" && (
-                        <div
-                            className={`
-                                flex flex-col gap-4
-                                lg:static lg:w-auto lg:h-auto
-                                fixed bottom-0 left-1/2 -translate-x-1/2
-                                w-[90%] h-[60%]
-                                bg-white shadow-lg rounded-t-2xl p-4
-                                `}
-                        >
+                        <div className="flex flex-col gap-4">
                             {/* Question Navigation */}
                             <div className="overflow-x-auto whitespace-nowrap border-b py-2">
                                 {questions.map((q, index) => {
