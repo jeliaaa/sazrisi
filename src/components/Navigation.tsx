@@ -28,7 +28,7 @@ const Navigation = () => {
   return (
     <>
       {/* Sidebar for desktop */}
-      <div className="top-0 left-0 h-screen w-[5dvw] bg-gray-900 text-white flex-col items-center py-4 gap-6 hidden md:fixed md:flex">
+      <div className="top-0 left-0 h-screen w-[5dvw] bg-gray-900 text-white z-50 flex-col items-center py-4 gap-6 hidden md:fixed md:flex">
         <Link to="/">
           <img src={logo} className="w-8" alt="Logo" />
         </Link>
@@ -36,7 +36,7 @@ const Navigation = () => {
         <hr className="w-[80%] border-2 border-gray-600 my-4" />
 
         {navigationList.map(({ Icon, name, to }) => (
-          <Link key={to} to={to} className="relative group w-fit">
+          <Link key={to} to={to} className="relative group w-fit z-50">
             <Icon
               className={`w-8 h-8 trans1ition-colors duration-200 ${isActive(to) ? "fill-main-color" : "fill-texts-color"
                 }`}
