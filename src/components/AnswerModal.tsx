@@ -291,219 +291,218 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
             />
 
             {/* Modal */}
-
-            <div
-                ref={modalRef}
-                className={`z-[300] fixed bg-white p-4 overflow-auto shadow-lg rounded-md 
+            {answerLoading ? <Loader /> :
+                <div
+                    ref={modalRef}
+                    className={`z-[300] fixed bg-white p-4 overflow-auto shadow-lg rounded-md 
     ${window.innerWidth < 1024 ? "left-1/2 -translate-x-1/2 bottom-0 cursor-default" : "cursor-move"}`}
-                style={{
-                    top: window.innerWidth < 1024 ? "auto" : position.y,
-                    left: window.innerWidth < 1024 ? "50%" : position.x,
-                    width: window.innerWidth < 1024 ? "90%" : size.width,
-                    height: window.innerWidth < 1024 ? "60%" : size.height,
-                    userSelect: isDragging || isResizing ? "none" : "auto",
-                }}
-                onMouseDown={handleMouseDown}
-                onClick={stopPropagation}
-            >
-
-                {/* Close Button */}
-                <button
-                    onClick={() => setIsOpen(false)}
-                    className="absolute top-2 right-2 text-xl font-bold cursor-pointer z-10 hover:text-red-500"
-                    aria-label="Close Modal"
-                    onMouseDown={stopPropagation}
+                    style={{
+                        top: window.innerWidth < 1024 ? "auto" : position.y,
+                        left: window.innerWidth < 1024 ? "auto" : position.x,
+                        width: window.innerWidth < 1024 ? "100%" : size.width,
+                        height: window.innerWidth < 1024 ? "60%" : size.height,
+                        userSelect: isDragging || isResizing ? "none" : "auto",
+                    }}
+                    onMouseDown={handleMouseDown}
+                    onClick={stopPropagation}
                 >
-                    ×
-                </button>
 
-                {/* Header */}
-                <div className="flex flex-wrap gap-4 mb-4 justify-center select-none">
-                    <h2 className="text-lg font-semibold">პასუხების ფურცელი</h2>
-                </div>
+                    {/* Close Button */}
+                    <button
+                        onClick={() => setIsOpen(false)}
+                        className="absolute top-2 right-2 text-xl font-bold cursor-pointer z-10 hover:text-red-500"
+                        aria-label="Close Modal"
+                        onMouseDown={stopPropagation}
+                    >
+                        ×
+                    </button>
 
-                {answerLoading && <Loader />}
-                {/* No Time Tab */}
-                {activeTab === "no-time" && (
-                    <div className="overflow-auto max-h-[70vh]">
-                        <table className="w-full text-sm sm:text-base table-fixed border">
-                            <thead>
-                                <tr>
-                                    <th className="border px-1 py-1 w-8 sm:w-10">#</th>
-                                    {["ა", "ბ", "გ", "დ"].map((choice) => (
-                                        <th key={choice} className="border px-1 py-1">
-                                            {choice}
-                                        </th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {questions.map((_, i) => (
-                                    <tr key={i}>
-                                        <td className="border text-center">{i + 1}</td>
+                    {/* Header */}
+                    <div className="flex flex-wrap gap-4 mb-4 justify-center select-none">
+                        <h2 className="text-lg font-semibold">პასუხების ფურცელი</h2>
+                    </div>
+
+                    {/* No Time Tab */}
+                    {activeTab === "no-time" && (
+                        <div className="overflow-auto max-h-[70vh]">
+                            <table className="w-full text-sm sm:text-base table-fixed border">
+                                <thead>
+                                    <tr>
+                                        <th className="border px-1 py-1 w-8 sm:w-10">#</th>
                                         {["ა", "ბ", "გ", "დ"].map((choice) => (
-                                            <td key={choice} className="border text-center">
-                                                <input
-                                                    type="radio"
-                                                    name={`noTime-${i}`}
-                                                    value={choice}
-                                                    checked={answersNoTime[i] === choice}
-                                                    onChange={() => handleNoTimeAnswer(i, choice)}
-                                                    className="mx-auto"
-                                                    onMouseDown={stopPropagation}
-                                                />
-                                            </td>
+                                            <th key={choice} className="border px-1 py-1">
+                                                {choice}
+                                            </th>
                                         ))}
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                        <div className="mt-4 text-right">
-                            <button
-                                onClick={() => alert("Submit clicked (implement your logic)")}
-                                className="border px-6 py-2 hover:bg-gray-100 rounded"
-                                disabled={answerLoading}
-                            >
-                                {answerLoading ? "Submitting..." : "Submit"}
-                            </button>
+                                </thead>
+                                <tbody>
+                                    {questions.map((_, i) => (
+                                        <tr key={i}>
+                                            <td className="border text-center">{i + 1}</td>
+                                            {["ა", "ბ", "გ", "დ"].map((choice) => (
+                                                <td key={choice} className="border text-center">
+                                                    <input
+                                                        type="radio"
+                                                        name={`noTime-${i}`}
+                                                        value={choice}
+                                                        checked={answersNoTime[i] === choice}
+                                                        onChange={() => handleNoTimeAnswer(i, choice)}
+                                                        className="mx-auto"
+                                                        onMouseDown={stopPropagation}
+                                                    />
+                                                </td>
+                                            ))}
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                            <div className="mt-4 text-right">
+                                <button
+                                    onClick={() => alert("Submit clicked (implement your logic)")}
+                                    className="border px-6 py-2 hover:bg-gray-100 rounded"
+                                    disabled={answerLoading}
+                                >
+                                    {answerLoading ? "Submitting..." : "Submit"}
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                )}
+                    )}
 
-                {/* Timed Tab */}
-                {activeTab === "timed" && (
-                    <div className="flex flex-col gap-4">
-                        {/* Question Navigation */}
-                        <div className="overflow-x-auto whitespace-nowrap border-b py-2">
-                            {questions.map((q, index) => {
-                                const hasSelectedAnswer = 'answer' in q && q.user_answer?.selected_answer;
-                                return (
-                                    <button
-                                        key={q.id}
-                                        onClick={() => handleQuestionSwitch(index)}
-                                        className={`inline-block px-3 py-1 mx-1 rounded-sm transition-colors ${currentQuestionIndex === index
-                                            ? "border-2"
-                                            : ""}  ${q.user_answer?.is_correct
-                                                ? "bg-green-400"
-                                                : "bg-red-400"
-                                            }`}
-                                        onMouseDown={stopPropagation}
-                                        title={hasSelectedAnswer ? `Answered: ${q.user_answer?.selected_answer?.toUpperCase()}` : "Not answered"}
-                                    >
-                                        {q.order}
-                                    </button>
-                                );
-                            })}
-                            {allAnswered && <Link
-                                to={`/quiz/result/${attempt?.id}`}
-                                className={`inline-block px-3 py-1 mx-1 rounded-sm transition-colors border-2`}
-                                onMouseDown={stopPropagation}
-                            >
-                                დასრულება
-                            </Link>}
-                        </div>
+                    {/* Timed Tab */}
+                    {activeTab === "timed" && (
+                        <div className="flex flex-col gap-4">
+                            {/* Question Navigation */}
+                            <div className="overflow-x-auto whitespace-nowrap border-b py-2">
+                                {questions.map((q, index) => {
+                                    const hasSelectedAnswer = 'answer' in q && q.user_answer?.selected_answer;
+                                    return (
+                                        <button
+                                            key={q.id}
+                                            onClick={() => handleQuestionSwitch(index)}
+                                            className={`inline-block px-3 py-1 mx-1 rounded-sm transition-colors ${currentQuestionIndex === index
+                                                ? "border-2"
+                                                : ""}  ${q.user_answer?.is_correct
+                                                    ? "bg-green-400"
+                                                    : "bg-red-400"
+                                                }`}
+                                            onMouseDown={stopPropagation}
+                                            title={hasSelectedAnswer ? `Answered: ${q.user_answer?.selected_answer?.toUpperCase()}` : "Not answered"}
+                                        >
+                                            {q.order}
+                                        </button>
+                                    );
+                                })}
+                                {allAnswered && <Link
+                                    to={`/quiz/result/${attempt?.id}`}
+                                    className={`inline-block px-3 py-1 mx-1 rounded-sm transition-colors border-2`}
+                                    onMouseDown={stopPropagation}
+                                >
+                                    დასრულება
+                                </Link>}
+                            </div>
 
-                        {/* Question Info */}
-                        <div className="text-center text-base font-semibold">
-                            კითხვა {currentQuestion?.order} / {questions.length}
-                            {isQuestionAnswered && (
-                                <div className="mt-1">
-                                    <span className="text-main-color title">შესრულებულია</span>
-                                    {currentQuestion && 'answer' in currentQuestion && currentQuestion.user_answer && (
-                                        <div className="text-sm text-gray-600 mt-1">
-                                            თქვენი პასუხი: <strong>{currentQuestion.user_answer.selected_answer.toUpperCase()}</strong>
-                                            {currentQuestion.user_answer.is_correct !== undefined && (
-                                                <span className={`ml-2 font-bold ${currentQuestion.user_answer.is_correct ? 'text-green-600' : 'text-red-600'}`}>
-                                                    ({currentQuestion.user_answer.is_correct ? 'სწორია' : 'არასწორია'})
-                                                </span>
-                                            )}
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-                        </div>
+                            {/* Question Info */}
+                            <div className="text-center text-base font-semibold">
+                                კითხვა {currentQuestion?.order} / {questions.length}
+                                {isQuestionAnswered && (
+                                    <div className="mt-1">
+                                        <span className="text-main-color title">შესრულებულია</span>
+                                        {currentQuestion && 'answer' in currentQuestion && currentQuestion.user_answer && (
+                                            <div className="text-sm text-gray-600 mt-1">
+                                                თქვენი პასუხი: <strong>{currentQuestion.user_answer.selected_answer.toUpperCase()}</strong>
+                                                {currentQuestion.user_answer.is_correct !== undefined && (
+                                                    <span className={`ml-2 font-bold ${currentQuestion.user_answer.is_correct ? 'text-green-600' : 'text-red-600'}`}>
+                                                        ({currentQuestion.user_answer.is_correct ? 'სწორია' : 'არასწორია'})
+                                                    </span>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
 
-                        {/* Answer Options */}
-                        <div className="grid grid-cols-2 gap-4 justify-center max-w-sm mx-auto">
-                            {["a", "b", "g", "d"].map((choice, index) => {
-                                const georgianChoices = ["ა", "ბ", "გ", "დ"];
+                            {/* Answer Options */}
+                            <div className="grid grid-cols-2 gap-4 justify-center max-w-sm mx-auto">
+                                {["a", "b", "g", "d"].map((choice, index) => {
+                                    const georgianChoices = ["ა", "ბ", "გ", "დ"];
 
-                                const selectedAnswer = currentQuestion?.user_answer?.selected_answer ?? answersTimed[currentQuestion?.order];
-                                const correctAnswer = currentQuestion?.answer;
+                                    const selectedAnswer = currentQuestion?.user_answer?.selected_answer ?? answersTimed[currentQuestion?.order];
+                                    const correctAnswer = currentQuestion?.answer;
 
-                                const isSelected = selectedAnswer === choice;
-                                const isCorrect = correctAnswer === choice;
-                                const isDisabled = isQuestionAnswered;
+                                    const isSelected = selectedAnswer === choice;
+                                    const isCorrect = correctAnswer === choice;
+                                    const isDisabled = isQuestionAnswered;
 
-                                return (
-                                    <label
-                                        key={choice}
-                                        className={`flex items-center gap-2 border p-2 rounded cursor-pointer transition-colors
+                                    return (
+                                        <label
+                                            key={choice}
+                                            className={`flex items-center gap-2 border p-2 rounded cursor-pointer transition-colors
           ${isCorrect
-                                                ? "bg-green-100 border-green-300"
-                                                : isSelected
-                                                    ? "bg-main-color/10 border-main-color"
-                                                    : "hover:bg-gray-50"
-                                            }
+                                                    ? "bg-green-100 border-green-300"
+                                                    : isSelected
+                                                        ? "bg-main-color/10 border-main-color"
+                                                        : "hover:bg-gray-50"
+                                                }
           ${isDisabled ? "cursor-not-allowed" : ""}
         `}
-                                        onMouseDown={stopPropagation}
-                                    >
-                                        <input
-                                            type="radio"
-                                            name="timedAnswer"
-                                            value={choice}
-                                            checked={isSelected}
-                                            onChange={() => !isDisabled && handleTimedAnswer(choice)}
-                                            disabled={isDisabled}
-                                        />
-                                        <span className={`${isSelected ? "text-main-color font-bold" : ""}`}>
-                                            {georgianChoices[index]}
-                                        </span>
-                                        {isSelected && isDisabled && (
-                                            <span className="ml-auto text-main-color">✓</span>
-                                        )}
-                                    </label>
-                                );
-                            })}
-                        </div>
+                                            onMouseDown={stopPropagation}
+                                        >
+                                            <input
+                                                type="radio"
+                                                name="timedAnswer"
+                                                value={choice}
+                                                checked={isSelected}
+                                                onChange={() => !isDisabled && handleTimedAnswer(choice)}
+                                                disabled={isDisabled}
+                                            />
+                                            <span className={`${isSelected ? "text-main-color font-bold" : ""}`}>
+                                                {georgianChoices[index]}
+                                            </span>
+                                            {isSelected && isDisabled && (
+                                                <span className="ml-auto text-main-color">✓</span>
+                                            )}
+                                        </label>
+                                    );
+                                })}
+                            </div>
 
 
-                        {/* Action Buttons */}
-                        <div className="flex justify-center gap-4 mt-4">
-                            <button
-                                onClick={handleSkip}
-                                className="border px-6 py-2 rounded hover:bg-gray-100 transition-colors"
-                                type="button"
-                                disabled={answerLoading || isQuestionAnswered}
-                            >
-                                გამოტოვება
-                            </button>
-                            <button
-                                onClick={handleTimedComplete}
-                                className={`border px-6 py-2 rounded transition-colors ${isQuestionAnswered
-                                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                                    : "bg-blue-500 text-white hover:bg-blue-600"
-                                    }`}
-                                type="button"
-                                disabled={answerLoading || isQuestionAnswered}
-                            >
-                                {answerLoading ? "ატვირთვა..." : isQuestionAnswered ? "უკვე შესრულებულია" : "შესრულება"}
-                            </button>
+                            {/* Action Buttons */}
+                            <div className="flex justify-center gap-4 mt-4">
+                                <button
+                                    onClick={handleSkip}
+                                    className="border px-6 py-2 rounded hover:bg-gray-100 transition-colors"
+                                    type="button"
+                                    disabled={answerLoading || isQuestionAnswered}
+                                >
+                                    გამოტოვება
+                                </button>
+                                <button
+                                    onClick={handleTimedComplete}
+                                    className={`border px-6 py-2 rounded transition-colors ${isQuestionAnswered
+                                        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                                        : "bg-blue-500 text-white hover:bg-blue-600"
+                                        }`}
+                                    type="button"
+                                    disabled={answerLoading || isQuestionAnswered}
+                                >
+                                    {answerLoading ? "ატვირთვა..." : isQuestionAnswered ? "უკვე შესრულებულია" : "შესრულება"}
+                                </button>
+                            </div>
                         </div>
+                    )}
+
+                    {/* Resize Handle */}
+                    <div
+                        data-resize-handle="true"
+                        onMouseDown={handleResizeMouseDown}
+                        className="w-8 h-8 bg-gray-100 flex items-center justify-center absolute top-1 left-1 cursor-se-resize rounded hover:bg-gray-200 transition-colors"
+                        title="Resize"
+                    >
+                        <MoveDiagonal2 size={16} />
                     </div>
-                )}
-
-                {/* Resize Handle */}
-                <div
-                    data-resize-handle="true"
-                    onMouseDown={handleResizeMouseDown}
-                    className="w-8 h-8 bg-gray-100 flex items-center justify-center absolute top-1 left-1 cursor-se-resize rounded hover:bg-gray-200 transition-colors"
-                    title="Resize"
-                >
-                    <MoveDiagonal2 size={16} />
-                </div>
-            </div>
+                </div>}
         </>
     );
 };
