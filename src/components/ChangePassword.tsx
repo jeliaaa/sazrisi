@@ -87,7 +87,7 @@ const ChangePassword = () => {
                 <button
                     type="submit"
                     disabled={loading}
-                    className="w-48 bg-main-color text-white font-semibold py-3 rounded-xl hover:opacity-90 transition disabled:opacity-50"
+                    className="w-48 bg-main-color cursor-pointer text-white font-semibold py-3 rounded-xl hover:opacity-90 transition disabled:opacity-50"
                 >
                     შენახვა
                 </button>
