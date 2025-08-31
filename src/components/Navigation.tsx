@@ -5,12 +5,10 @@ import SettingsIcon from "../icons/settings.svg?react";
 import LeaveIcon from "../icons/leave.svg?react";
 import VideoLessons from "../icons/video-lessons.svg?react";
 import logo from "../assets/logo.png";
-import { useUser } from "../hooks/useUser";
 import { useAuthStore } from "../stores/authStore";
 
 const Navigation = () => {
   const { pathname } = useLocation();
-  const { profileImage } = useUser();
   const { logout, user } = useAuthStore();
 
   const navigationList = [
@@ -50,7 +48,7 @@ const Navigation = () => {
         <div className="flex flex-col gap-y-5 absolute bottom-5 items-center">
           <Link to="/profile">
             <img
-              src={profileImage}
+              src={import.meta.env.VITE_BACKEND_APP_URL + user?.avatar?.url}
               className="w-10 h-10 rounded-full border-2 border-main-color"
               alt="Profile"
             />
