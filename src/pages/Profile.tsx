@@ -1,9 +1,12 @@
 import { useUser } from "../hooks/useUser";
+import { useAuthStore } from "../stores/authStore";
 
 const Profile = () => {
-  const { profileImage, username, email, themeColor } = useUser();
+  const { profileImage } = useUser();
+  const { loading, user } = useAuthStore();
 
-  if (!profileImage || !username || !email) {
+
+  if (loading) {
     return (
       <div className="w-full h-screen flex justify-center items-center">
         <p className="text-gray-600 text-xl">Loading profile information...</p>
@@ -28,16 +31,17 @@ const Profile = () => {
       <div className="bg-white shadow-md rounded-xl p-4 space-y-4">
         <div>
           <h2 className="text-lg font-semibold">Სახელი</h2>
-          <p className="text-gray-700">{username}</p>
+          <p className="text-gray-700">{user?.firstname} {user?.lastname}</p>
         </div>
         <div>
           <h2 className="text-lg font-semibold">ელ.ფოსტა</h2>
-          <p className="text-gray-700">{email}</p>
+          {user?.avatar?.url}
+          <p className="text-gray-700">{user?.email}</p>
         </div>
         <div>
           <h2 className="text-lg font-semibold">თემა</h2>
           <p className="text-gray-700">
-            დაყენებული ფერის თემა: <span className="capitalize">{themeColor}</span>
+            დაყენებული ფერის თემა: <span className="capitalize">{user?.preferences?.theme_color}</span>
           </p>
         </div>
       </div>
