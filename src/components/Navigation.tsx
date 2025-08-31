@@ -11,7 +11,7 @@ import { useAuthStore } from "../stores/authStore";
 const Navigation = () => {
   const { pathname } = useLocation();
   const { profileImage } = useUser();
-  const { logout } = useAuthStore();
+  const { logout, user } = useAuthStore();
 
   const navigationList = [
     { to: "/quizs", name: "ტესტები", Icon: TestsIcon },
@@ -78,7 +78,7 @@ const Navigation = () => {
         ))}
         <Link to="/profile">
           <img
-            src={profileImage}
+            src={import.meta.env.VITE_BACKEND_APP_URL + user?.avatar?.url}
             className="w-8 h-8 rounded-full border-2 border-main-color"
             alt="Profile"
           />
