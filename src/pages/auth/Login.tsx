@@ -4,10 +4,17 @@ import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import { useAuthStore } from "../../stores/authStore";
 import toast from "react-hot-toast";
+import Loader from "../../components/reusables/Loader";
 
 const Login = () => {
     const nav = useNavigate();
     const { login, loading, error, isAuth } = useAuthStore();
+    const [hydrated, setHydrated] = useState(false);
+
+    useEffect(() => {
+        setHydrated(true);
+    }, []);
+
     useEffect(() => {
         if (isAuth) {
             nav('/')
@@ -33,6 +40,8 @@ const Login = () => {
             toast.error('დაფიქსირდა შეცდომა!')
         }
     };
+
+    if (!hydrated) return <Loader />
 
     return (
         <div className="w-full h-screen flex items-center justify-center">
