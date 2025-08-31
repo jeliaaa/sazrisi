@@ -33,7 +33,6 @@ const Profile = () => {
         </div>
         <div>
           <h2 className="text-lg font-semibold">ელ.ფოსტა</h2>
-          {user?.avatar?.url}
           <p className="text-gray-700">{user?.email}</p>
         </div>
         <div>
