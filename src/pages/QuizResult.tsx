@@ -214,7 +214,7 @@ const QuizResultPage = () => {
 
                                                 {/* PDF Page */}
                                                 <div className="mt-4">
-                                                    <PDFViewer fileUrl={attempt.quiz_file!} page={item.order + 1} />
+                                                    <PDFViewer fileUrl={attempt.quiz_file!} page={item.order} />
                                                 </div>
                                             </div>
                                         )}
