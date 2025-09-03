@@ -380,7 +380,7 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
                                         <button
                                             key={q.id}
                                             onClick={() => handleQuestionSwitch(index)}
-                                            className={`inline-block px-3 py-1 mx-1 rounded-sm transition-colors ${currentQuestionIndex === index
+                                            className={`inline-block px-3 py-1 mx-1 bg-gray-300 rounded-sm transition-colors ${currentQuestionIndex === index
                                                 ? "border-2" : "border-0"} `}
                                             onMouseDown={stopPropagation}
                                             title={hasSelectedAnswer ? `Answered: ${q.user_answer?.selected_answer?.toUpperCase()}` : "Not answered"}
