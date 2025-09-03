@@ -205,10 +205,10 @@ const QuizResultPage = () => {
                                                 )}
 
                                                 {/* Explanation */}
-                                                {!item.user_answer?.is_correct && item.explanation && (
+                                                {!item.user_answer?.is_correct && attempt.quiz_explanation && (
                                                     <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                                                         <h5 className="font-medium text-yellow-800 mb-1">განმარტება</h5>
-                                                        <CkeditorContentViewer  html={item.explanation} />
+                                                        <PDFViewer fileUrl={attempt.quiz_explanation} page={item.order} />
                                                     </div>
                                                 )}
 

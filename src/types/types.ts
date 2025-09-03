@@ -93,14 +93,15 @@ export interface IAttempt {
     remaining_time: number;
     questions: Question[];
     quiz_file?: string | null;
+    quiz_explanation?: string | null;
 }
+
 
 
 export interface Question {
     score: number
     order: number
     id: number
-    explanation: string | null
     answer: string | null
     topic: string | null
     user_answer: UserAnswer | null
@@ -108,7 +109,6 @@ export interface Question {
 
 export interface QuestionWithAnswers {
     id: number
-    explanation: string
     score: number
     order: number
     answer: string
