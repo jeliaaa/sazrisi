@@ -381,11 +381,7 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
                                             key={q.id}
                                             onClick={() => handleQuestionSwitch(index)}
                                             className={`inline-block px-3 py-1 mx-1 rounded-sm transition-colors ${currentQuestionIndex === index
-                                                ? "border-2"
-                                                : ""}  ${q.user_answer?.is_correct
-                                                    ? "bg-green-400"
-                                                    : "bg-red-400"
-                                                }`}
+                                                ? "border-2" : "border-0"} `}
                                             onMouseDown={stopPropagation}
                                             title={hasSelectedAnswer ? `Answered: ${q.user_answer?.selected_answer?.toUpperCase()}` : "Not answered"}
                                         >
@@ -411,11 +407,6 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
                                         {currentQuestion && 'answer' in currentQuestion && currentQuestion.user_answer && (
                                             <div className="text-sm text-gray-600 mt-1">
                                                 თქვენი პასუხი: <strong>{currentQuestion.user_answer.selected_answer.toUpperCase()}</strong>
-                                                {currentQuestion.user_answer.is_correct !== undefined && (
-                                                    <span className={`ml-2 font-bold ${currentQuestion.user_answer.is_correct ? 'text-green-600' : 'text-red-600'}`}>
-                                                        ({currentQuestion.user_answer.is_correct ? 'სწორია' : 'არასწორია'})
-                                                    </span>
-                                                )}
                                             </div>
                                         )}
                                     </div>
@@ -428,21 +419,19 @@ const AnswerModal = ({ isOpen, setIsOpen, isTraining, attempt, questions }: Answ
                                     const georgianChoices = ["ა", "ბ", "გ", "დ"];
 
                                     const selectedAnswer = currentQuestion?.user_answer?.selected_answer ?? answersTimed[currentQuestion?.order];
-                                    const correctAnswer = currentQuestion?.answer;
+                                    // const correctAnswer = currentQuestion?.answer;
 
                                     const isSelected = selectedAnswer === choice;
-                                    const isCorrect = correctAnswer === choice;
+                                    // const isCorrect = correctAnswer === choice;
                                     const isDisabled = isQuestionAnswered;
 
                                     return (
                                         <label
                                             key={choice}
                                             className={`flex items-center gap-2 border p-2 rounded cursor-pointer transition-colors
-          ${isCorrect
-                                                    ? "bg-green-100 border-green-300"
-                                                    : isSelected
-                                                        ? "bg-main-color/10 border-main-color"
-                                                        : "hover:bg-gray-50"
+                                                    ${isSelected
+                                                    ? "bg-main-color/10 border-main-color"
+                                                    : "hover:bg-gray-50"
                                                 }
           ${isDisabled ? "cursor-not-allowed" : ""}
         `}
