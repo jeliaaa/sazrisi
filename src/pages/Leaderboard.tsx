@@ -351,7 +351,7 @@ const Leaderboard = () => {
         ) : error ? (
           <p className="text-red-500">{error}</p>
         ) : (
-          <table className="w-full text-sm md:text-base bg-white shadow-sm rounded-xl overflow-hidden table-fixed">
+                    <table className="w-full text-sm md:text-base bg-white shadow-sm rounded-xl overflow-hidden table-fixed">
             <thead className="text-left bg-gray-100">
               <tr>
                 <th className="py-3 px-2 md:px-4 w-1/6 sm:w-[15%]">პოზიცია</th>
@@ -363,7 +363,7 @@ const Leaderboard = () => {
             <tbody>
               {leaderboard.map((entry) => (
                 <tr key={entry.position} className="hover:bg-gray-50 transition-colors">
-                  <td className="py-3 px-2 ">
+                  <td className="py-3 px-2 md:px-4">
                     <span className="bg-green-100 text-green-600 px-4 py-1 rounded-md inline-block shadow text-center w-full sm:w-auto">
                       {entry.position}
                     </span>
