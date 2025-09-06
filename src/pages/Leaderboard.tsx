@@ -169,9 +169,6 @@
 
 // export default Leaderboard;
 
-
-
-
 import { useEffect, useState } from 'react';
 import Search from "../icons/search.svg?react";
 import Close from "../icons/close.svg?react";
@@ -179,12 +176,13 @@ import ChevronDown from "../icons/chevronDown.svg?react";
 import { useLeaderboardStore } from "../stores/leaderboardStore";
 import { useQuizStore } from "../stores/quizStore";
 
+type OptionType = "დღეს" | "კვირის" | "თვის" | "სემესტრის" | "წლის";
+
 const Leaderboard = () => {
   const [search, setSearch] = useState<string>("");
-  type OptionType = "დღეს" | "კვირის" | "თვის" | "სემესტრის" | "წლის";
   const [selectedOption, setSelectedOption] = useState<OptionType>("დღეს");
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | "">("");
   const [leaderboardSize, setLeaderboardSize] = useState<number>(20);
-  const [dropdownValue, setDropdownValue] = useState<string>("");
 
   const { leaderboard, fetchLeaderboard, loading, error } = useLeaderboardStore();
   const { categories, fetchCategories } = useQuizStore();
@@ -199,40 +197,28 @@ const Leaderboard = () => {
     "წლის": "year",
   };
 
-  // Fetch categories once
+  // Fetch categories on mount
   useEffect(() => {
     fetchCategories();
   }, [fetchCategories]);
 
-  // Fetch leaderboard whenever option or size changes
+  // Fetch leaderboard when filters change
   useEffect(() => {
-    fetchLeaderboard(optionMap[selectedOption], leaderboardSize);
-  }, [selectedOption, leaderboardSize, fetchLeaderboard]);
+    fetchLeaderboard(optionMap[selectedOption], leaderboardSize, selectedCategoryId || undefined);
+  }, [selectedOption, leaderboardSize, selectedCategoryId, fetchLeaderboard]);
 
-  // Format time function
-  const formatTime = (seconds: number) => {
-    if (!seconds) return "0s";
-    const h = Math.floor(seconds / 3600);
-    const m = Math.floor((seconds % 3600) / 60);
-    const s = Math.floor(seconds % 60);
-    if (h > 0) return `${h}h ${m}m ${s}s`;
-    if (m > 0) return `${m}m ${s}s`;
-    return `${s}s`;
-  };
-
-  // Filter leaderboard by search
+  // Filter by search
   const filteredData = leaderboard.filter((entry) => {
     const fullName = `${entry.user.firstname} ${entry.user.lastname}`.toLowerCase();
     return fullName.includes(search.toLowerCase());
   });
 
-  const sizeOptions = [5, 10, 15, 20];
-
   return (
     <div className="w-full min-h-screen p-4 md:p-10 flex flex-col bg-gray-50">
-      {/* Search & Select */}
+      {/* Search & Filters */}
       <div className="flex flex-col md:flex-row gap-4 items-stretch">
-        <div className="relative w-full md:w-1/2">
+        {/* Search */}
+        <div className="relative w-full md:w-1/3">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 fill-main-color" />
           <input
             type="text"
@@ -251,17 +237,17 @@ const Leaderboard = () => {
           )}
         </div>
 
-        {/* Dropdown categories */}
-        <div className="relative w-full md:w-1/2">
+        {/* Category Dropdown */}
+        <div className="relative w-full md:w-1/3">
           <select
-            value={dropdownValue}
-            onChange={(e) => setDropdownValue(e.target.value)}
+            value={selectedCategoryId}
+            onChange={(e) => setSelectedCategoryId(e.target.value ? Number(e.target.value) : "")}
             className="appearance-none bg-white text-main-color h-12 w-full pl-4 pr-10 rounded-xl outline-none text-sm shadow-sm"
           >
-            <option value="">აირჩიე კატეგორია</option>
-            {categories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category?.title}
+            <option value="">ყველა კურსი</option>
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.title}
               </option>
             ))}
           </select>
@@ -271,8 +257,8 @@ const Leaderboard = () => {
         </div>
       </div>
 
-      {/* Filters & Top Buttons */}
-      <div className="mt-6 border-y py-3 flex flex-col md:flex-row justify-between items-center">
+      {/* Time Filters */}
+      <div className="mt-6 border-y py-3">
         <div className="flex gap-x-4 flex-wrap">
           {(Object.keys(optionMap) as OptionType[]).map((option) => (
             <p
@@ -288,22 +274,6 @@ const Leaderboard = () => {
             </p>
           ))}
         </div>
-
-        <div className="flex gap-2 mt-2 md:mt-0">
-          {sizeOptions.map((size) => (
-            <button
-              key={size}
-              onClick={() => setLeaderboardSize(size)}
-              className={`px-3 py-1 rounded-lg text-sm font-medium border ${
-                leaderboardSize === size
-                  ? "bg-main-color text-white border-main-color"
-                  : "bg-white text-main-color border-gray-300"
-              }`}
-            >
-              Top {size}
-            </button>
-          ))}
-        </div>
       </div>
 
       {/* Table */}
@@ -316,10 +286,9 @@ const Leaderboard = () => {
           <table className="w-full text-sm md:text-base bg-white shadow-sm rounded-xl overflow-hidden table-fixed">
             <thead className="text-left bg-gray-100">
               <tr>
-                <th className="py-3 px-2 md:px-4 w-1/3">სახელი გვარი</th>
-                <th className="py-3 px-2 md:px-4 w-1/6">ქულა</th>
-                <th className="py-3 px-2 md:px-4 w-1/6">დრო</th>
-                <th className="py-3 px-2 md:px-4 w-1/6">პოზიცია</th>
+                <th className="py-3 px-2 md:px-4 w-1/2 sm:w-[55%]">სახელი გვარი</th>
+                <th className="py-3 px-2 md:px-4 w-1/4 sm:w-[25%]">ქულა</th>
+                <th className="py-3 px-2 md:px-4 w-1/4 sm:w-[20%]">პოზიცია</th>
               </tr>
             </thead>
             <tbody>
@@ -334,11 +303,6 @@ const Leaderboard = () => {
                   <td className="py-3 px-2 md:px-4">
                     <span className="bg-red-100 text-red-600 px-4 py-1 rounded-md inline-block text-center w-full sm:w-auto">
                       {entry.total_score}
-                    </span>
-                  </td>
-                  <td className="py-3 px-2 md:px-4">
-                    <span className="bg-yellow-100 text-yellow-700 px-4 py-1 rounded-md inline-block text-center w-full sm:w-auto">
-                      {formatTime(entry.total_time_taken_seconds)}
                     </span>
                   </td>
                   <td className="py-3 px-2 md:px-4">
