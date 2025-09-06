@@ -363,7 +363,7 @@ const Leaderboard = () => {
               {leaderboard.map((entry) => (
                 <tr key={entry.position} className="hover:bg-gray-50 transition-colors">
                   <td className="py-3 px-2 md:px-4 flex items-center gap-x-2">
-                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gray-300 shrink-0" />
+                    <img src={import.meta.env.VITE_BACKEND_APP_URL + entry?.user?.avatar?.url} className="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover bg-gray-300 shrink-0" />
                     <span className="truncate">
                       {entry.user.firstname} {entry.user.lastname}
                     </span>
