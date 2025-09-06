@@ -270,7 +270,7 @@ const Leaderboard = () => {
             <select
               value={selectedCategoryId}
               onChange={(e) => setSelectedCategoryId(e.target.value ? Number(e.target.value) : "")}
-              className="appearance-none bg-white text-main-color h-12 w-full pl-4 pr-10 rounded-xl outline-none text-sm shadow-sm"
+              className="appearance-none cursor-pointer bg-white text-main-color h-12 w-full pl-4 pr-10 rounded-xl outline-none text-sm shadow-sm"
             >
               <option value="">ყველა კატეგორია</option>
               {categories.map((cat) => (
@@ -290,7 +290,7 @@ const Leaderboard = () => {
               <select
                 value={selectedQuizId}
                 onChange={(e) => setSelectedQuizId(e.target.value ? Number(e.target.value) : "")}
-                className="appearance-none bg-white text-main-color h-12 w-full pl-4 pr-10 rounded-xl outline-none text-sm shadow-sm"
+                className="appearance-none cursor-pointer bg-white text-main-color h-12 w-full pl-4 pr-10 rounded-xl outline-none text-sm shadow-sm"
               >
                 <option value="">ყველა ქვიზი</option>
                 {quizzes.map((quiz) => (
@@ -307,11 +307,10 @@ const Leaderboard = () => {
         </div>
       </div>
 
-      {/* Time Filters */}
       <div className="mt-6 border-y py-3">
         <div className="flex gap-x-4 flex-wrap">
           {(Object.keys(optionMap) as OptionType[]).map((option) => (
-            <p
+            <button
               key={option}
               onClick={() => setSelectedOption(option)}
               className={`cursor-pointer text-sm md:text-base ${
@@ -321,7 +320,7 @@ const Leaderboard = () => {
               }`}
             >
               {option}
-            </p>
+            </button>
           ))}
         </div>
       </div>
@@ -332,7 +331,7 @@ const Leaderboard = () => {
           <button
             key={size}
             onClick={() => setLeaderboardSize(size)}
-            className={`px-4 py-1 rounded-md border ${
+            className={`px-4 py-1 cursor-pointer rounded-md border ${
               leaderboardSize === size
                 ? "bg-main-color text-white"
                 : "bg-white text-main-color border-gray-300"
