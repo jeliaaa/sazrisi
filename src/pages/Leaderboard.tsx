@@ -363,7 +363,7 @@ const Leaderboard = () => {
             <tbody>
               {leaderboard.map((entry) => (
                 <tr key={entry.position} className="hover:bg-gray-50 transition-colors">
-                  <td className="py-3 px-2 md:px-4">
+                  <td className="py-3 px-2 ">
                     <span className="bg-green-100 text-green-600 px-4 py-1 rounded-md inline-block shadow text-center w-full sm:w-auto">
                       {entry.position}
                     </span>
