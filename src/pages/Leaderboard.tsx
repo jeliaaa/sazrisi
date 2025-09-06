@@ -172,27 +172,43 @@
 
 
 
-
-import { useState } from 'react'
-import Search from "../icons/search.svg?react"
-import Close from "../icons/close.svg?react"
-import ChevronDown from "../icons/chevronDown.svg?react"
-
-const mockData = [
-  { name: "ნიკა ლომინაძე", score: 95 },
-  { name: "თაკო ზოსიძე", score: 88 },
-  { name: "საბა საბაშვილი", score: 82 },
-  { name: "ანა ბერიძე", score: 78 },
-  { name: "გიორგი გიორგაძე", score: 74 },
-];
+import { useEffect, useState } from 'react';
+import Search from "../icons/search.svg?react";
+import Close from "../icons/close.svg?react";
+import ChevronDown from "../icons/chevronDown.svg?react";
+import { useLeaderboardStore } from "../stores/leaderboardStore";
 
 const Leaderboard = () => {
-  const [search, setSearch] = useState('');
-  const [dropdownValue, setDropdownValue] = useState('აირჩიე კურსი');
-  const [selectedOption, setSelectedOption] = useState('დღეს');
-  const options = ['დღეს', 'კვირის', 'თვის', 'სემესტრის', 'წლის'];
+  // search is plain string
+  const [search, setSearch] = useState<string>("");
+  const [dropdownValue, setDropdownValue] = useState("აირჩიე კურსი");
 
-  const handleClear = () => setSearch('');
+  // selectedOption is restricted union
+  type OptionType = "დღეს" | "კვირის" | "თვის" | "სემესტრის" | "წლის";
+  const [selectedOption, setSelectedOption] = useState<OptionType>("დღეს");
+
+  const { leaderboard, fetchLeaderboard, loading, error } = useLeaderboardStore();
+
+  const handleClear = () => setSearch("");
+
+  // Mapping Georgian labels → backend query param
+  const optionMap: Record<OptionType, "day" | "week" | "month" | "semester" | "year"> = {
+    "დღეს": "day",
+    "კვირის": "week",
+    "თვის": "month",
+    "სემესტრის": "semester",
+    "წლის": "year",
+  };
+
+  useEffect(() => {
+    fetchLeaderboard(optionMap[selectedOption], 20);
+  }, [selectedOption, fetchLeaderboard]);
+
+  // Filter by search
+  const filteredData = leaderboard.filter((entry) => {
+    const fullName = `${entry.user.firstname} ${entry.user.lastname}`.toLowerCase();
+    return fullName.includes(search.toLowerCase());
+  });
 
   return (
     <div className="w-full min-h-screen p-4 md:p-10 flex flex-col bg-gray-50">
@@ -237,14 +253,14 @@ const Leaderboard = () => {
       {/* Filters */}
       <div className="mt-6 border-y py-3">
         <div className="flex gap-x-4 flex-wrap">
-          {options.map((option, index) => (
+          {(Object.keys(optionMap) as OptionType[]).map((option) => (
             <p
-              key={index}
+              key={option}
               onClick={() => setSelectedOption(option)}
               className={`cursor-pointer text-sm md:text-base ${
                 selectedOption === option
-                  ? 'underline font-semibold text-main-color'
-                  : 'text-gray-600'
+                  ? "underline font-semibold text-main-color"
+                  : "text-gray-600"
               }`}
             >
               {option}
@@ -253,39 +269,45 @@ const Leaderboard = () => {
         </div>
       </div>
 
+      {/* Table */}
       <div className="mt-6 w-full">
-        <table className="w-full text-sm md:text-base bg-white shadow-sm rounded-xl overflow-hidden table-fixed">
-          <thead className="text-left bg-gray-100">
-            <tr>
-              <th className="py-3 px-2 md:px-4 w-1/2 sm:w-[55%]">სახელი გვარი</th>
-              <th className="py-3 px-2 md:px-4 w-1/4 sm:w-[25%]">ქულა</th>
-              <th className="py-3 px-2 md:px-4 w-1/4 sm:w-[20%]">პოზიცია</th>
-            </tr>
-          </thead>
-          <tbody>
-            {mockData.map((entry, index) => (
-              <tr
-                key={index}
-                className="hover:bg-gray-50 transition-colors"
-              >
-                <td className="py-3 px-2 md:px-4 flex items-center gap-x-2">
-                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gray-300 shrink-0" />
-                  <span className="truncate">{entry.name}</span>
-                </td>
-                <td className="py-3 px-2 md:px-4">
-                  <span className="bg-red-100 text-red-600 px-4 py-1 rounded-md inline-block text-center w-full sm:w-auto">
-                    {entry.score}
-                  </span>
-                </td>
-                <td className="py-3 px-2 md:px-4">
-                  <span className="bg-green-100 text-green-600 px-4 py-1 rounded-md inline-block shadow text-center w-full sm:w-auto">
-                    {index + 1}
-                  </span>
-                </td>
+        {loading ? (
+          <p className="text-gray-500">იტვირთება...</p>
+        ) : error ? (
+          <p className="text-red-500">{error}</p>
+        ) : (
+          <table className="w-full text-sm md:text-base bg-white shadow-sm rounded-xl overflow-hidden table-fixed">
+            <thead className="text-left bg-gray-100">
+              <tr>
+                <th className="py-3 px-2 md:px-4 w-1/2 sm:w-[55%]">სახელი გვარი</th>
+                <th className="py-3 px-2 md:px-4 w-1/4 sm:w-[25%]">ქულა</th>
+                <th className="py-3 px-2 md:px-4 w-1/4 sm:w-[20%]">პოზიცია</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filteredData.map((entry) => (
+                <tr key={entry.position} className="hover:bg-gray-50 transition-colors">
+                  <td className="py-3 px-2 md:px-4 flex items-center gap-x-2">
+                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gray-300 shrink-0" />
+                    <span className="truncate">
+                      {entry.user.firstname} {entry.user.lastname}
+                    </span>
+                  </td>
+                  <td className="py-3 px-2 md:px-4">
+                    <span className="bg-red-100 text-red-600 px-4 py-1 rounded-md inline-block text-center w-full sm:w-auto">
+                      {entry.total_score}
+                    </span>
+                  </td>
+                  <td className="py-3 px-2 md:px-4">
+                    <span className="bg-green-100 text-green-600 px-4 py-1 rounded-md inline-block shadow text-center w-full sm:w-auto">
+                      {entry.position}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );

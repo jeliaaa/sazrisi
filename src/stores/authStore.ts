@@ -13,6 +13,7 @@ export interface User {
     avatar: Avatar | null;
     preferences: Preferences | null;
 }
+
 export interface Avatar {
     url: string;
 }
