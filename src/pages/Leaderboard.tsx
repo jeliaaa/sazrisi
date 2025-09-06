@@ -217,21 +217,15 @@ const Leaderboard = () => {
     }
   }, [selectedCategoryId, fetchCategoryQuizzes]);
 
-  // Fetch leaderboard when filters change
   useEffect(() => {
     fetchLeaderboard(
       optionMap[selectedOption],
       leaderboardSize,
       selectedCategoryId || undefined,
-      selectedQuizId || undefined
+      selectedQuizId || undefined,
+      search || undefined
     );
   }, [selectedOption, leaderboardSize, selectedCategoryId, selectedQuizId, fetchLeaderboard]);
-
-  // Filter by search
-  const filteredData = leaderboard.filter((entry) => {
-    const fullName = `${entry.user.firstname} ${entry.user.lastname}`.toLowerCase();
-    return fullName.includes(search.toLowerCase());
-  });
 
   const sizeOptions = [3, 5, 10, 15, 20, 50, 80, 100];
 
@@ -355,7 +349,7 @@ const Leaderboard = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredData.map((entry) => (
+              {leaderboard.map((entry) => (
                 <tr key={entry.position} className="hover:bg-gray-50 transition-colors">
                   <td className="py-3 px-2 md:px-4 flex items-center gap-x-2">
                     <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gray-300 shrink-0" />

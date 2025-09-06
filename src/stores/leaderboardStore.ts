@@ -18,7 +18,7 @@ interface LeaderboardState {
   leaderboard: LeaderboardEntry[];
   loading: boolean;
   error: string | null;
-  fetchLeaderboard: (type?: LeaderboardType, size?: number, category_id?: number | undefined, quiz_id?: number | undefined) => Promise<void>;
+  fetchLeaderboard: (type?: LeaderboardType, size?: number, category_id?: number | undefined, quiz_id?: number | undefined, search?: string) => Promise<void>;
 }
 
 export const useLeaderboardStore = create<LeaderboardState>()(
@@ -28,11 +28,11 @@ export const useLeaderboardStore = create<LeaderboardState>()(
       loading: false,
       error: null,
 
-      fetchLeaderboard: async (type = 'day', size = 20, category_id = undefined, quiz_id = undefined) => {
+      fetchLeaderboard: async (type = 'day', size = 20, category_id = undefined, quiz_id = undefined, search) => {
         set({ loading: true, error: null });
         try {
           const res = await apiV2.get<LeaderboardEntry[]>('/quiz/leaderboard', {
-            params: { type, size, category_id, quiz_id },
+            params: { type, size, category_id, quiz_id, search },
           });
           set({ leaderboard: res.data, loading: false });
         } catch (err) {
