@@ -54,6 +54,7 @@ export interface User {
 export interface Category {
     id: number;
     title: string;
+    has_access: boolean;
 }
 
 export interface Quiz {

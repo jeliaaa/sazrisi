@@ -269,7 +269,7 @@ const Leaderboard = () => {
             >
               <option value="">ყველა კურსი</option>
               {categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
+                <option disabled={!cat.has_access} key={cat.id} value={cat.id}>
                   {cat.title}
                 </option>
               ))}
