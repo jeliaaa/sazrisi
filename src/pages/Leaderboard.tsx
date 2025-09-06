@@ -233,7 +233,7 @@ const Leaderboard = () => {
     return fullName.includes(search.toLowerCase());
   });
 
-  const sizeOptions = [5, 10, 15, 20];
+  const sizeOptions = [3, 5, 10, 15, 20, 50, 80, 100];
 
   return (
     <div className="w-full min-h-screen p-4 md:p-10 flex flex-col bg-gray-50">
@@ -323,7 +323,7 @@ const Leaderboard = () => {
 
       {/* Leaderboard Size Selector */}
       <div className="mt-4 flex gap-2 flex-wrap">
-        {[5, 10, 15, 20].map((size) => (
+        {sizeOptions.map((size) => (
           <button
             key={size}
             onClick={() => setLeaderboardSize(size)}
