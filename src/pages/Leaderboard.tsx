@@ -168,6 +168,13 @@
 // };
 
 // export default Leaderboard;
+
+
+
+
+
+
+
 import { useEffect, useState } from 'react';
 import Search from "../icons/search.svg?react";
 import Close from "../icons/close.svg?react";
@@ -181,10 +188,11 @@ const Leaderboard = () => {
   const [search, setSearch] = useState<string>("");
   const [selectedOption, setSelectedOption] = useState<OptionType>("დღეს");
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | "">("");
+  const [selectedQuizId, setSelectedQuizId] = useState<number | "">("");
   const [leaderboardSize, setLeaderboardSize] = useState<number>(20);
 
   const { leaderboard, fetchLeaderboard, loading, error } = useLeaderboardStore();
-  const { categories, fetchCategories } = useQuizStore();
+  const { categories, quizzes, fetchCategories, fetchCategoryQuizzes } = useQuizStore();
 
   const handleClear = () => setSearch("");
 
@@ -201,10 +209,23 @@ const Leaderboard = () => {
     fetchCategories();
   }, [fetchCategories]);
 
+  // Fetch quizzes when category changes
+  useEffect(() => {
+    if (selectedCategoryId) {
+      fetchCategoryQuizzes(Number(selectedCategoryId));
+      setSelectedQuizId(""); // reset quiz selection when category changes
+    }
+  }, [selectedCategoryId, fetchCategoryQuizzes]);
+
   // Fetch leaderboard when filters change
   useEffect(() => {
-    fetchLeaderboard(optionMap[selectedOption], leaderboardSize, selectedCategoryId || undefined);
-  }, [selectedOption, leaderboardSize, selectedCategoryId, fetchLeaderboard]);
+    fetchLeaderboard(
+      optionMap[selectedOption],
+      leaderboardSize,
+      selectedCategoryId || undefined,
+      selectedQuizId || undefined
+    );
+  }, [selectedOption, leaderboardSize, selectedCategoryId, selectedQuizId, fetchLeaderboard]);
 
   // Filter by search
   const filteredData = leaderboard.filter((entry) => {
@@ -219,7 +240,7 @@ const Leaderboard = () => {
       {/* Search & Filters */}
       <div className="flex flex-col md:flex-row gap-4 items-stretch">
         {/* Search */}
-        <div className='w-full flex justify-between items-center'>
+        <div className='w-full flex justify-between items-center gap-4'>
           <div className="relative w-full md:w-1/3">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 fill-main-color" />
             <input
@@ -257,6 +278,27 @@ const Leaderboard = () => {
               <ChevronDown className="fill-main-color" />
             </div>
           </div>
+
+          {/* Quiz Dropdown - show only if category selected */}
+          {selectedCategoryId && (
+            <div className="relative w-full md:w-1/3">
+              <select
+                value={selectedQuizId}
+                onChange={(e) => setSelectedQuizId(e.target.value ? Number(e.target.value) : "")}
+                className="appearance-none bg-white text-main-color h-12 w-full pl-4 pr-10 rounded-xl outline-none text-sm shadow-sm"
+              >
+                <option value="">ყველა ქვიზი</option>
+                {quizzes.map((quiz) => (
+                  <option key={quiz.id} value={quiz.id}>
+                    {quiz.title}
+                  </option>
+                ))}
+              </select>
+              <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2">
+                <ChevronDown className="fill-main-color" />
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -281,7 +323,7 @@ const Leaderboard = () => {
 
       {/* Leaderboard Size Selector */}
       <div className="mt-4 flex gap-2 flex-wrap">
-        {sizeOptions.map((size) => (
+        {[5, 10, 15, 20].map((size) => (
           <button
             key={size}
             onClick={() => setLeaderboardSize(size)}
