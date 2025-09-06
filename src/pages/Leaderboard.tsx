@@ -273,7 +273,7 @@ const Leaderboard = () => {
               onChange={(e) => setSelectedCategoryId(e.target.value ? Number(e.target.value) : "")}
               className="appearance-none bg-white text-main-color h-12 w-full pl-4 pr-10 rounded-xl outline-none text-sm shadow-sm"
             >
-              <option value="">ყველა კურსი</option>
+              <option value="">ყველა კატეგორია</option>
               {categories.map((cat) => (
                 <option disabled={!cat.has_access} key={cat.id} value={cat.id}>
                   {cat.title}
