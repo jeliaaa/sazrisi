@@ -225,7 +225,7 @@ const Leaderboard = () => {
       selectedQuizId || undefined,
       search || undefined
     );
-  }, [selectedOption, leaderboardSize, selectedCategoryId, selectedQuizId, fetchLeaderboard]);
+  }, [selectedOption, leaderboardSize, selectedCategoryId, selectedQuizId, search, fetchLeaderboard]);
 
   const sizeOptions = [3, 5, 10, 15, 20, 50, 80, 100];
 
