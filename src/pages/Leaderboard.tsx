@@ -229,6 +229,17 @@ const Leaderboard = () => {
 
   const sizeOptions = [3, 5, 10, 15, 20, 50, 80, 100];
 
+  const formatTime = (totalSeconds: number) => {
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = Math.floor(totalSeconds % 60);
+    const milliseconds = Math.floor((totalSeconds - Math.floor(totalSeconds)) * 1000);
+
+    // padStart to always have 2 digits for minutes/seconds, 3 digits for ms
+    return `${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}:${milliseconds.toString().padStart(3, "0")}`;
+  };
+
   return (
     <div className="w-full min-h-screen p-4 md:p-10 flex flex-col bg-gray-50">
       {/* Search & Filters */}
@@ -365,8 +376,8 @@ const Leaderboard = () => {
                   <td className="py-3 px-2 md:px-4">
                     <span className="bg-blue-100 text-blue-600 px-4 py-1 rounded-md inline-block text-center w-full sm:w-auto">
                       {entry.total_time_taken_seconds
-                        ? (entry.total_time_taken_seconds / 60).toFixed(2)
-                        : "0.00"}
+                        ? formatTime(entry.total_time_taken_seconds)
+                        : "00:00:000"}
                     </span>
                   </td>
                   <td className="py-3 px-2 md:px-4">
