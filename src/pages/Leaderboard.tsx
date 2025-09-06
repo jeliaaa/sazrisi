@@ -168,7 +168,6 @@
 // };
 
 // export default Leaderboard;
-
 import { useEffect, useState } from 'react';
 import Search from "../icons/search.svg?react";
 import Close from "../icons/close.svg?react";
@@ -212,6 +211,8 @@ const Leaderboard = () => {
     const fullName = `${entry.user.firstname} ${entry.user.lastname}`.toLowerCase();
     return fullName.includes(search.toLowerCase());
   });
+
+  const sizeOptions = [5, 10, 15, 20];
 
   return (
     <div className="w-full min-h-screen p-4 md:p-10 flex flex-col bg-gray-50">
@@ -257,7 +258,7 @@ const Leaderboard = () => {
             </div>
           </div>
         </div>
-        </div>
+      </div>
 
       {/* Time Filters */}
       <div className="mt-6 border-y py-3">
@@ -276,6 +277,23 @@ const Leaderboard = () => {
             </p>
           ))}
         </div>
+      </div>
+
+      {/* Leaderboard Size Selector */}
+      <div className="mt-4 flex gap-2 flex-wrap">
+        {sizeOptions.map((size) => (
+          <button
+            key={size}
+            onClick={() => setLeaderboardSize(size)}
+            className={`px-4 py-1 rounded-md border ${
+              leaderboardSize === size
+                ? "bg-main-color text-white"
+                : "bg-white text-main-color border-gray-300"
+            }`}
+          >
+            Top {size}
+          </button>
+        ))}
       </div>
 
       {/* Table */}
