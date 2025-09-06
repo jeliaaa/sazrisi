@@ -348,9 +348,10 @@ const Leaderboard = () => {
           <table className="w-full text-sm md:text-base bg-white shadow-sm rounded-xl overflow-hidden table-fixed">
             <thead className="text-left bg-gray-100">
               <tr>
-                <th className="py-3 px-2 md:px-4 w-1/2 sm:w-[55%]">სახელი გვარი</th>
-                <th className="py-3 px-2 md:px-4 w-1/4 sm:w-[25%]">ქულა</th>
-                <th className="py-3 px-2 md:px-4 w-1/4 sm:w-[20%]">პოზიცია</th>
+                <th className="py-3 px-2 md:px-4 w-1/2 sm:w-[45%]">სახელი გვარი</th>
+                <th className="py-3 px-2 md:px-4 w-1/6 sm:w-[15%]">ქულა</th>
+                <th className="py-3 px-2 md:px-4 w-1/6 sm:w-[15%]">დრო (წთ)</th>
+                <th className="py-3 px-2 md:px-4 w-1/6 sm:w-[15%]">პოზიცია</th>
               </tr>
             </thead>
             <tbody>
@@ -365,6 +366,13 @@ const Leaderboard = () => {
                   <td className="py-3 px-2 md:px-4">
                     <span className="bg-red-100 text-red-600 px-4 py-1 rounded-md inline-block text-center w-full sm:w-auto">
                       {entry.total_score}
+                    </span>
+                  </td>
+                  <td className="py-3 px-2 md:px-4">
+                    <span className="bg-blue-100 text-blue-600 px-4 py-1 rounded-md inline-block text-center w-full sm:w-auto">
+                      {entry.total_time_taken_seconds
+                        ? (entry.total_time_taken_seconds / 60).toFixed(2)
+                        : "0.00"}
                     </span>
                   </td>
                   <td className="py-3 px-2 md:px-4">
