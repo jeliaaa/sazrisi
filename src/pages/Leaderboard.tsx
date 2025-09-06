@@ -269,7 +269,10 @@ const Leaderboard = () => {
           <div className="relative w-full md:w-1/3">
             <select
               value={selectedCategoryId}
-              onChange={(e) => setSelectedCategoryId(e.target.value ? Number(e.target.value) : undefined)}
+              onChange={(e) => {
+                setSelectedCategoryId(e.target.value ? Number(e.target.value) : undefined)
+                setSelectedQuizId(undefined)
+              }}
               className="appearance-none cursor-pointer bg-white text-main-color h-12 w-full pl-4 pr-10 rounded-xl outline-none text-sm shadow-sm"
             >
               <option value="">ყველა კატეგორია</option>
@@ -289,7 +292,9 @@ const Leaderboard = () => {
             <div className="relative w-full md:w-1/3">
               <select
                 value={selectedQuizId}
-                onChange={(e) => setSelectedQuizId(e.target.value ? Number(e.target.value) : undefined)}
+                onChange={(e) => {
+                  setSelectedQuizId(e.target.value ? Number(e.target.value) : undefined)
+                }}
                 className="appearance-none cursor-pointer bg-white text-main-color h-12 w-full pl-4 pr-10 rounded-xl outline-none text-sm shadow-sm"
               >
                 <option value="">ყველა ქვიზი</option>
