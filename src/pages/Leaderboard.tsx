@@ -364,8 +364,8 @@ const Leaderboard = () => {
               {leaderboard.map((entry) => (
                 <tr key={entry.position} className="hover:bg-gray-50 transition-colors">
                   <td className="py-3 px-2 md:px-4">
-                    <span className="bg-red-100 text-red-600 px-4 py-1 rounded-md inline-block text-center w-full sm:w-auto">
-                      {entry.total_score}
+                    <span className="bg-green-100 text-green-600 px-4 py-1 rounded-md inline-block shadow text-center w-full sm:w-auto">
+                      {entry.position}
                     </span>
                   </td>
                   <td className="py-3 px-2 md:px-4 flex items-center gap-x-2">
@@ -378,15 +378,15 @@ const Leaderboard = () => {
                     </span>
                   </td>
                   <td className="py-3 px-2 md:px-4">
+                    <span className="bg-red-100 text-red-600 px-4 py-1 rounded-md inline-block text-center w-full sm:w-auto">
+                      {entry.total_score}
+                    </span>
+                  </td>
+                  <td className="py-3 px-2 md:px-4">
                     <span className="bg-blue-100 text-blue-600 px-4 py-1 rounded-md inline-block text-center w-full sm:w-auto">
                       {entry.total_time_taken_seconds
                         ? formatTime(entry.total_time_taken_seconds)
                         : "00:00:000"}
-                    </span>
-                  </td>
-                  <td className="py-3 px-2 md:px-4">
-                    <span className="bg-green-100 text-green-600 px-4 py-1 rounded-md inline-block shadow text-center w-full sm:w-auto">
-                      {entry.position}
                     </span>
                   </td>
                 </tr>
