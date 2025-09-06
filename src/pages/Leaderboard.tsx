@@ -177,20 +177,20 @@ import Search from "../icons/search.svg?react";
 import Close from "../icons/close.svg?react";
 import ChevronDown from "../icons/chevronDown.svg?react";
 import { useLeaderboardStore } from "../stores/leaderboardStore";
+import { useQuizStore } from "../stores/quizStore";
 
 const Leaderboard = () => {
   const [search, setSearch] = useState<string>("");
+  type OptionType = "დღეს" | "კვირის" | "თვის" | "სემესტრის" | "წლის";
   const [selectedOption, setSelectedOption] = useState<OptionType>("დღეს");
   const [leaderboardSize, setLeaderboardSize] = useState<number>(20);
-  const [dropdownValue, setDropdownValue] = useState<string>("აირჩიე კურსი");
-
-  type OptionType = "დღეს" | "კვირის" | "თვის" | "სემესტრის" | "წლის";
+  const [dropdownValue, setDropdownValue] = useState<string>("");
 
   const { leaderboard, fetchLeaderboard, loading, error } = useLeaderboardStore();
+  const { categories, fetchCategories } = useQuizStore();
 
   const handleClear = () => setSearch("");
 
-  // Mapping Georgian labels → backend query param
   const optionMap: Record<OptionType, "day" | "week" | "month" | "semester" | "year"> = {
     "დღეს": "day",
     "კვირის": "week",
@@ -199,36 +199,38 @@ const Leaderboard = () => {
     "წლის": "year",
   };
 
-  // Fetch leaderboard when option or size changes
+  // Fetch categories once
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
+
+  // Fetch leaderboard whenever option or size changes
   useEffect(() => {
     fetchLeaderboard(optionMap[selectedOption], leaderboardSize);
   }, [selectedOption, leaderboardSize, fetchLeaderboard]);
 
-  // Format total_time_taken
+  // Format time function
   const formatTime = (seconds: number) => {
     if (!seconds) return "0s";
-
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
     const s = Math.floor(seconds % 60);
-
     if (h > 0) return `${h}h ${m}m ${s}s`;
     if (m > 0) return `${m}m ${s}s`;
     return `${s}s`;
   };
 
-  // Filter by search
+  // Filter leaderboard by search
   const filteredData = leaderboard.filter((entry) => {
     const fullName = `${entry.user.firstname} ${entry.user.lastname}`.toLowerCase();
     return fullName.includes(search.toLowerCase());
   });
 
-  // Leaderboard size buttons
   const sizeOptions = [5, 10, 15, 20];
 
   return (
     <div className="w-full min-h-screen p-4 md:p-10 flex flex-col bg-gray-50">
-      {/* Search */}
+      {/* Search & Select */}
       <div className="flex flex-col md:flex-row gap-4 items-stretch">
         <div className="relative w-full md:w-1/2">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 fill-main-color" />
@@ -249,17 +251,19 @@ const Leaderboard = () => {
           )}
         </div>
 
-        {/* Dropdown (optional course filter) */}
+        {/* Dropdown categories */}
         <div className="relative w-full md:w-1/2">
           <select
             value={dropdownValue}
             onChange={(e) => setDropdownValue(e.target.value)}
             className="appearance-none bg-white text-main-color h-12 w-full pl-4 pr-10 rounded-xl outline-none text-sm shadow-sm"
           >
-            <option>აირჩიე კურსი</option>
-            <option>ოფცია 1</option>
-            <option>ოფცია 2</option>
-            <option>ოფცია 3</option>
+            <option value="">აირჩიე კატეგორია</option>
+            {categories.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category?.title}
+              </option>
+            ))}
           </select>
           <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2">
             <ChevronDown className="fill-main-color" />
