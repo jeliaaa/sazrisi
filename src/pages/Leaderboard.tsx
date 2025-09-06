@@ -363,17 +363,19 @@ const Leaderboard = () => {
               <tbody>
                 {leaderboard.map((entry) => (
                   <tr key={entry.position} className="hover:bg-gray-50 transition-colors">
-                    <td colSpan={2} className="py-3 px-2 md:px-4">
-                      <div className="flex items-center gap-x-2">
-                        <span className="bg-green-100 text-green-600 px-4 py-1 rounded-md inline-block shadow text-center shrink-0">
-                          {entry.position}
-                        </span>
-                        <img 
-                          src={entry?.user?.avatar?.url ? import.meta.env.VITE_BACKEND_APP_URL + entry?.user?.avatar?.url : Placeholder} 
-                          className="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover bg-gray-300 shrink-0" 
-                        />
-                        <span className="truncate">{entry.user.firstname} {entry.user.lastname}</span>
-                      </div>
+                    <td className="py-3 px-2 md:px-4">
+                      <span className="bg-green-100 text-green-600 px-4 py-1 rounded-md inline-block shadow text-center w-full sm:w-auto">
+                        {entry.position}
+                      </span>
+                    </td>
+                    <td className="py-3 px-2 md:px-4 flex items-center gap-x-2">
+                      <img 
+                        src={entry?.user?.avatar?.url ? import.meta.env.VITE_BACKEND_APP_URL + entry?.user?.avatar?.url : Placeholder} 
+                        className="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover bg-gray-300 shrink-0" 
+                      />
+                      <span className="truncate">
+                        {entry.user.firstname} {entry.user.lastname}
+                      </span>
                     </td>
                     <td className="py-3 px-2 md:px-4">
                       <span className="bg-red-100 text-red-600 px-4 py-1 rounded-md inline-block text-center w-full sm:w-auto">
@@ -382,7 +384,9 @@ const Leaderboard = () => {
                     </td>
                     <td className="py-3 px-2 md:px-4">
                       <span className="bg-blue-100 text-blue-600 px-4 py-1 rounded-md inline-block text-center w-full sm:w-auto">
-                        {entry.total_time_taken_seconds ? formatTime(entry.total_time_taken_seconds) : "00:00:000"}
+                        {entry.total_time_taken_seconds
+                          ? formatTime(entry.total_time_taken_seconds)
+                          : "00:00:000"}
                       </span>
                     </td>
                   </tr>
