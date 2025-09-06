@@ -218,44 +218,46 @@ const Leaderboard = () => {
       {/* Search & Filters */}
       <div className="flex flex-col md:flex-row gap-4 items-stretch">
         {/* Search */}
-        <div className="relative w-full md:w-1/3">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 fill-main-color" />
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="ძებნა..."
-            className="w-full pl-10 pr-10 bg-white h-12 rounded-xl outline-none text-sm text-main-color shadow-sm"
-          />
-          {search && (
-            <button
-              onClick={handleClear}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black"
-            >
-              <Close className="fill-main-color" />
-            </button>
-          )}
-        </div>
+        <div className='w-full flex justify-between items-center'>
+          <div className="relative w-full md:w-1/3">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 fill-main-color" />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="ძებნა..."
+              className="w-full pl-10 pr-10 bg-white h-12 rounded-xl outline-none text-sm text-main-color shadow-sm"
+            />
+            {search && (
+              <button
+                onClick={handleClear}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black"
+              >
+                <Close className="fill-main-color" />
+              </button>
+            )}
+          </div>
 
-        {/* Category Dropdown */}
-        <div className="relative w-full md:w-1/3">
-          <select
-            value={selectedCategoryId}
-            onChange={(e) => setSelectedCategoryId(e.target.value ? Number(e.target.value) : "")}
-            className="appearance-none bg-white text-main-color h-12 w-full pl-4 pr-10 rounded-xl outline-none text-sm shadow-sm"
-          >
-            <option value="">ყველა კურსი</option>
-            {categories.map((cat) => (
-              <option key={cat.id} value={cat.id}>
-                {cat.title}
-              </option>
-            ))}
-          </select>
-          <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2">
-            <ChevronDown className="fill-main-color" />
+          {/* Category Dropdown */}
+          <div className="relative w-full md:w-1/3">
+            <select
+              value={selectedCategoryId}
+              onChange={(e) => setSelectedCategoryId(e.target.value ? Number(e.target.value) : "")}
+              className="appearance-none bg-white text-main-color h-12 w-full pl-4 pr-10 rounded-xl outline-none text-sm shadow-sm"
+            >
+              <option value="">ყველა კურსი</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.title}
+                </option>
+              ))}
+            </select>
+            <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2">
+              <ChevronDown className="fill-main-color" />
+            </div>
           </div>
         </div>
-      </div>
+        </div>
 
       {/* Time Filters */}
       <div className="mt-6 border-y py-3">
