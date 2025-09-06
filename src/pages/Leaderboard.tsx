@@ -205,16 +205,16 @@ const Leaderboard = () => {
     "წლის": "year",
   };
 
-  // Fetch categories on mount
+
   useEffect(() => {
     fetchCategories();
   }, [fetchCategories]);
 
-  // Fetch quizzes when category changes
+
   useEffect(() => {
     if (selectedCategoryId) {
       fetchCategoryQuizzes(Number(selectedCategoryId));
-      setSelectedQuizId(""); // reset quiz selection when category changes
+      setSelectedQuizId("");
     }
   }, [selectedCategoryId, fetchCategoryQuizzes]);
 
@@ -235,7 +235,6 @@ const Leaderboard = () => {
     const seconds = Math.floor(totalSeconds % 60);
     const milliseconds = Math.floor((totalSeconds - Math.floor(totalSeconds)) * 1000);
 
-    // padStart to always have 2 digits for minutes/seconds, 3 digits for ms
     return `${minutes.toString().padStart(2, "0")}:${seconds
       .toString()
       .padStart(2, "0")}:${milliseconds.toString().padStart(3, "0")}`;
@@ -243,9 +242,9 @@ const Leaderboard = () => {
 
   return (
     <div className="w-full min-h-screen p-4 md:p-10 flex flex-col bg-gray-50">
-      {/* Search & Filters */}
+
       <div className="flex flex-col md:flex-row gap-4 items-stretch">
-        {/* Search */}
+
         <div className='w-full flex justify-between items-center gap-4'>
           <div className="relative w-full md:w-1/3">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 fill-main-color" />
@@ -266,7 +265,7 @@ const Leaderboard = () => {
             )}
           </div>
 
-          {/* Category Dropdown */}
+
           <div className="relative w-full md:w-1/3">
             <select
               value={selectedCategoryId}
@@ -285,7 +284,7 @@ const Leaderboard = () => {
             </div>
           </div>
 
-          {/* Quiz Dropdown - show only if category selected */}
+ 
           {selectedCategoryId && (
             <div className="relative w-full md:w-1/3">
               <select
@@ -327,7 +326,7 @@ const Leaderboard = () => {
         </div>
       </div>
 
-      {/* Leaderboard Size Selector */}
+
       <div className="mt-4 flex gap-2 flex-wrap">
         {sizeOptions.map((size) => (
           <button
@@ -344,7 +343,7 @@ const Leaderboard = () => {
         ))}
       </div>
 
-      {/* Table */}
+
       <div className="mt-6 w-full">
         {loading ? (
           <p className="text-gray-500">იტვირთება...</p>
