@@ -355,7 +355,7 @@ const Leaderboard = () => {
               <tr>
                 <th className="py-3 px-2 md:px-4 w-1/2 sm:w-[45%]">სახელი გვარი</th>
                 <th className="py-3 px-2 md:px-4 w-1/6 sm:w-[15%]">ქულა</th>
-                <th className="py-3 px-2 md:px-4 w-1/6 sm:w-[15%]">დრო (წთ)</th>
+                <th className="py-3 px-2 md:px-4 w-1/6 sm:w-[15%]">დრო (წთ:წ:მწ)</th>
                 <th className="py-3 px-2 md:px-4 w-1/6 sm:w-[15%]">პოზიცია</th>
               </tr>
             </thead>
