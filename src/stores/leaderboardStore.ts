@@ -13,7 +13,6 @@ export interface LeaderboardEntry {
   total_score: number;
   correct_answers: number;
   total_time_taken_seconds: number;
-  total_questions: number;
 }
 
 interface LeaderboardState {
