@@ -11,6 +11,7 @@ export interface LeaderboardEntry {
   position: number;
   user: User;
   total_score: number;
+  correct_answers: number;
   total_time_taken_seconds: number;
 }
 

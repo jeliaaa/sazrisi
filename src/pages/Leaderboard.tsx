@@ -359,6 +359,7 @@ const Leaderboard = () => {
               <tr>
                 <th className="py-3 px-2 md:px-4 w-1/2 sm:w-[45%]">სახელი გვარი</th>
                 <th className="py-3 px-2 md:px-4 w-1/6 sm:w-[15%]">ქულა</th>
+                <th className="py-3 px-2 md:px-4 w-1/6 sm:w-[15%]">სწორი პასუხების რაოდენობა</th>
                 <th className="py-3 px-2 md:px-4 w-1/6 sm:w-[15%]">დრო (წთ:წ:მწ)</th>
                 <th className="py-3 px-2 md:px-4 w-1/6 sm:w-[15%]">პოზიცია</th>
               </tr>
@@ -378,6 +379,11 @@ const Leaderboard = () => {
                   <td className="py-3 px-2 md:px-4">
                     <span className="bg-red-100 text-red-600 px-4 py-1 rounded-md inline-block text-center w-full sm:w-auto">
                       {entry.total_score}
+                    </span>
+                  </td>
+                  <td className="py-3 px-2 md:px-4">
+                    <span className="bg-red-100 text-red-600 px-4 py-1 rounded-md inline-block text-center w-full sm:w-auto">
+                      {entry.correct_answers}
                     </span>
                   </td>
                   <td className="py-3 px-2 md:px-4">
