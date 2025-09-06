@@ -210,6 +210,9 @@ const Leaderboard = () => {
     return fullName.includes(search.toLowerCase());
   });
 
+  console.log(leaderboard);
+  
+
   return (
     <div className="w-full min-h-screen p-4 md:p-10 flex flex-col bg-gray-50">
       {/* Search & Select */}
