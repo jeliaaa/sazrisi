@@ -1,4 +1,5 @@
 import { useAuthStore } from "../stores/authStore";
+import Placeholder from '../assets/placeholder.png'
 
 const Profile = () => {
   const { loading, user } = useAuthStore();
@@ -16,7 +17,7 @@ const Profile = () => {
     <div className="bg-gray-50 px-4 py-6 md:px-8 max-w-4xl mx-auto font-sans">
       <div className="flex items-center gap-6 mb-6">
         <img
-          src={import.meta.env.VITE_BACKEND_APP_URL + user?.avatar?.url}
+          src={user?.avatar?.url ? import.meta.env.VITE_BACKEND_APP_URL + user?.avatar?.url : Placeholder}
           alt="Profile"
           className="w-24 h-24 rounded-full border-4 border-main-color object-cover"
         />

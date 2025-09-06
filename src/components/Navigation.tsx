@@ -6,6 +6,7 @@ import LeaveIcon from "../icons/leave.svg?react";
 import VideoLessons from "../icons/video-lessons.svg?react";
 import logo from "../assets/logo.png";
 import { useAuthStore } from "../stores/authStore";
+import Placeholder from '../assets/placeholder.png'
 
 const Navigation = () => {
   const { pathname } = useLocation();
@@ -48,7 +49,7 @@ const Navigation = () => {
         <div className="flex flex-col gap-y-5 absolute bottom-5 items-center">
           <Link to="/profile">
             <img
-              src={import.meta.env.VITE_BACKEND_APP_URL + user?.avatar?.url}
+              src={user?.avatar?.url ? import.meta.env.VITE_BACKEND_APP_URL + user?.avatar?.url : Placeholder}
               className="w-10 h-10 rounded-full border-2 border-main-color"
               alt="Profile"
             />
@@ -76,7 +77,7 @@ const Navigation = () => {
         ))}
         <Link to="/profile">
           <img
-            src={import.meta.env.VITE_BACKEND_APP_URL + user?.avatar?.url}
+            src={user?.avatar?.url ? import.meta.env.VITE_BACKEND_APP_URL + user?.avatar?.url : Placeholder}
             className="w-8 h-8 rounded-full border-2 border-main-color"
             alt="Profile"
           />
