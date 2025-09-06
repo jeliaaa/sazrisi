@@ -354,15 +354,20 @@ const Leaderboard = () => {
           <table className="w-full text-sm md:text-base bg-white shadow-sm rounded-xl overflow-hidden table-fixed">
             <thead className="text-left bg-gray-100">
               <tr>
+                <th className="py-3 px-2 md:px-4 w-1/6 sm:w-[15%]">პოზიცია</th>
                 <th className="py-3 px-2 md:px-4 w-1/2 sm:w-[45%]">სახელი გვარი</th>
                 <th className="py-3 px-2 md:px-4 w-1/6 sm:w-[15%]">ქულა</th>
                 <th className="py-3 px-2 md:px-4 w-1/6 sm:w-[15%]">დრო (წთ:წ:მწ)</th>
-                <th className="py-3 px-2 md:px-4 w-1/6 sm:w-[15%]">პოზიცია</th>
               </tr>
             </thead>
             <tbody>
               {leaderboard.map((entry) => (
                 <tr key={entry.position} className="hover:bg-gray-50 transition-colors">
+                  <td className="py-3 px-2 md:px-4">
+                    <span className="bg-red-100 text-red-600 px-4 py-1 rounded-md inline-block text-center w-full sm:w-auto">
+                      {entry.total_score}
+                    </span>
+                  </td>
                   <td className="py-3 px-2 md:px-4 flex items-center gap-x-2">
                     <img 
                       src={entry?.user?.avatar?.url ? import.meta.env.VITE_BACKEND_APP_URL + entry?.user?.avatar?.url : Placeholder} 
@@ -370,11 +375,6 @@ const Leaderboard = () => {
                     />
                     <span className="truncate">
                       {entry.user.firstname} {entry.user.lastname}
-                    </span>
-                  </td>
-                  <td className="py-3 px-2 md:px-4">
-                    <span className="bg-red-100 text-red-600 px-4 py-1 rounded-md inline-block text-center w-full sm:w-auto">
-                      {entry.total_score}
                     </span>
                   </td>
                   <td className="py-3 px-2 md:px-4">
