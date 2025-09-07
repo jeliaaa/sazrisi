@@ -83,10 +83,13 @@ const Quizs = () => {
                     <Link
                       to={`/quiz/${selectedCategoryId}/${quiz.id}`}
                       key={quiz.id}
-                      className="border w-full border-gray-200 p-4 rounded-xl cursor-pointer shadow-sm hover:shadow-md transition"
                     >
-                      <h4 className="title font-semibold">{quiz.title}</h4>
-                      {quiz.description && <p className="plain-text text-gray-600">{quiz.description}</p>}
+                      <div
+                        className="border w-full border-gray-200 p-4 rounded-xl cursor-pointer shadow-sm hover:shadow-md transition"
+                      >
+                        <h4 className="title font-semibold">{quiz.title}</h4>
+                        {quiz.description && <p className="plain-text text-gray-600">{quiz.description}</p>}
+                      </div>
                     </Link>
                   ))}
                 </div>
