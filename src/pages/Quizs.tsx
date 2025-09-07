@@ -78,7 +78,7 @@ const Quizs = () => {
               {quizzes.length === 0 ? (
                 <p className="plain-text text-gray-500">ტესტები ვერ მოიძებნა.</p>
               ) : (
-                <div className="space-y-4">
+                <div className="flex flex-col gap-4">
                   {quizzes.map((quiz) => (
                     <Link
                       to={`/quiz/${selectedCategoryId}/${quiz.id}`}
