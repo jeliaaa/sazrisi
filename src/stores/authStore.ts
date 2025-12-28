@@ -2,8 +2,6 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { apiV1 } from '../utils/axios';
 import { AxiosError } from 'axios';
-import Cookies from "js-cookie";
-
 
 // ---------- Types ----------
 export interface User {
@@ -68,9 +66,7 @@ export const useAuthStore = create<AuthState>()(
             login: async (email, password) => {
                 try {
                     set({ loading: true, error: null });
-                    // await apiV1.post('/user/login/', { email, password });
-                    const res = await apiV1.post('/user/login/', { email, password });
-                    Cookies.set("session_token", res.data.token)
+                    await apiV1.post('/user/login/', { email, password });
                     await get().fetchMe();
                     set({ isAuth: true });
                     return true;
