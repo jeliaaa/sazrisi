@@ -190,3 +190,6 @@ const StatisticsDashboard = () => {
 };
 
 export default StatisticsDashboard;
+
+
+//AnswerModal, NoteCanvas, PdfViewer, QuizResult, QuizSingle, QuizStart
