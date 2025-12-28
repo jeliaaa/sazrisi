@@ -104,6 +104,8 @@ const StatisticsDashboard = () => {
             .catch((err) => console.error(err));
     }, []);
 
+    console.log(stats)
+
     if (!stats) return <p>Loading statistics...</p>;
 
     // === Chart Data ===

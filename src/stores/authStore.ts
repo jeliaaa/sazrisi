@@ -161,8 +161,8 @@ export const useAuthStore = create<AuthState>()(
                     set({ user: res.data });
                     return true;
                 } catch (error) {
-                    const err = error as AxiosError<{ detail?: string }>
-                    set({ error: err.response?.data?.detail || 'Registration failed' });
+                    const err = error as AxiosError<{ email: string }>
+                    set({ error: err.response?.data?.email[0] || 'Registration failed' });
                     return false;
                 } finally {
                     set({ loading: false });

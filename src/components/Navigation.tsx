@@ -50,7 +50,7 @@ const Navigation = () => {
           <Link to="/profile">
             <img
               src={user?.avatar?.url ? import.meta.env.VITE_BACKEND_APP_URL + user?.avatar?.url : Placeholder}
-              className="w-10 h-10 rounded-full border-2 border-main-color"
+              className="w-10 h-10 rounded-full border-2 border-main-color object-cover object-center"
               alt="Profile"
             />
           </Link>

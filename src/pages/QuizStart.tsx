@@ -1,4 +1,4 @@
-import { Clock, Trophy, Target, Calendar, BookOpen, Star, FileQuestionMark, X } from 'lucide-react'
+import { Clock, Trophy, Target, BookOpen, Star, FileQuestionMark, X } from 'lucide-react'
 import { useEffect, useState } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useQuizStore } from '../stores/quizStore';
@@ -56,7 +56,7 @@ const QuizStart = () => {
                     <p className="text-gray-600 plain-text">{quizzStart?.description}</p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <div className="flex items-center p-3 bg-main-color/10 rounded-lg">
                         <Target className="h-5 w-5 text-main-color mr-3" />
                         <div>
@@ -75,16 +75,16 @@ const QuizStart = () => {
                         <Clock className="h-5 w-5 text-orange-500 mr-3" />
                         <div>
                             <div className="text-sm text-orange-600 plain-text">დრო</div>
-                            <div className="font-semibold text-orange-900 title">{quizzStart?.time_limit}</div>
+                            <div className="font-semibold text-orange-900 title">{quizzStart?.time_limit} წთ</div>
                         </div>
                     </div>
-                    <div className="flex items-center p-3 bg-purple-50 rounded-lg">
+                    {/* <div className="flex items-center p-3 bg-purple-50 rounded-lg">
                         <Calendar className="h-5 w-5 text-purple-500 mr-3" />
                         <div>
                             <div className="text-sm text-purple-600 plain-text">თარიღი</div>
                             <div className="font-semibold text-purple-900 title">{quizzStart?.time_limit}</div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
 
                 {/* Start Button */}
@@ -104,11 +104,11 @@ const QuizStart = () => {
                 <div className="bg-gradient-to-r from-main-color to-main-color rounded-lg px-6 py-4">
                     <h2 className="text-xl font-semibold text-white flex items-center title">
                         <Trophy className="h-6 w-6 mr-2" />
-                        სტატისტიკური შედეგი (თქვენი პროგრესი შეგიძლიათ იხილოთ პირად კაბინეტშიც)
+                        [მალე...] სტატისტიკური შედეგი (თქვენი პროგრესი შეგიძლიათ იხილოთ პირად კაბინეტშიც)
                     </h2>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
                     <div className="p-4 bg-green-50 rounded-lg border border-green-200">
                         <div className="text-3xl font-bold text-green-600 mb-1 title">80</div>
                         <div className="text-sm text-green-700 font-medium plain-text">ქულა</div>
@@ -121,7 +121,7 @@ const QuizStart = () => {
                         <div className="text-3xl font-bold text-purple-600 mb-1 title">7m 35s</div>
                         <div className="text-sm text-purple-700 font-medium plain-text">დახარჯული დრო</div>
                     </div>
-                </div>
+                </div> */}
             </div>
             {questionModal &&
                 <div className='w-dvw h-dvh left-0 top-0 flex items-center justify-center bg-black/50 absolute z-50'>

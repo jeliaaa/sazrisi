@@ -15,6 +15,7 @@ export default function Settings() {
   // Get current query params
   const params = new URLSearchParams(window.location.search);
   const tabFromQuery = params.get("tab");
+  const isLocked = true
 
   const [activeTab, setActiveTab] = useState<string>(tabFromQuery || "პროფილი");
 
@@ -252,7 +253,9 @@ export default function Settings() {
   };
 
   return (
-    <div className="w-full px-4 py-6 sm:px-6 md:px-10 max-w-5xl mx-auto">
+    isLocked ? <div className="w-[95dvw] h-dvh absolute z-2  flex items-center justify-center top-0 right-0">
+      <p className="title text-dark-color">ეს გვერდი დროებით მიუწვდომელია! დაგველოდეთ!</p>
+    </div> : <div className="w-full px-4 py-6 sm:px-6 md:px-10 max-w-5xl mx-auto">
       <div className="w-full border-b-2 mb-6">
         <div className="flex flex-wrap justify-start gap-x-6 gap-y-2 px-2 py-3">
           {tabs.map((tab) => (
