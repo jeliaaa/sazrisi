@@ -6,6 +6,8 @@ const QuizPage = lazy(() => import("../pages/Quizs"));
 const QuizStartPage = lazy(() => import("../pages/QuizStart"));
 const QuizSinglePage = lazy(() => import("../pages/QuizSingle"));
 const QuizResultPage = lazy(() => import("../pages/QuizResult"));
+const ImitatedQuizPage = lazy(() => import("../pages/ImitatedQuiz"));
+const ImitatedApplyPage = lazy(() => import("../pages/ImitatedApply"));
 const LeaderboardPage = lazy(() => import("../pages/Leaderboard"));
 const SettingsPage = lazy(() => import("../pages/Settings"));
 const ProfilePage = lazy(() => import("../pages/Profile"));
@@ -41,6 +43,16 @@ export const privateRoutes = [
     title: "quizResult",
     path: routes.quizResult,
     component: QuizResultPage,
+  },
+  {
+    title: "imitatedQuiz",
+    path: routes.imitatedQuiz,
+    component: ImitatedQuizPage,
+  },
+  {
+    title: "imitatedQuizApply",
+    path: routes.imitatedApply,
+    component: ImitatedApplyPage,
   },
   {
     title: "leaderboard",

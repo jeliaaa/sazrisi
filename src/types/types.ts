@@ -147,3 +147,9 @@ export interface Note {
 export interface NoteBody {
     note: FormData;
 }
+
+export interface QuizAttemptResponse {
+    code: string;
+    quiz_title: string;
+    status: string;
+}

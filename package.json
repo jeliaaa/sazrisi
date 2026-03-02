@@ -20,8 +20,10 @@
     "clsx": "^2.1.1",
     "framer-motion": "^12.9.4",
     "html-react-parser": "^5.2.6",
+    "jspdf": "^4.2.0",
     "lucide-react": "^0.536.0",
     "pdfjs-dist": "^5.4.54",
+    "qrcode": "^1.5.4",
     "react": "^19.0.0",
     "react-chartjs-2": "^5.3.0",
     "react-dom": "^19.0.0",
@@ -39,6 +41,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
+    "@types/qrcode": "^1.5.6",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@types/react-katex": "^3.0.4",

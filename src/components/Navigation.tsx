@@ -4,6 +4,7 @@ import TestsIcon from "../icons/tests.svg?react";
 import SettingsIcon from "../icons/settings.svg?react";
 import LeaveIcon from "../icons/leave.svg?react";
 import VideoLessons from "../icons/video-lessons.svg?react";
+import ImitatedQuiz from "../icons/pen.svg?react";
 import logo from "../assets/logo.png";
 import { useAuthStore } from "../stores/authStore";
 import Placeholder from '../assets/placeholder.png'
@@ -14,6 +15,7 @@ const Navigation = () => {
 
   const navigationList = [
     { to: "/quizs", name: "ტესტები", Icon: TestsIcon },
+    { to: "/imitated", name: "იმიტირებული გამოცდა", Icon: ImitatedQuiz },
     { to: "/leaderboard", name: "ლიდერბორდი", Icon: LeaderboardIcon },
     { to: "/settings", name: "პარამეტრები", Icon: SettingsIcon },
     { to: "/videoLessons", name: "ვიდეო გაკვეთილები", Icon: VideoLessons },

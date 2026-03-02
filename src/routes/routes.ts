@@ -9,6 +9,8 @@ export const privateRoutes = {
   quizStart: "/quiz/:catId/:id/",
   quizSingle: "/quiz/:catId/:id/:attemptId",
   quizResult: "/quiz/result/:attemptId",
+  imitatedQuiz : "/imitated",
+  imitatedApply: "/imitated/:categoryId/:quizId",
   leaderboard: "/leaderboard",
   settings: "/settings",
   profile: "/profile",
