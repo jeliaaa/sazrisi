@@ -8,7 +8,7 @@ interface QuizStore {
     quizzes: Quiz[];
     applyResponse: QuizAttemptResponse | null;
     fetchCategoryQuizzes: (categoryId: number) => Promise<void>;
-    fetchApplyImitated: (quizId: string) => Promise<void>;
+    fetchApplyImitated: (quizId: string) => Promise<QuizAttemptResponse | null>;
 
 }
 
@@ -38,6 +38,7 @@ export const useImitatedStore = create<QuizStore>((set) => ({
         } catch (error) {
             console.error('Failed to fetch quizzes:', error);
             set({ loading: false })
+            return null;
         }
     }
 }));

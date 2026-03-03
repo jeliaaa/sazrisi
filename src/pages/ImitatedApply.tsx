@@ -89,12 +89,12 @@ const ImitatedApply = () => {
         setIsGeneratingPdf(true);
 
         try {
-            fetchApplyImitated(quizId!); // ← trigger the fetch to populate the store
-            // const response = await fetchApplyImitated(quizId!); // ← await and capture return value
-            const response = useImitatedStore.getState().applyResponse;
+            // await fetchApplyImitated(quizId!); // ← trigger the fetch to populate the store
+            const response = await fetchApplyImitated(quizId!); // ← await and capture return value
+            // const response = useImitatedStore.getState().applyResponse;
             console.log("response", response); // verify it's what you expect
 
-            if (response?.status === "geted_attempt" && user) {
+            if (response && user) {
                 const quizInfo: QuizInfo = {
                     quizId: quizId!,
                     quizTitle: response.quiz_title ?? "Quiz",
