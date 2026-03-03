@@ -20,7 +20,10 @@ const WHITE = "#FFFFFF";
 export interface QuizInfo {
     quizId: string;
     quizTitle: string;
-    quizDate: string;   // e.g. "17.07.2024 14:00"
+    quizDescription: string;
+    quizTimeLimit?: number; // in minutes
+    quizStartDate?: string; // e.g. "2024-07-17T14:00:00Z"
+    quizEndDate?: string;   // e.g. "2024-07-17T16:00:00Z"
     category: string;
     room: number | string;
     location?: string;
@@ -132,14 +135,31 @@ export async function generateQuizCard(
     //   field("Phone",     profile.);
     field("ID / Reg.", profile.id.toString());
 
+    // ── DESCRIPTION BLOCK ───────────────────────────────────────────────────────
+    const descBlockY = secTop + 50;
+    if (quiz.quizDescription) {
+        doc.setFillColor(255, 251, 235);
+        doc.roundedRect(PAD, descBlockY, W - PAD * 2, 12, 2, 2, "F");
+        doc.setDrawColor(...rgb(ORANGE)).setLineWidth(0.4);
+        doc.roundedRect(PAD, descBlockY, W - PAD * 2, 12, 2, 2);
+
+        doc.setFillColor(...rgb(ORANGE));
+        doc.roundedRect(PAD, descBlockY, 4, 12, 2, 0, "F");
+
+        doc.setFont("helvetica", "bold").setFontSize(7).setTextColor(...rgb(ORANGE));
+        doc.text("DESCRIPTION", PAD + 8, descBlockY + 4.5);
+        doc.setFont("helvetica", "normal").setFontSize(8).setTextColor(...rgb(DARK));
+        doc.text(quiz.quizDescription, PAD + 8, descBlockY + 9.5, { maxWidth: W - PAD * 2 - 12 });
+    }
+
     // ── TABLE ───────────────────────────────────────────────────────────────────
-    const tableTop = secTop + 50;
+    const tableTop = quiz.quizDescription ? descBlockY + 18 : secTop + 50;
     const cols = [PAD + 2, PAD + 82, PAD + 128, PAD + 158];
 
     doc.setFillColor(...rgb(DARK));
     doc.rect(PAD, tableTop, W - PAD * 2, 9, "F");
     doc.setFont("helvetica", "bold").setFontSize(8).setTextColor(...rgb(WHITE));
-    ["EXAM / QUIZ", "DATE & TIME", "ROOM", "HALL"].forEach((h, i) =>
+    ["EXAM / QUIZ", "DATE & TIME", "ROOM"].forEach((h, i) =>
         doc.text(h, cols[i], tableTop + 6.3)
     );
 
@@ -148,8 +168,8 @@ export async function generateQuizCard(
     doc.setDrawColor(220, 220, 220).setLineWidth(0.3);
     doc.rect(PAD, tableTop + 9, W - PAD * 2, 12);
     doc.setFont("helvetica", "normal").setFontSize(9).setTextColor(...rgb(DARK));
-    [quiz.quizTitle, quiz.quizDate, String(quiz.room)].forEach((v, i) =>
-        doc.text(v, cols[i], tableTop + 17, i === 0 ? { maxWidth: 75 } : {})
+    [quiz.quizTitle, `${new Date(quiz.quizStartDate!).toLocaleString("ka-GE")}`, String(quiz.room)].forEach((v, i) =>
+        doc.text(v, cols[i], tableTop + 17, i === 0 ? { maxWidth: 150 } : {})
     );
 
     const extras: [string, string][] = [["Category", quiz.category]];

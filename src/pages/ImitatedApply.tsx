@@ -1,19 +1,10 @@
 import { Calendar, Monitor, Laptop, Users, MapPin, X, CheckCircle } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { useQuizStore } from '../stores/quizStore';
 import { useImitatedStore } from '../stores/imitatedStore';
 import { generateQuizCard, QuizInfo } from '../functionalComponents/generateQuizCard';
 import { useAuthStore } from '../stores/authStore';
+import { useNavigate, useParams } from 'react-router-dom';
 
-// ─── Mock data ────────────────────────────────────────────────────────────────
-const MOCK_SESSION = {
-    date: "Wednesday, March 5, 2026",
-    time: "10:00 AM – 12:00 PM",
-    location: "Room 204, Building A",
-    emptySpaces: 6,
-    totalSpaces: 20
-};
 
 // ─── Confirm Modal ─────────────────────────────────────────────────────────────
 const ConfirmModal = ({ date, time, laptopMode, onConfirm, onCancel }: { date: string, time: string, laptopMode: string, onConfirm: () => void, onCancel: () => void }) => (
@@ -39,7 +30,7 @@ const ConfirmModal = ({ date, time, laptopMode, onConfirm, onCancel }: { date: s
                     <div className="flex justify-between items-center">
                         <span className="text-sm text-gray-500 plain-text">ინფორმაცია მოწყობილობაზე</span>
                         <span className="font-semibold text-gray-800 title">
-                            {laptopMode === "my" ? "My Laptop" : "Provided Laptop"}
+                            {laptopMode === "my" ? "ჩემი მოწყობილობა" : "ორგანიზაციის მოწყობილობა"}
                         </span>
                     </div>
                 </div>
@@ -66,20 +57,19 @@ const ConfirmModal = ({ date, time, laptopMode, onConfirm, onCancel }: { date: s
 // ─── Main Component ────────────────────────────────────────────────────────────
 const ImitatedApply = () => {
     const { categoryId, quizId } = useParams();
+    const navigate = useNavigate(); 
     const [laptopMode, setLaptopMode] = useState("my");
     const [showModal, setShowModal] = useState(false);
-    const { fetchQuizStart, quizzStart } = useQuizStore();
-    const { fetchApplyImitated } = useImitatedStore();
+    // const { fetchQuizStart } = useQuizStore();
+    const { fetchApplyImitated, fetchCategoryQuizzes, quizzes } = useImitatedStore();
     const { user } = useAuthStore();
-    const session = MOCK_SESSION;
-
+    const session = quizzes.find(q => q.id === Number(quizId)) || null;
     useEffect(() => {
         if (categoryId && quizId) {
-            fetchQuizStart(categoryId, quizId);
+            fetchCategoryQuizzes(parseInt(categoryId));
         }
-    }, [categoryId, quizId, fetchQuizStart]);
+    }, [categoryId, quizId, fetchCategoryQuizzes]);
 
-    console.log(quizzStart)
 
     // In your component state:
     const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
@@ -90,23 +80,26 @@ const ImitatedApply = () => {
 
         try {
             // await fetchApplyImitated(quizId!); // ← trigger the fetch to populate the store
-            const response = await fetchApplyImitated(quizId!); // ← await and capture return value
+            const response = await fetchApplyImitated(quizId!, laptopMode); // ← await and capture return value
             // const response = useImitatedStore.getState().applyResponse;
-            console.log("response", response); // verify it's what you expect
 
             if (response && user) {
                 const quizInfo: QuizInfo = {
                     quizId: quizId!,
-                    quizTitle: response.quiz_title ?? "Quiz",
-                    quizDate: "Date Date",
+                    quizTitle: session?.title ?? "Quiz",
+                    quizDescription: session?.description ?? "",
+                    quizTimeLimit: session?.time_limit ?? 0,
+                    quizStartDate: session?.start_datetime,
+                    quizEndDate: session?.end_datetime,
                     category: categoryId ?? "General",
                     room: 1,
-                    location: "location",
+                    location: session?.location ?? "N/A",
                     laptopMode: laptopMode !== "my",
                     code: response.code ?? "N/A",
                 };
 
                 await generateQuizCard(user, quizInfo); // ← await so loader stays until done
+                navigate(`/imitated/?categoryId=${categoryId}`);
             }
         } catch (err) {
             console.error("PDF generation failed:", err);
@@ -118,7 +111,7 @@ const ImitatedApply = () => {
 
 
     return (
-        <div className="min-h-screen overflow-y-auto flex flex-col gap-6 bg-gray-50 p-4 sm:p-6 md:p-8">
+        session && <div className="min-h-screen overflow-y-auto flex flex-col gap-6 bg-gray-50 p-4 sm:p-6 md:p-8">
 
             {/* ── Session Info Card ───────────────────────────────────────────────── */}
             <div className="w-full flex flex-col gap-6 bg-white p-6 rounded-2xl shadow">
@@ -145,8 +138,8 @@ const ImitatedApply = () => {
                         <Calendar className="h-5 w-5 text-main-color mr-3 shrink-0" />
                         <div>
                             <div className="text-sm text-main-color plain-text">თარიღი & დრო</div>
-                            <div className="font-semibold text-main-color title">{session.date}</div>
-                            <div className="text-xs text-main-color/70 plain-text">{session.time}</div>
+                            <div className="font-semibold text-main-color title">{new Date(session.start_datetime).toLocaleString("ka-GE")} - <br/>{new Date(session?.end_datetime).toLocaleString("ka-GE")}</div>
+                            <div className="text-xs text-main-color/70 plain-text">{session?.time_limit} წუთი</div>
                         </div>
                     </div>
 
@@ -154,9 +147,11 @@ const ImitatedApply = () => {
                         <Users className="h-5 w-5 text-green-500 mr-3 shrink-0" />
                         <div>
                             <div className="text-sm text-green-600 plain-text">თავისუფალი ადგილები</div>
-                            <div className={`font-semibold title ${session.emptySpaces <= 3 ? 'text-red-600' : 'text-green-700'}`}>
-                                {session.emptySpaces} / {session.totalSpaces}
+
+                            <div className={`font-semibold title ${session?.max_space - session?.user_count <= 3 ? 'text-red-600' : 'text-green-700'}`}>
+                                {session?.max_space - session?.user_count} / {session?.max_space}
                             </div>
+
                             <div className="text-xs text-green-600/70 plain-text">ხელმისაწვდომი ადგილები</div>
                         </div>
                     </div>
@@ -165,7 +160,7 @@ const ImitatedApply = () => {
                         <MapPin className="h-5 w-5 text-orange-500 mr-3 shrink-0" />
                         <div>
                             <div className="text-sm text-orange-600 plain-text">ლოკაცია</div>
-                            <div className="font-semibold text-orange-900 title">{session.location}</div>
+                            <div className="font-semibold text-orange-900 title">{session?.location}</div>
                         </div>
                     </div>
                 </div>
@@ -204,21 +199,23 @@ const ImitatedApply = () => {
 
                     {/* Your Laptop */}
                     <button
-                        onClick={() => { setLaptopMode("yours")}}
+                        onClick={() => { setLaptopMode("company"); }}
+                        disabled={session.available_laptops <= 0 && laptopMode !== "company"}
                         className={`flex items-center gap-4 p-4 rounded-lg border-2 cursor-pointer transition-all duration-200 text-left
-              ${laptopMode === "yours"
+              ${laptopMode === "company"
                                 ? "border-main-color bg-main-color/10"
                                 : "border-gray-200 bg-gray-50 hover:border-gray-300"
                             }`}
                     >
-                        <Monitor className={`h-8 w-8 shrink-0 ${laptopMode === "yours" ? "text-main-color" : "text-gray-400"}`} />
+                        <Monitor className={`h-8 w-8 shrink-0 ${laptopMode === "company" ? "text-main-color" : "text-gray-400"}`} />
                         <div>
-                            <div className={`font-semibold title ${laptopMode === "yours" ? "text-main-color" : "text-gray-700"}`}>
-                                ორგანიზაციის ლეპტოპი / მოწყობილობა
+                            <div className={`font-semibold title ${laptopMode === "company" ? "text-main-color" : "text-gray-700"}`}>
+                                ორგანიზაციის ლეპტოპი / მოწყობილობა <br/>
+                                დარჩა : {session.available_laptops}
                             </div>
                             <div className="text-sm plain-text text-gray-500">ორგანიზაციის ლეპტოპს გამოვიყენებ</div>
                         </div>
-                        {laptopMode === "yours" && (
+                        {laptopMode === "company" && (
                             <CheckCircle className="h-5 w-5 text-main-color ml-auto shrink-0" />
                         )}
                     </button>
@@ -230,7 +227,7 @@ const ImitatedApply = () => {
 
                     <button
                         onClick={() => setShowModal(true)}
-                        disabled={session.emptySpaces === 0}
+                        disabled={session.is_valid_space === false || session.is_active === true}
                         className="w-full cursor-pointer bg-main-color plain-text hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                     >
                         <Calendar className="h-5 w-5 mr-2" />
@@ -242,8 +239,8 @@ const ImitatedApply = () => {
             {/* ── Modal ──────────────────────────────────────────────────────────────── */}
             {showModal && (
                 <ConfirmModal
-                    date={session.date}
-                    time={session.time}
+                    date={new Date(session.start_datetime).toLocaleDateString("ka-GE")}
+                    time={new Date(session.start_datetime).toLocaleDateString("ka-GE")}
                     laptopMode={laptopMode}
                     onConfirm={handleConfirm}
                     onCancel={() => setShowModal(false)}

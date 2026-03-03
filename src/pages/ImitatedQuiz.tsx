@@ -1,10 +1,12 @@
 import { useEffect } from "react";
-import { useSearchParams, useNavigate, Link } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { useQuizStore } from "../stores/quizStore";
 import Lock from "../icons/lock-solid.svg?react";
 import { Category } from "../types/types";
 import Loader from "../components/reusables/Loader";
 import { useImitatedStore } from "../stores/imitatedStore";
+import { File } from "lucide-react";
+import { useAuthStore } from "../stores/authStore";
 // Example locked category IDs
 const lockedCategories = [2, 5];
 
@@ -16,13 +18,16 @@ const ImitatedQuiz = () => {
 
   const { categories, fetchCategories, loading } = useQuizStore();
   const { quizzes, fetchCategoryQuizzes } = useImitatedStore();
+  const {user} = useAuthStore();
   // Fetch categories on mount
   useEffect(() => {
     fetchCategories();
   }, [fetchCategories]);
 
+  console.log(quizzes);
+
   // Fetch quizzes when categoryId changes
-   useEffect(() => {
+  useEffect(() => {
     if (selectedCategoryId) {
       fetchCategoryQuizzes(selectedCategoryId);
     }
@@ -34,7 +39,7 @@ const ImitatedQuiz = () => {
       navigate(`?categoryId=${id}`);
     }
   };
-  if(loading){
+  if (loading) {
     <Loader />
   }
 
@@ -80,19 +85,109 @@ const ImitatedQuiz = () => {
                 <p className="plain-text text-gray-500">ტესტები ვერ მოიძებნა.</p>
               ) : (
                 <div className="flex flex-col gap-4">
-                  {quizzes.map((quiz) => (
-                    <Link
-                      to={`/imitated/${selectedCategoryId}/${quiz.id}`}
-                      key={quiz.id}
-                    >
+                  {quizzes.map((quiz) => {
+                    const hasAttempt = !!quiz.attempt;
+                    const isInactive = !quiz.is_active;
+                    const hasInvalidSpace = !quiz.is_valid_space;
+
+                    ;
+                    const isCompleted = hasAttempt && quiz.attempt?.status === "completed";
+                    const isUpcoming =
+                      isInactive &&
+                      quiz.start_datetime &&
+                      new Date() < new Date(quiz.start_datetime);
+
+
+                    const isPastDue =
+                      isInactive &&
+                      quiz.end_datetime &&
+                      new Date() > new Date(quiz.end_datetime);
+
+                    const isDisabled = !isInactive || hasInvalidSpace || isCompleted || isPastDue;
+
+                    let cardStyle = "border-gray-200 bg-white hover:shadow-md cursor-pointer";
+                    let label = null;
+                    let hasExamPaper = false
+
+
+
+
+                    if (isUpcoming) {
+                      cardStyle = "border-main-color text-dark-color cursor-pointer";
+                      label = "მალე დაიწყება | დარეგისტრირდი";
+                    }
+
+                    if (isPastDue) {
+                      cardStyle = "border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed";
+                      label = "არაქტიური";
+                    }
+
+                    if (hasInvalidSpace && !isPastDue) {
+                      cardStyle = "border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed";
+                      label = "ადგილები შევსებულია";
+                    }
+
+                    if (isCompleted) {
+                      cardStyle = "border-green-400 bg-green-50 text-green-800 hover:shadow-md";
+                      label = "შედეგის ნახვა";
+                    }
+
+                    if (!isInactive) {
+                      cardStyle = "border-blue-200 bg-blue-50 text-blue-800 cursor-not-allowed";
+                      label = "მიმდინარეობს";
+                    }
+
+
+                    if (hasAttempt && (isUpcoming || !isInactive)) {
+                      hasExamPaper = true;
+                      label = "რეგისტრაცია წარმატებით შესრულდა!";
+                    }
+
+
+                    return (
                       <div
-                        className="border w-full border-gray-200 p-4 rounded-xl cursor-pointer shadow-sm hover:shadow-md transition"
+                        key={quiz.id}
+                        onClick={() => {
+                          if (isDisabled) return;
+
+                          if (hasAttempt && user) {
+                            console.log("Generating quiz card for attempt:", quiz.attempt);
+                            // generateQuizCard(user, quiz.attempt)
+                          } else {
+                            navigate(`/imitated/${selectedCategoryId}/${quiz.id}`);
+                          }
+                        }}
+                        className={`border p-4 flex justify-between rounded-xl transition ${cardStyle}`}
                       >
-                        <h4 className="title font-semibold">{quiz.title}</h4>
-                        {quiz.description && <p className="plain-text text-gray-600">{quiz.description}</p>}
+                        <div>
+                          <h4 className="title font-semibold">{quiz.title}</h4>
+
+                          {quiz.description && (
+                            <p className="plain-text text-sm">{quiz.description}</p>
+                          )}
+
+
+
+                          {quiz.start_datetime && quiz.end_datetime && (
+                            <div className="mt-2 text-xs text-gray-500">
+                              {new Date(quiz.start_datetime).toLocaleString("ka-GE")} - {new Date(quiz.end_datetime).toLocaleString("ka-GE")}
+                            </div>
+                          )}
+                          {label && (
+                            <div className="mt-2 text-xs font-semibold">
+                              {label}
+                            </div>
+                          )}
+                        </div>
+                        {hasExamPaper && (
+                          <div className="mt-2 text-xs text-dark-color flex flex-col items-end font-medium">
+                            <span>გამოცდის ქაღალდი ხელმისაწვდომია</span>
+                            <File className="w-10 h-10 mt-1" />
+                          </div>
+                        )}
                       </div>
-                    </Link>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>

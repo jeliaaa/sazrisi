@@ -153,3 +153,34 @@ export interface QuizAttemptResponse {
     quiz_title: string;
     status: string;
 }
+
+export interface ImitiatedQuiz {
+  id: number;
+  title: string;
+  description: string;
+  category: number;
+
+  time_limit: number;
+  total_questions: number;
+  total_score: number;
+
+  location: string;
+  file: string;
+
+  created_at: string;
+  start_datetime: string;
+  end_datetime: string;
+
+  is_active: boolean;
+
+  max_space: number;
+  user_count: number;
+  is_valid_space: boolean;
+
+  available_laptops: number;
+  registered_laptops: number;
+  is_laptop_available: boolean;
+
+  attempt: IAttempt | null;
+}
+
