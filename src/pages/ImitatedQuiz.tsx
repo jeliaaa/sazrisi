@@ -7,6 +7,7 @@ import Loader from "../components/reusables/Loader";
 import { useImitatedStore } from "../stores/imitatedStore";
 import { File } from "lucide-react";
 import { useAuthStore } from "../stores/authStore";
+import { generateQuizCard, QuizInfo } from "../functionalComponents/generateQuizCard";
 // Example locked category IDs
 const lockedCategories = [2, 5];
 
@@ -18,7 +19,7 @@ const ImitatedQuiz = () => {
 
   const { categories, fetchCategories, loading } = useQuizStore();
   const { quizzes, fetchCategoryQuizzes } = useImitatedStore();
-  const {user} = useAuthStore();
+  const { user } = useAuthStore();
   // Fetch categories on mount
   useEffect(() => {
     fetchCategories();
@@ -152,7 +153,22 @@ const ImitatedQuiz = () => {
 
                           if (hasAttempt && user) {
                             console.log("Generating quiz card for attempt:", quiz.attempt);
-                            // generateQuizCard(user, quiz.attempt)
+
+                            const quizInfo: QuizInfo = {
+                              quizId: quiz.id!.toString(),
+                              quizTitle: quiz.title ?? "Quiz",
+                              quizDescription: quiz.description ?? "",
+                              quizTimeLimit: quiz.time_limit ?? 0,
+                              quizStartDate: quiz.start_datetime,
+                              quizEndDate: quiz.end_datetime,
+                              category: selectedCategoryId.toString() ?? "General",
+                              room: 1,
+                              location: quiz.location ?? "N/A",
+                              laptopMode: true,
+                              code: quiz.attempt?.code ?? "N/A",
+                            };
+
+                            generateQuizCard(user, quizInfo);
                           } else {
                             navigate(`/imitated/${selectedCategoryId}/${quiz.id}`);
                           }

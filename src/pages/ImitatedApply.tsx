@@ -211,7 +211,7 @@ const ImitatedApply = () => {
                         <div>
                             <div className={`font-semibold title ${laptopMode === "company" ? "text-main-color" : "text-gray-700"}`}>
                                 ორგანიზაციის ლეპტოპი / მოწყობილობა <br/>
-                                დარჩა : {session.available_laptops}
+                                დარჩა : {session.available_laptops - session.registered_laptops}
                             </div>
                             <div className="text-sm plain-text text-gray-500">ორგანიზაციის ლეპტოპს გამოვიყენებ</div>
                         </div>

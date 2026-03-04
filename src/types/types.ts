@@ -82,6 +82,7 @@ export interface QuizStart {
 
 export interface IAttempt {
     id: number;
+    code?: string
     quiz: number;
     status: 'started' | 'completed' | 'pending' | string; // you can extend or narrow this
     score: number;
