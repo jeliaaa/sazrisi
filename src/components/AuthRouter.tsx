@@ -1,14 +1,20 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useAuthStore } from "../stores/authStore";
 
 function AuthRoute({ children }: { children: React.ReactNode }) {
-    const { user, fetchMe, loading } = useAuthStore();
-
+    const isAuth = useAuthStore((state) => state.isAuth);
+    const fetchMe = useAuthStore((state) => state.fetchMe);
+    const hasFetched = useRef(false);
+    
     useEffect(() => {
-        if (!user && !loading) {
+        if (!isAuth && !hasFetched.current) {
+            hasFetched.current = true;
             fetchMe();
         }
-    }, [user, loading, fetchMe]);
+        return () => useAuthStore.setState({error: null});
+    }, []);
+
+
 
     return <>{children}</>;
 }

@@ -55,7 +55,7 @@ const Profile = () => {
         <StatCard label="საერთო ქულა" value={stats?.overall.total_accumulated_points} />
         <StatCard label="საუკეთესო შედეგი" value={`${stats?.overall.best_result_percent ? (stats?.overall.best_result_percent / 30).toFixed(2) : "" }%`} />
         <StatCard label="აქტიური დღეები" value={stats?.overall.login_count} />
-        <StatCard label="სულ სწორი პასუხები" value={stats?.overall.total_answers} />
+        <StatCard label="სულ პასუხები" value={stats?.overall.total_answers} />
         <StatCard label="სულ არასწორი პასუხები" value={stats?.overall.total_errors} />
       </div>
     </div>

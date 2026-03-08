@@ -19,6 +19,8 @@ export type PathType = {
 export interface SignUpFormData {
     name: string;
     email: string;
+    phone: string;
+    verification_code: string;
     preferences: string; // store selected color preference
     profile: File | null;
     firstname: string;
@@ -46,6 +48,7 @@ export interface User {
     lastname: string;
     email: string;
     preference: string;
+    phone: string | null;
     //   email_verified: boolean;
 }
 
@@ -156,32 +159,32 @@ export interface QuizAttemptResponse {
 }
 
 export interface ImitiatedQuiz {
-  id: number;
-  title: string;
-  description: string;
-  category: number;
+    id: number;
+    title: string;
+    description: string;
+    category: number;
 
-  time_limit: number;
-  total_questions: number;
-  total_score: number;
+    time_limit: number;
+    total_questions: number;
+    total_score: number;
 
-  location: string;
-  file: string;
+    location: string;
+    file: string;
 
-  created_at: string;
-  start_datetime: string;
-  end_datetime: string;
+    created_at: string;
+    start_datetime: string;
+    end_datetime: string;
 
-  is_active: boolean;
+    is_active: boolean;
 
-  max_space: number;
-  user_count: number;
-  is_valid_space: boolean;
+    max_space: number;
+    user_count: number;
+    is_valid_space: boolean;
 
-  available_laptops: number;
-  registered_laptops: number;
-  is_laptop_available: boolean;
+    available_laptops: number;
+    registered_laptops: number;
+    is_laptop_available: boolean;
 
-  attempt: IAttempt | null;
+    attempt: IAttempt | null;
 }
 

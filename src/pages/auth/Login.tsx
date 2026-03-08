@@ -10,21 +10,21 @@ const Login = () => {
     const nav = useNavigate();
     const { login, loading, error, isAuth } = useAuthStore();
     const [hydrated, setHydrated] = useState(false);
+    const [usePhone, setUsePhone] = useState(false);
+    const [form, setForm] = useState({ login_id: "", password: "" });
 
     useEffect(() => {
+        useAuthStore.setState({ error: null });
         setHydrated(true);
     }, []);
 
     useEffect(() => {
-        if (isAuth) {
-            nav('/')
-        }
-    }, [isAuth, nav])
-    const [form, setForm] = useState({
-        email: "",
-        password: "",
-    });
+        if (isAuth) nav("/");
+    }, [isAuth, nav]);
 
+    useEffect(() => {
+        setForm((prev) => ({ ...prev, login_id: "" }));
+    }, [usePhone]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -33,15 +33,16 @@ const Login = () => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const success = await login(form.email, form.password);
+        const login_id = usePhone ? `995${form.login_id}` : form.login_id;
+        const success = await login(login_id, form.password);
         if (success) {
             nav("/");
         } else {
-            toast.error('დაფიქსირდა შეცდომა!')
+            toast.error("დაფიქსირდა შეცდომა!");
         }
     };
 
-    if (!hydrated) return <Loader />
+    if (!hydrated) return <Loader />;
 
     return (
         <div className="w-full h-screen flex items-center justify-center">
@@ -54,14 +55,45 @@ const Login = () => {
                     onSubmit={handleSubmit}
                     className="flex flex-col gap-y-5 justify-center h-full w-full"
                 >
-                    <div className="flex flex-col gap-y-2">
-                        <Input
-                            label="მომხმარებლის სახელი"
-                            name="email"
-                            value={form.email}
-                            onChange={handleChange}
-                        />
+                    {/* Toggle */}
+                    <div className="flex items-center gap-2 text-sm">
+                        <span className={!usePhone ? "font-semibold" : "text-gray-400"}>ელ.ფოსტა</span>
+                        <button
+                            type="button"
+                            onClick={() => setUsePhone((p) => !p)}
+                            className={`relative w-10 h-5 rounded-full transition-colors duration-200 ${usePhone ? "bg-main-color" : "bg-gray-300"}`}
+                        >
+                            <span
+                                className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${usePhone ? "translate-x-5" : "translate-x-0"}`}
+                            />
+                        </button>
+                        <span className={usePhone ? "font-semibold" : "text-gray-400"}>ტელეფონი</span>
                     </div>
+
+                    <div className="flex flex-col gap-y-2">
+                        {usePhone ? (
+                            <div className="flex items-center gap-2">
+                                <span className="text-sm text-gray-500 border border-gray-300 rounded px-2 py-[9px]">+995</span>
+                                <div className="flex-1">
+                                    <Input
+                                        label="ტელეფონის ნომერი"
+                                        name="login_id"
+                                        type="tel"
+                                        value={form.login_id}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            </div>
+                        ) : (
+                            <Input
+                                label="ელ.ფოსტა"
+                                name="login_id"
+                                value={form.login_id}
+                                onChange={handleChange}
+                            />
+                        )}
+                    </div>
+
                     <div className="flex flex-col gap-y-2">
                         <Input
                             label="პაროლი"
@@ -71,10 +103,12 @@ const Login = () => {
                             onChange={handleChange}
                         />
                     </div>
+
                     {error && <span className="text-red-500">{error}</span>}
+
                     <button
                         disabled={loading}
-                        className="mt-5 bg-dark-color text-gray-100 py-[10px] px-[35px] rounded-[10px] cursor-pointer transition-all delay-75 border-2 hover: border-dark-color hover:bg-transparent hover:text-dark-color"
+                        className="mt-5 bg-dark-color text-gray-100 py-[10px] px-[35px] rounded-[10px] cursor-pointer transition-all delay-75 border-2 hover:border-dark-color hover:bg-transparent hover:text-dark-color"
                         type="submit"
                     >
                         {loading ? "იტვირთება..." : "შესვლა"}

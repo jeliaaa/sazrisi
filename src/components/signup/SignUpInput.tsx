@@ -1,11 +1,10 @@
 import { useController, Control, FieldValues, Path } from "react-hook-form";
+import { InputHTMLAttributes } from "react";
 
-interface ControlledInputProps<T extends FieldValues> {
+interface ControlledInputProps<T extends FieldValues> extends Omit<InputHTMLAttributes<HTMLInputElement>, "name"> {
   name: Path<T>;
   label: string;
   control: Control<T>;
-  type?: string;
-  placeholder?: string;
 }
 
 const ControlledInput = <T extends FieldValues>({
@@ -14,6 +13,7 @@ const ControlledInput = <T extends FieldValues>({
   control,
   type = "text",
   placeholder,
+  ...rest
 }: ControlledInputProps<T>) => {
   const {
     field,
@@ -27,6 +27,7 @@ const ControlledInput = <T extends FieldValues>({
       </label>
       <input
         {...field}
+        {...rest}
         type={type}
         placeholder={placeholder}
         className={`w-full mt-2 px-3 py-2 border rounded-md text-md text-dark-color shadow-sm focus:outline-none focus:ring-2 focus:ring-main-color focus:border-main-color ${

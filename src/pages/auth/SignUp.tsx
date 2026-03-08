@@ -301,6 +301,8 @@ export default function SignUp() {
             email: data.email,
             password: data.password,
             rePassword: data.rePassword,
+            phone: `995${data.phone}`,
+            verification_code: data.verification_code,
         });
         console.log(error)
         if (!success) {

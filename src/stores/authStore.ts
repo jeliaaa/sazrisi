@@ -9,7 +9,8 @@ export interface User {
     firstname: string;
     lastname: string;
     email: string;
-    email_verified: boolean;
+    phone: string;
+    phone_verified: boolean;
     avatar: Avatar | null;
     preferences: Preferences | null;
 }
@@ -26,8 +27,11 @@ interface RegisterStep1Data {
     firstname: string;
     lastname: string;
     email: string;
+    phone: string;
     password: string;
     rePassword: string;
+    verification_code: string;
+
 }
 
 
@@ -40,7 +44,8 @@ interface AuthState {
     isAuth: boolean;
 
     // Auth
-    login: (email: string, password: string) => Promise<boolean>;
+    login: (login_id: string, password: string) => Promise<boolean>;
+    verifyCode: (phone: string) => Promise<{ detail: string, isOk: boolean }>;
     logout: () => Promise<void>;
     fetchMe: () => Promise<void>;
     resetPassword: (params: { currentPassword: string; newPassword: string }) =>
@@ -63,10 +68,10 @@ export const useAuthStore = create<AuthState>()(
             isAuth: false,
 
             // ---------- Auth ----------
-            login: async (email, password) => {
+            login: async (login_id, password) => {
                 try {
                     set({ loading: true, error: null });
-                    await apiV1.post('/user/login/', { email, password });
+                    await apiV1.post('/user/login/', { login_id, password });
                     await get().fetchMe();
                     set({ isAuth: true });
                     return true;
@@ -76,6 +81,19 @@ export const useAuthStore = create<AuthState>()(
                     return false;
                 } finally {
                     set({ loading: false });
+                }
+            },
+
+            verifyCode: async (phone: string): Promise<{ detail: string, isOk: boolean }> => {
+                try {
+                    set({ loading: true, error: null });
+                    const res = await apiV1.post<{ detail: string, isOk: boolean }>('/user/register/send-code/', { phone: `995${phone}` });
+                    set({ loading: false });
+                    return { detail: res.data.detail, isOk: true };
+                } catch (error) {
+                    const err = error as AxiosError<{ detail: string, isOk: boolean }>;
+                    set({ error: err.response?.data?.detail || 'Failed to send verification code', loading: false });
+                    return err.response?.data || { detail: 'დაფიქსირდა შეცდომა', isOk: false };
                 }
             },
 
@@ -158,7 +176,8 @@ export const useAuthStore = create<AuthState>()(
                 try {
                     set({ loading: true, error: null });
                     const res = await apiV1.post<User>('/user/register/', data);
-                    set({ user: res.data });
+                    set({ user: res.data, isAuth: true, error: null });
+                    await get().fetchMe();
                     return true;
                 } catch (error) {
                     const err = error as AxiosError<{ email: string }>
