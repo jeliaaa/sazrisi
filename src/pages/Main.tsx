@@ -6,7 +6,7 @@ const Main = () => {
   return (
     <div className="w-full min-h-screen box-border flex flex-col">
       <div className="p-5 flex flex-col ">
-        <Link to="/imitated" className="w-full text-texts-color flex flex-col py-5 px-3 items-center gap-y-5 h-fit lg:h-[400px] bg-main-color cursor-pointer rounded-xl hover:scale-102 transition-all delay-200">
+        <Link to="/imitated?categoryId=1" className="w-full text-texts-color flex flex-col py-5 px-3 items-center gap-y-5 h-fit lg:h-[400px] bg-main-color cursor-pointer rounded-xl hover:scale-102 transition-all delay-200">
           <span className="text-center text-4xl md:text-7xl">დარეგისტრირდი იმიტირებულ გამოცდაზე!</span>
           <span className="text-center title">დააჭირე ბანერს იმიტირებულ გამოცდაზე რეგისტრაციის დასაწყებად.</span>
           <img src={leaderboardImg} alt="..." />
