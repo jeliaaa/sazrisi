@@ -15,7 +15,7 @@ const VideoLessonsPage = lazy(() => import("../pages/VideoLessons"));
 const NewsPage = lazy(() => import("../pages/News"));
 const NewsSinglePage = lazy(() => import("../pages/NewsSingle"));
 const ChatPage = lazy(() => import("../pages/Chat"));
-const Test = lazy(() => import("../Test"));
+const Test = lazy(() => import("../pages/TopicWritingPage"));
 
 
 export const privateRoutes = [
