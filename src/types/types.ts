@@ -111,7 +111,6 @@ export interface Question {
     topic: string | null
     user_answer: UserAnswer | null
 }
-
 export interface QuestionWithAnswers {
     id: number
     score: number
@@ -188,3 +187,82 @@ export interface ImitiatedQuiz {
     attempt: IAttempt | null;
 }
 
+
+
+export interface AttemptUser {
+    id: number;
+    firstname: string;
+    lastname: string;
+    email: string;
+    phone: string;
+    phone_verified: string;
+    avatar: string | null;
+    preferences: unknown | null;
+}
+
+export interface CompletedAttempt extends ImitiatedQuiz {
+    attempt: IAttempt & {
+        user: AttemptUser;
+        laptop_type: string;
+    };
+}
+
+
+// _____ for the imitated quiz result page _____
+
+// base — used during quiz taking
+export interface UserAnswer {
+    id: number;
+    selected_answer: string;
+    is_correct: boolean;
+    answred_at: Date;
+    time_taken: number;
+}
+
+// used inside CompletedAttempt / ImitiatedQuiz attempt
+export interface UserAnswerSummary {
+    id: number;
+    selected_answer: string;
+    is_correct: boolean;
+    time_taken: number;
+}
+
+// used inside AttemptResult questions
+export interface UserAnswerResult {
+    id: number;
+    selected_answer: string;
+    is_correct: boolean;
+    score_earned: number;
+    answered_at: string;
+    time_taken: number;
+}
+
+export interface AttemptResultQuestion {
+    id: number;
+    score: number;
+    order: number;
+    user_answer: UserAnswerResult | null;
+}
+
+export interface AttemptResult {
+    id: number;
+    code: string;
+    status: "completed" | "pending" | "in_progress";
+    score: number;
+    total_questions: number;
+    correct_answers: number;
+    percentage: string;
+    started_at: string;
+    completed_at: string;
+    time_taken: number | null;
+    questions: AttemptResultQuestion[];
+    quiz_file: string;
+    quiz_explanation: string | null;
+}
+
+export interface QuestionResult {
+    id: number;
+    score: number;
+    order: number;
+    user_answer: UserAnswerResult | null;
+}

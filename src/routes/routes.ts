@@ -11,6 +11,7 @@ export const privateRoutes = {
   quizResult: "/quiz/result/:attemptId",
   imitatedQuiz : "/imitated",
   imitatedApply: "/imitated/:categoryId/:quizId",
+  imitatedResult: "/imitated/result/:code",
   leaderboard: "/leaderboard",
   settings: "/settings",
   profile: "/profile",

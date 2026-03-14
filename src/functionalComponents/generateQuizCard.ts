@@ -1,38 +1,27 @@
-/**
- * Dependencies:
- *   npm install jspdf qrcode
- *   npm install --save-dev @types/qrcode
- */
-
 import jsPDF from "jspdf";
 import QRCode from "qrcode";
 import { User } from "../stores/authStore";
 import font from "../fonts/georgianFontForPdf";
 
-// ─── Brand colours ────────────────────────────────────────────────────────────
 const ORANGE = "#FF9900";
 const DARK = "#1a202c";
 const WHITE = "#FFFFFF";
-
-// ─── Types ────────────────────────────────────────────────────────────────────
-
 
 export interface QuizInfo {
     quizId: string;
     quizTitle: string;
     quizDescription: string;
-    quizTimeLimit?: number; // in minutes
-    quizStartDate?: string; // e.g. "2024-07-17T14:00:00Z"
-    quizEndDate?: string;   // e.g. "2024-07-17T16:00:00Z"
+    quizTimeLimit?: number;
+    quizStartDate?: string;
+    quizEndDate?: string;
     category: string;
     room: number | string;
     location?: string;
     laptopMode?: boolean;
-    code: string
+    code: string;
 }
 
-// ─── XOR + Base64 encryption ─────────────────────────────────────────────────
-const XOR_KEY = 73; // change to any secret byte (1–255)
+const XOR_KEY = 73;
 
 export function encryptCode(payload: object): string {
     const json = JSON.stringify(payload);
@@ -51,7 +40,6 @@ export function decryptCode(encoded: string): object {
     return JSON.parse(json);
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
 function rgb(hex: string): [number, number, number] {
     return [
         parseInt(hex.slice(1, 3), 16),
@@ -60,23 +48,16 @@ function rgb(hex: string): [number, number, number] {
     ];
 }
 
-// ─── Main generator ───────────────────────────────────────────────────────────
-export async function generateQuizCard(
-    profile: User,
-    quiz: QuizInfo,
-): Promise<void> {
+export async function generateQuizCard(profile: User, quiz: QuizInfo): Promise<void> {
     const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
     const W = 210, H = 297, PAD = 12;
 
-    // Encrypted payload embedded in QR
-    // const encryptedCode = encryptCode({
-    //     uid: profile.id,
-    //     qid: quiz.quizId,
-    //     date: quiz.quizDate,
-    //     cat: quiz.category,
-    //     ts: Date.now(),
-    // });
+    // ── FONTS ────────────────────────────────────────────────────────────────────
+    doc.addFileToVFS("NotoSansGeorgian-Regular.ttf", font);
+    doc.addFont("NotoSansGeorgian-Regular.ttf", "geo", "normal");
+    doc.addFont("NotoSansGeorgian-Regular.ttf", "geo", "bold"); // same file mapped as bold
 
+    // ── QR CODE ──────────────────────────────────────────────────────────────────
     const qrDataUrl = await QRCode.toDataURL(quiz.code, {
         errorCorrectionLevel: "H",
         margin: 1,
@@ -84,33 +65,23 @@ export async function generateQuizCard(
         width: 300,
     });
 
-    // ── HEADER ──────────────────────────────────────────────────────────────────
+    // ── HEADER ───────────────────────────────────────────────────────────────────
     doc.setFillColor(...rgb(DARK));
     doc.rect(0, 0, W, 30, "F");
     doc.setFillColor(...rgb(ORANGE));
     doc.rect(0, 30, W, 3, "F");
 
-
-
-    doc.addFileToVFS("NotoSansGeorgian-Regular.ttf", font);
-    doc.addFont("NotoSansGeorgian-Regular.ttf", "geo", "normal");
-
-    doc.setFont("helvetica");
-
-
     doc.setFont("helvetica", "bold").setFontSize(16).setTextColor(...rgb(WHITE));
     doc.text("QUIZ ADMISSION CARD", PAD, 19);
 
-    // Year badge
     doc.setFillColor(...rgb(ORANGE));
     doc.roundedRect(W - PAD - 18, 8, 18, 10, 2, 2, "F");
     doc.setFontSize(9).setTextColor(...rgb(DARK));
     doc.text(new Date().getFullYear().toString(), W - PAD - 9, 14.5, { align: "center" });
 
-    // ── CANDIDATE ───────────────────────────────────────────────────────────────
+    // ── CANDIDATE ────────────────────────────────────────────────────────────────
     const secTop = 40;
 
-    // Photo box
     doc.setDrawColor(...rgb(ORANGE)).setLineWidth(1);
     doc.rect(PAD, secTop, 34, 42);
     doc.setFillColor(243, 244, 246);
@@ -122,7 +93,7 @@ export async function generateQuizCard(
     let cy = secTop + 2;
 
     const field = (label: string, value: string) => {
-        doc.setFont("geo", "bold").setFontSize(7).setTextColor(107, 114, 128);
+        doc.setFont("geo", "normal").setFontSize(7).setTextColor(107, 114, 128);
         doc.text(label.toUpperCase(), lx, cy + 4);
         doc.setFont("geo", "normal").setFontSize(11).setTextColor(...rgb(DARK));
         doc.text(value, lx, cy + 11);
@@ -132,10 +103,9 @@ export async function generateQuizCard(
     field("First Name", profile.firstname);
     field("Last Name", profile.lastname);
     field("Email", profile.email);
-    //   field("Phone",     profile.);
     field("ID / Reg.", profile.id.toString());
 
-    // ── DESCRIPTION BLOCK ───────────────────────────────────────────────────────
+    // ── DESCRIPTION BLOCK ────────────────────────────────────────────────────────
     const descBlockY = secTop + 50;
     if (quiz.quizDescription) {
         doc.setFillColor(255, 251, 235);
@@ -146,13 +116,13 @@ export async function generateQuizCard(
         doc.setFillColor(...rgb(ORANGE));
         doc.roundedRect(PAD, descBlockY, 4, 12, 2, 0, "F");
 
-        doc.setFont("helvetica", "bold").setFontSize(7).setTextColor(...rgb(ORANGE));
+        doc.setFont("geo", "normal").setFontSize(7).setTextColor(...rgb(ORANGE));
         doc.text("DESCRIPTION", PAD + 8, descBlockY + 4.5);
-        doc.setFont("helvetica", "normal").setFontSize(8).setTextColor(...rgb(DARK));
+        doc.setFont("geo", "normal").setFontSize(8).setTextColor(...rgb(DARK));
         doc.text(quiz.quizDescription, PAD + 8, descBlockY + 9.5, { maxWidth: W - PAD * 2 - 12 });
     }
 
-    // ── TABLE ───────────────────────────────────────────────────────────────────
+    // ── TABLE ────────────────────────────────────────────────────────────────────
     const tableTop = quiz.quizDescription ? descBlockY + 18 : secTop + 50;
     const cols = [PAD + 2, PAD + 82, PAD + 128, PAD + 158];
 
@@ -167,7 +137,7 @@ export async function generateQuizCard(
     doc.rect(PAD, tableTop + 9, W - PAD * 2, 12, "F");
     doc.setDrawColor(220, 220, 220).setLineWidth(0.3);
     doc.rect(PAD, tableTop + 9, W - PAD * 2, 12);
-    doc.setFont("helvetica", "normal").setFontSize(9).setTextColor(...rgb(DARK));
+    doc.setFont("geo", "normal").setFontSize(9).setTextColor(...rgb(DARK));
     [quiz.quizTitle, `${new Date(quiz.quizStartDate!).toLocaleString("ka-GE")}`, String(quiz.room)].forEach((v, i) =>
         doc.text(v, cols[i], tableTop + 17, i === 0 ? { maxWidth: 150 } : {})
     );
@@ -183,20 +153,19 @@ export async function generateQuizCard(
         doc.rect(PAD, extraY, W - PAD * 2, 10, "F");
         doc.setDrawColor(220, 220, 220);
         doc.rect(PAD, extraY, W - PAD * 2, 10);
-        doc.setFont("helvetica", "bold").setFontSize(8).setTextColor(...rgb(DARK));
+        doc.setFont("geo", "normal").setFontSize(8).setTextColor(...rgb(DARK));
         doc.text(label + ":", cols[0], extraY + 6.8);
-        doc.setFont("helvetica", "normal");
+        doc.setFont("geo", "normal");
         doc.text(value, cols[0] + 26, extraY + 6.8);
         extraY += 10;
     });
 
-    // ── BIG CODE BLOCK ──────────────────────────────────────────────────────────
+    // ── CODE BLOCK ───────────────────────────────────────────────────────────────
     const codeBlockY = extraY + 12;
 
     doc.setFillColor(...rgb(DARK));
     doc.rect(PAD, codeBlockY, W - PAD * 2, 32, "F");
-
-    doc.setFillColor(...rgb(ORANGE));          // Left accent stripe
+    doc.setFillColor(...rgb(ORANGE));
     doc.rect(PAD, codeBlockY, 5, 32, "F");
 
     doc.setFont("helvetica", "bold").setFontSize(7.5).setTextColor(...rgb(ORANGE));
@@ -205,7 +174,7 @@ export async function generateQuizCard(
     doc.setFontSize(30).setTextColor(...rgb(WHITE));
     doc.text(quiz.code, W / 2 - 10, codeBlockY + 25, { align: "center", charSpace: 5 });
 
-    // ── QR CODE ─────────────────────────────────────────────────────────────────
+    // ── QR ───────────────────────────────────────────────────────────────────────
     const qrY = codeBlockY + 40, qrSize = 44, qrX = (W - qrSize) / 2;
 
     doc.setFillColor(...rgb(WHITE));
@@ -223,7 +192,7 @@ export async function generateQuizCard(
         W / 2, qrY + qrSize + 11, { align: "center" }
     );
 
-    // ── FOOTER ──────────────────────────────────────────────────────────────────
+    // ── FOOTER ───────────────────────────────────────────────────────────────────
     doc.setFillColor(...rgb(ORANGE));
     doc.rect(0, H - 18, W, 2, "F");
     doc.setFillColor(...rgb(DARK));
