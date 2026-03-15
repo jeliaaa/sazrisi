@@ -49,7 +49,7 @@ const ImitatedQuiz = () => {
   };
 
   const handleGoToResult = (quiz: ImitiatedQuiz) => () => {
-    if (quiz.attempt?.code && new Date().toLocaleDateString("ka-GE") > new Date(quiz.end_datetime).toLocaleDateString("ka-GE")) {
+    if (quiz.attempt?.code && new Date() > new Date(quiz.end_datetime)){
       navigate(`/imitated/result/${quiz.attempt.code}`);
     } else{
       toast.loading("შედეგები ხელმისაწვდომი იქნება ტესტის დასრულების შემდეგ!");
