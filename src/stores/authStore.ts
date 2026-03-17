@@ -52,6 +52,10 @@ interface AuthState {
         Promise<{ success: boolean; message?: string }>;
     update: (params: { email?: string | null; theme_color?: string }) => Promise<void>;
 
+    // Password Reset
+    sendResetCode: (phone: string) => Promise<{ detail: string, isOk: boolean }>;
+    confirmResetPassword: (data: { phone: string, verification_code: string, new_password: string, rePassword: string }) => Promise<boolean>;
+
     // Register
     registerBasic: (data: RegisterStep1Data) => Promise<boolean>;
     setPreference: (data: Preferences) => Promise<boolean>;
@@ -166,6 +170,35 @@ export const useAuthStore = create<AuthState>()(
                 } catch (error) {
                     const err = error as AxiosError<{ detail?: string }>
                     set({ error: err.response?.data?.detail || 'Update failed' });
+                } finally {
+                    set({ loading: false });
+                }
+            },
+
+            // ---------- Password Reset ----------
+            sendResetCode: async (phone: string): Promise<{ detail: string, isOk: boolean }> => {
+                try {
+                    set({ loading: true, error: null });
+                    const res = await apiV1.post<{ detail: string, isOk: boolean }>('/user/password-reset/send-code/', { phone: `995${phone}` });
+                    set({ loading: false });
+                    return { detail: res.data.detail, isOk: true };
+                } catch (error) {
+                    const err = error as AxiosError<{ detail: string, isOk: boolean }>;
+                    set({ error: err.response?.data?.detail || 'Failed to send reset code', loading: false });
+                    return err.response?.data || { detail: 'დაფიქსირდა შეცდომა', isOk: false };
+                }
+            },
+
+            confirmResetPassword: async (data: { phone: string, verification_code: string, new_password: string, rePassword: string }) => {
+                try {
+                    set({ loading: true, error: null });
+                    await apiV1.post('/user/password-reset/confirm/', { ...data, phone: `995${data.phone}` });
+                    set({ loading: false });
+                    return true;
+                } catch (error) {
+                    const err = error as AxiosError<{ detail?: string }>;
+                    set({ error: err.response?.data?.detail || 'Password reset failed' });
+                    return false;
                 } finally {
                     set({ loading: false });
                 }
