@@ -191,7 +191,7 @@ export default function TopicWritingPage() {
             </p>
             <button
               onClick={handleSubmit}
-              disabled={!wordReady || status === "loading"}
+              disabled={!wordReady}
               className="inline-flex items-center gap-2 px-7 py-3 rounded-xl bg-dark-color text-main-color plain-text font-bold tracking-wide shadow-md hover:bg-gray-800 hover:-translate-y-px active:translate-y-0 transition-all duration-200 disabled:opacity-35 disabled:cursor-not-allowed disabled:translate-y-0"
             >
               გაგზავნა

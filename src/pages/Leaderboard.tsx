@@ -277,7 +277,7 @@ const Leaderboard = () => {
             >
               <option value="">ყველა კატეგორია</option>
               {categories.map((cat) => (
-                <option disabled={!cat.has_access} key={cat.id} value={cat.id}>
+                <option key={cat.id} value={cat.id}>
                   {cat.title}
                 </option>
               ))}
