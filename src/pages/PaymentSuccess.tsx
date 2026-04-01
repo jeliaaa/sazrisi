@@ -89,7 +89,6 @@ export default function PaymentSuccess() {
                 გადახდილია <strong>{amount} {currency}</strong>.
               </p>
             )}
-            <p className="plain-text text-gray-500">ტესტზე წვდომა გააქტიურებულია 30 დღით.</p>
           </>
         )}
         {status === "pending" && (
@@ -120,7 +119,7 @@ export default function PaymentSuccess() {
         {/* CTA */}
         <div className="flex gap-3 w-full mt-2">
           <Link
-            to="/quizs"
+            to="/imitated"
             className="flex-1 py-3 rounded-xl bg-dark-color text-main-color plain-text font-bold text-center shadow hover:bg-gray-800 transition-all"
           >
             ტესტებზე გადასვლა

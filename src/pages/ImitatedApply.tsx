@@ -7,55 +7,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { apiV1 } from '../utils/axios';
 
 
-// ─── Confirm Modal ─────────────────────────────────────────────────────────────
-const ConfirmModal = ({ date, time, laptopMode, onConfirm, onCancel }: { date: string, time: string, laptopMode: string, onConfirm: () => void, onCancel: () => void }) => (
-    <div className="w-dvw h-dvh left-0 top-0 flex items-center justify-center bg-black/50 fixed z-50">
-        <div className="w-4/5 max-w-md bg-white rounded-xl flex flex-col shadow-2xl">
-            <div className="border-b-2 p-4 flex justify-between items-center">
-                <span className="title text-lg font-semibold">აპლიკაციის დადასტურება</span>
-                <X className="w-6 h-6 cursor-pointer text-gray-500 hover:text-gray-800 transition-colors" onClick={onCancel} />
-            </div>
-
-            <div className="p-6 flex flex-col gap-4">
-                <p className="plain-text text-gray-600">დარწმუნებული ხართ, რომ გინდათ ამ სესიაზე რეგისტრაცია?</p>
-
-                <div className="flex flex-col gap-3 bg-gray-50 rounded-lg p-4 border border-gray-200">
-                    <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-500 plain-text">თარიღი</span>
-                        <span className="font-semibold text-gray-800 title">{date}</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-500 plain-text">დრო</span>
-                        <span className="font-semibold text-gray-800 title">{time}</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-500 plain-text">ინფორმაცია მოწყობილობაზე</span>
-                        <span className="font-semibold text-gray-800 title">
-                            {laptopMode === "my" ? "ჩემი მოწყობილობა" : "ორგანიზაციის მოწყობილობა"}
-                        </span>
-                    </div>
-                </div>
-
-                <div className="flex gap-3 pt-2">
-                    <button
-                        onClick={onCancel}
-                        className="flex-1 plain-text border border-gray-300 text-gray-600 font-semibold py-2.5 px-4 rounded-lg transition-all duration-200 hover:bg-gray-50 cursor-pointer"
-                    >
-                        უარყოფა
-                    </button>
-                    <button
-                        onClick={onConfirm}
-                        className="flex-1 plain-text bg-main-color hover:opacity-90 text-white font-semibold py-2.5 px-4 rounded-lg transition-all duration-200 shadow hover:shadow-md cursor-pointer"
-                    >
-                        დადასტურება
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-);
-
-
 // ─── Payment Gate ──────────────────────────────────────────────────────────────
 function PaymentGate({ quizId, title, price }: { quizId: string; title: string; price: string }) {
     const [loading, setLoading] = useState(false);
@@ -122,7 +73,78 @@ function PaymentGate({ quizId, title, price }: { quizId: string; title: string; 
         </div>
     );
 }
+ // Payment gate: session loaded, is paid, no access
+    // if (session && session.is_paid && !session.has_access) {
+    //     return (
+            // <div className="min-h-screen overflow-y-auto flex flex-col gap-6 bg-gray-50 p-4 sm:p-6 md:p-8">
+            //     <PaymentGate
+            //         quizId={quizId!}
+            //         title={session.title}
+            //         price={session.price}
+            //     />
+            // </div>
+    //     );
+    // }
 
+// ─── Confirm Modal ─────────────────────────────────────────────────────────────
+const ConfirmModal = ({ quizId, session, date, time, laptopMode, onConfirm, onCancel }: { quizId?: string, session: any, date: string, time: string, laptopMode: string, onConfirm: () => void, onCancel: () => void }) => (
+    <div className="w-dvw h-dvh left-0 top-0 flex items-center justify-center bg-black/50 fixed z-50">
+        <div className="w-4/5 max-w-md bg-white rounded-xl flex flex-col shadow-2xl">
+            <div className="border-b-2 p-4 flex justify-between items-center">
+                <span className="title text-lg font-semibold">აპლიკაციის დადასტურება</span>
+                <X className="w-6 h-6 cursor-pointer text-gray-500 hover:text-gray-800 transition-colors" onClick={onCancel} />
+            </div>
+
+            <div className="p-6 flex flex-col gap-4">
+                <p className="plain-text text-gray-600">დარწმუნებული ხართ, რომ გინდათ ამ სესიაზე რეგისტრაცია?</p>
+
+                <div className="flex flex-col gap-3 bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-500 plain-text">თარიღი</span>
+                        <span className="font-semibold text-gray-800 title">{date}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-500 plain-text">დრო</span>
+                        <span className="font-semibold text-gray-800 title">{time}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-500 plain-text">ინფორმაცია მოწყობილობაზე</span>
+                        <span className="font-semibold text-gray-800 title">
+                            {laptopMode === "my" ? "ჩემი მოწყობილობა" : "ორგანიზაციის მოწყობილობა"}
+                        </span>
+                    </div>
+                </div>
+
+                {(session && session.is_paid && !session.has_access) 
+                    ? (
+                    <PaymentGate
+                        quizId={quizId!}
+                        title={session.title}
+                        price={session.price}
+                    />
+                    )
+                    : (
+                        <div className="flex gap-3 pt-2">
+                            <button
+                                onClick={onCancel}
+                                className="flex-1 plain-text border border-gray-300 text-gray-600 font-semibold py-2.5 px-4 rounded-lg transition-all duration-200 hover:bg-gray-50 cursor-pointer"
+                            >
+                                უარყოფა
+                            </button>
+                            <button
+                                onClick={onConfirm}
+                                className="flex-1 plain-text bg-main-color hover:opacity-90 text-white font-semibold py-2.5 px-4 rounded-lg transition-all duration-200 shadow hover:shadow-md cursor-pointer"
+                            >
+                                დადასტურება
+                            </button>
+                        </div>
+                    )
+
+                }
+            </div>
+        </div>
+    </div>
+);
 
 // ─── Main Component ────────────────────────────────────────────────────────────
 const ImitatedApply = () => {
@@ -173,19 +195,6 @@ const ImitatedApply = () => {
             setIsGeneratingPdf(false);
         }
     };
-
-    // Payment gate: session loaded, is paid, no access
-    if (session && session.is_paid && !session.has_access) {
-        return (
-            <div className="min-h-screen overflow-y-auto flex flex-col gap-6 bg-gray-50 p-4 sm:p-6 md:p-8">
-                <PaymentGate
-                    quizId={quizId!}
-                    title={session.title}
-                    price={session.price}
-                />
-            </div>
-        );
-    }
 
     return (
         session && <div className="min-h-screen overflow-y-auto flex flex-col gap-6 bg-gray-50 p-4 sm:p-6 md:p-8">
@@ -313,6 +322,8 @@ const ImitatedApply = () => {
                 <ConfirmModal
                     date={new Date(session.start_datetime).toLocaleDateString("ka-GE")}
                     time={new Date(session.start_datetime).toLocaleDateString("ka-GE")}
+                    quizId={quizId}
+                    session={session}
                     laptopMode={laptopMode}
                     onConfirm={handleConfirm}
                     onCancel={() => setShowModal(false)}
