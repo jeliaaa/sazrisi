@@ -89,7 +89,7 @@ export default function PaymentSuccess() {
                 გადახდილია <strong>{amount} {currency}</strong>.
               </p>
             )}
-            <p className="plain-text text-gray-500">კატეგორიაზე წვდომა გააქტიურებულია 30 დღით.</p>
+            <p className="plain-text text-gray-500">ტესტზე წვდომა გააქტიურებულია 30 დღით.</p>
           </>
         )}
         {status === "pending" && (

@@ -57,9 +57,6 @@ export interface User {
 export interface Category {
     id: number;
     title: string;
-    has_access: boolean;
-    is_paid: boolean;
-    price: string;
     description?: string;
 }
 
@@ -84,6 +81,9 @@ export interface QuizStart {
     attempt: null | IAttempt | undefined; // if nullable
     category: number; // this might refer to a parent category ID
     created_at: string; // ISO date string
+    is_paid: boolean;
+    price: string;
+    has_access: boolean;
 }
 
 export interface IAttempt {
@@ -188,6 +188,10 @@ export interface ImitiatedQuiz {
     is_laptop_available: boolean;
 
     attempt: IAttempt | null;
+
+    is_paid: boolean;
+    price: string;
+    has_access: boolean;
 }
 
 
