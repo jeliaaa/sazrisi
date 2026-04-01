@@ -1,8 +1,14 @@
 import { useState, useEffect, useRef } from "react";
+import { apiV4 } from "../utils/axios";
 
-interface SubmitPayload {
-  topicId: number;
-  essay: string;
+interface EssayFeedback {
+  score: string;
+  overall_feedback: string;
+  strengths: string[];
+  improvements: string[];
+  language_quality: string;
+  structure: string;
+  advice: string;
 }
 
 const topic = {
@@ -29,6 +35,7 @@ export default function TopicWritingPage() {
   const [wordCount, setWordCount]     = useState(0);
   const [elapsed, setElapsed]         = useState(0);
   const [timerActive, setTimerActive] = useState(false);
+  const [feedback, setFeedback]       = useState<EssayFeedback | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -60,14 +67,13 @@ export default function TopicWritingPage() {
     setStatus("loading");
     if (intervalRef.current) clearInterval(intervalRef.current);
 
-    const payload: SubmitPayload = { topicId: topic.id, essay };
     try {
-      const res = await fetch("/api/submit-essay", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+      const res = await apiV4.post("/ai/evaluate-essay/", {
+        essay,
+        topic_title: topic.title,
+        topic_prompt: topic.prompt,
       });
-      if (!res.ok) throw new Error("Network error");
+      setFeedback(res.data);
       setStatus("success");
     } catch {
       setStatus("error");
@@ -108,70 +114,48 @@ export default function TopicWritingPage() {
           <p className="plain-text text-gray-500 leading-relaxed">{topic.prompt}</p>
         </div>
 
-        {/* ── Hints ── */}
-        {/* <div className="flex flex-wrap gap-2">
-          <span className="w-full text-xs tracking-widest uppercase text-gray-400 mb-1">
-            შემოთავაზებული მიმართულებები
-          </span>
-          {topic.hints.map((h, i) => (
-            <span
-              key={i}
-              className="plain-text px-3 py-1 rounded-lg border border-gray-200 bg-gray-50 text-gray-500 hover:bg-main-color/5 hover:border-main-color/30 hover:text-main-color transition-all duration-200 cursor-default"
-            >
-              💡 {h}
-            </span>
-          ))}
-        </div> */}
-
         {/* ── Writing area ── */}
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center justify-between">
-            <span className="text-xs tracking-widest uppercase text-gray-400">
-              თქვენი ნამუშევარი
-            </span>
-            <span className={`text-sm tabular-nums font-bold transition-colors duration-300 ${wordReady ? "text-green-600" : "text-main-color"}`}>
-              {wordReady ? `✓ ${wordCount} სიტყვა` : `${wordCount} / ${MIN_WORDS} სიტყვა`}
-            </span>
-          </div>
-
-          <textarea
-            ref={textareaRef}
-            value={essay}
-            onChange={(e) => setEssay(e.target.value)}
-            placeholder="დაიწყეთ თქვენი თხზულების წერა... გამოთქვით პოზიცია, დაამტკიცეთ მაგალითებით."
-            disabled={status === "loading" || status === "success"}
-            className="w-full min-h-[360px] p-6 plain-text text-dark-color bg-white border-1.5 border-gray-200 rounded-xl resize-y outline-none leading-relaxed placeholder:text-gray-300 placeholder:italic transition-all duration-200 focus:border-main-color focus:shadow-[0_0_0_3px_rgba(255,153,0,0.12)] disabled:opacity-50 caret-main-color"
-          />
-
-          {/* Progress bar */}
-          <div className="flex items-center gap-3">
-            <div className="flex-1 h-1 bg-gray-100 rounded-full overflow-hidden">
-              <div
-                className="h-full rounded-full transition-all duration-500"
-                style={{
-                  width: `${progress}%`,
-                  background: wordReady
-                    ? "linear-gradient(90deg, #FF9900, #16a34a)"
-                    : "linear-gradient(90deg, rgba(255,153,0,0.4), #FF9900)",
-                }}
-              />
+        {status !== "success" && (
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs tracking-widest uppercase text-gray-400">
+                თქვენი ნამუშევარი
+              </span>
+              <span className={`text-sm tabular-nums font-bold transition-colors duration-300 ${wordReady ? "text-green-600" : "text-main-color"}`}>
+                {wordReady ? `✓ ${wordCount} სიტყვა` : `${wordCount} / ${MIN_WORDS} სიტყვა`}
+              </span>
             </div>
-            <span className="text-xs text-gray-400 tabular-nums min-w-[30px] text-right">
-              {Math.round(progress)}%
-            </span>
-          </div>
-        </div>
 
-        {/* ── Banners ── */}
-        {status === "success" && (
-          <div className="flex items-center gap-3 bg-green-50 border border-green-200 rounded-xl px-5 py-4 plain-text text-green-700">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="shrink-0">
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
-            თხზულება წარმატებით გაიგზავნა! &nbsp; დახარჯული დრო: {formatTime(elapsed)}
+            <textarea
+              ref={textareaRef}
+              value={essay}
+              onChange={(e) => setEssay(e.target.value)}
+              placeholder="დაიწყეთ თქვენი თხზულების წერა... გამოთქვით პოზიცია, დაამტკიცეთ მაგალითებით."
+              disabled={status === "loading"}
+              className="w-full min-h-[360px] p-6 plain-text text-dark-color bg-white border-1.5 border-gray-200 rounded-xl resize-y outline-none leading-relaxed placeholder:text-gray-300 placeholder:italic transition-all duration-200 focus:border-main-color focus:shadow-[0_0_0_3px_rgba(255,153,0,0.12)] disabled:opacity-50 caret-main-color"
+            />
+
+            {/* Progress bar */}
+            <div className="flex items-center gap-3">
+              <div className="flex-1 h-1 bg-gray-100 rounded-full overflow-hidden">
+                <div
+                  className="h-full rounded-full transition-all duration-500"
+                  style={{
+                    width: `${progress}%`,
+                    background: wordReady
+                      ? "linear-gradient(90deg, #FF9900, #16a34a)"
+                      : "linear-gradient(90deg, rgba(255,153,0,0.4), #FF9900)",
+                  }}
+                />
+              </div>
+              <span className="text-xs text-gray-400 tabular-nums min-w-[30px] text-right">
+                {Math.round(progress)}%
+              </span>
+            </div>
           </div>
         )}
 
+        {/* ── Error banner ── */}
         {status === "error" && (
           <div className="flex items-center gap-3 bg-red-50 border border-red-200 rounded-xl px-5 py-4 plain-text text-red-600">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0">
@@ -189,8 +173,16 @@ export default function TopicWritingPage() {
           </div>
         )}
 
+        {/* ── AI loading ── */}
+        {status === "loading" && (
+          <div className="flex flex-col items-center gap-4 py-12 bg-gradient-to-br from-main-color/5 to-orange-50 border border-main-color/20 rounded-2xl">
+            <div className="w-10 h-10 rounded-full border-3 border-main-color/30 border-t-main-color animate-spin" />
+            <p className="plain-text text-gray-500">AI აფასებს თქვენს ნარკვევს...</p>
+          </div>
+        )}
+
         {/* ── Submit footer ── */}
-        {status !== "success" && (
+        {status !== "success" && status !== "loading" && (
           <div className="flex items-center justify-end gap-4 flex-wrap">
             <p className="flex-1 plain-text text-gray-400 min-w-[160px]">
               {wordReady
@@ -202,21 +194,94 @@ export default function TopicWritingPage() {
               disabled={!wordReady || status === "loading"}
               className="inline-flex items-center gap-2 px-7 py-3 rounded-xl bg-dark-color text-main-color plain-text font-bold tracking-wide shadow-md hover:bg-gray-800 hover:-translate-y-px active:translate-y-0 transition-all duration-200 disabled:opacity-35 disabled:cursor-not-allowed disabled:translate-y-0"
             >
-              {status === "loading" ? (
-                <>
-                  <span className="w-4 h-4 rounded-full border-2 border-main-color/30 border-t-main-color animate-spin" />
-                  გაგზავნა...
-                </>
-              ) : (
-                <>
-                  გაგზავნა
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <line x1="5" y1="12" x2="19" y2="12"/>
-                    <polyline points="12 5 19 12 12 19"/>
-                  </svg>
-                </>
-              )}
+              გაგზავნა
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
             </button>
+          </div>
+        )}
+
+        {/* ── AI Feedback ── */}
+        {status === "success" && feedback && (
+          <div className="flex flex-col gap-5 animate-in fade-in">
+
+            {/* Score header */}
+            <div className="flex items-center gap-4 bg-gradient-to-r from-main-color/10 to-orange-50 border border-main-color/30 rounded-2xl px-6 py-5">
+              <div className="flex flex-col">
+                <span className="text-xs tracking-widest uppercase text-main-color font-bold mb-1">AI შეფასება</span>
+                <span className="text-4xl font-bold text-dark-color">{feedback.score}</span>
+              </div>
+              <div className="flex-1 pl-4 border-l border-main-color/20">
+                <p className="plain-text text-gray-600 leading-relaxed">{feedback.overall_feedback}</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Strengths */}
+              <div className="bg-green-50 border border-green-200 rounded-xl p-5">
+                <h3 className="plain-text font-bold text-green-700 mb-3 flex items-center gap-2">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  ძლიერი მხარეები
+                </h3>
+                <ul className="flex flex-col gap-2">
+                  {feedback.strengths.map((s, i) => (
+                    <li key={i} className="plain-text text-green-800 flex items-start gap-2">
+                      <span className="mt-1 w-1.5 h-1.5 rounded-full bg-green-500 shrink-0" />
+                      {s}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Improvements */}
+              <div className="bg-orange-50 border border-orange-200 rounded-xl p-5">
+                <h3 className="plain-text font-bold text-orange-700 mb-3 flex items-center gap-2">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                  გასაუმჯობესებელი
+                </h3>
+                <ul className="flex flex-col gap-2">
+                  {feedback.improvements.map((s, i) => (
+                    <li key={i} className="plain-text text-orange-800 flex items-start gap-2">
+                      <span className="mt-1 w-1.5 h-1.5 rounded-full bg-orange-500 shrink-0" />
+                      {s}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            {/* Language + Structure */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-white border border-gray-200 rounded-xl p-5">
+                <h3 className="plain-text font-bold text-gray-700 mb-2">ენობრივი ხარისხი</h3>
+                <p className="plain-text text-gray-600">{feedback.language_quality}</p>
+              </div>
+              <div className="bg-white border border-gray-200 rounded-xl p-5">
+                <h3 className="plain-text font-bold text-gray-700 mb-2">სტრუქტურა</h3>
+                <p className="plain-text text-gray-600">{feedback.structure}</p>
+              </div>
+            </div>
+
+            {/* Advice */}
+            <div className="bg-dark-color rounded-xl p-6">
+              <h3 className="plain-text font-bold text-main-color mb-2 flex items-center gap-2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 6v6l4 2"/></svg>
+                რჩევები სამომავლოდ
+              </h3>
+              <p className="plain-text text-gray-300 leading-relaxed">{feedback.advice}</p>
+            </div>
+
+            {/* Retry */}
+            <div className="flex justify-end">
+              <button
+                onClick={() => { setStatus("idle"); setFeedback(null); setEssay(""); setElapsed(0); setTimerActive(false); }}
+                className="plain-text text-sm text-gray-400 underline hover:text-gray-600 transition-colors"
+              >
+                ახალი ნარკვევი
+              </button>
+            </div>
           </div>
         )}
 

@@ -16,7 +16,9 @@ const VideoLessonsPage = lazy(() => import("../pages/VideoLessons"));
 const NewsPage = lazy(() => import("../pages/News"));
 const NewsSinglePage = lazy(() => import("../pages/NewsSingle"));
 const ChatPage = lazy(() => import("../pages/Chat"));
-const Test = lazy(() => import("../pages/TopicWritingPage"));
+const Test           = lazy(() => import("../pages/TopicWritingPage"));
+const PaymentSuccess = lazy(() => import("../pages/PaymentSuccess"));
+const PaymentFail    = lazy(() => import("../pages/PaymentFail"));
 
 
 export const privateRoutes = [
@@ -99,5 +101,15 @@ export const privateRoutes = [
     title: "test",
     path: routes.test,
     component: Test,
-  }
+  },
+  {
+    title: "paymentSuccess",
+    path: routes.paymentSuccess,
+    component: PaymentSuccess,
+  },
+  {
+    title: "paymentFail",
+    path: routes.paymentFail,
+    component: PaymentFail,
+  },
 ];

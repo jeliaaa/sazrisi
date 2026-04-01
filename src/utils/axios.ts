@@ -39,4 +39,5 @@ const createAxiosInstance = (version: string) => {
 export const apiV1 = createAxiosInstance("v1");
 export const apiV2 = createAxiosInstance("v2");
 export const apiV3 = createAxiosInstance("v3");
+export const apiV4 = createAxiosInstance("v4");
 

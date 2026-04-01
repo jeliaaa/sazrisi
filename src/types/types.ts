@@ -58,6 +58,9 @@ export interface Category {
     id: number;
     title: string;
     has_access: boolean;
+    is_paid: boolean;
+    price: string;
+    description?: string;
 }
 
 export interface Quiz {

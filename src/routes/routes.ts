@@ -20,6 +20,8 @@ export const privateRoutes = {
   test: "/test",
   news: "/news",
   newsSingle: "/news/:id",
+  paymentSuccess: "/payment/success",
+  paymentFail: "/payment/fail",
 };
 
 export const routes = {
