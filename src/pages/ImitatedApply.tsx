@@ -8,7 +8,7 @@ import { apiV1 } from '../utils/axios';
 
 
 // ─── Payment Gate ──────────────────────────────────────────────────────────────
-function PaymentGate({ quizId, title, price }: { quizId: string; title: string; price: string }) {
+function PaymentGate({ quizId, title, price, laptop_type }: { quizId: string; title: string; price: string, laptop_type: string }) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
@@ -16,7 +16,9 @@ function PaymentGate({ quizId, title, price }: { quizId: string; title: string; 
         setLoading(true);
         setError('');
         try {
-            const res = await apiV1.post(`/payment/imitation-quiz/${quizId}/pay/`);
+            const res = await apiV1.post(`/payment/imitation-quiz/${quizId}/pay/`, {
+                laptop_type: ""
+            });
             window.location.href = res.data.redirect_url;
         } catch (err: any) {
             setError(err?.response?.data?.error || 'გადახდა ვერ განხორციელდა. სცადეთ თავიდან.');
@@ -121,6 +123,7 @@ const ConfirmModal = ({ quizId, session, date, time, laptopMode, onConfirm, onCa
                         quizId={quizId!}
                         title={session.title}
                         price={session.price}
+                        laptop_type={laptopMode}
                     />
                     )
                     : (
