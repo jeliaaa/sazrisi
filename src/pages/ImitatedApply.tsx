@@ -17,7 +17,7 @@ function PaymentGate({ quizId, title, price, laptop_type }: { quizId: string; ti
         setError('');
         try {
             const res = await apiV1.post(`/payment/imitation-quiz/${quizId}/pay/`, {
-                laptop_type: ""
+                laptop_type: laptop_type
             });
             window.location.href = res.data.redirect_url;
         } catch (err: any) {
