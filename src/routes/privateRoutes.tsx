@@ -19,6 +19,8 @@ const ChatPage = lazy(() => import("../pages/Chat"));
 const Test           = lazy(() => import("../pages/TopicWritingPage"));
 const PaymentSuccess = lazy(() => import("../pages/PaymentSuccess"));
 const PaymentFail    = lazy(() => import("../pages/PaymentFail"));
+const TopicPage      = lazy(() => import("../pages/TopicPage"));
+const HistoryPage    = lazy(() => import("../pages/History"));
 
 
 export const privateRoutes = [
@@ -111,5 +113,15 @@ export const privateRoutes = [
     title: "paymentFail",
     path: routes.paymentFail,
     component: PaymentFail,
+  },
+  {
+    title: "topicPage",
+    path: routes.topicPage,
+    component: TopicPage,
+  },
+  {
+    title: "history",
+    path: routes.history,
+    component: HistoryPage,
   },
 ];

@@ -1,15 +1,20 @@
 import { useEffect, useState } from 'react';
-import { Clock, Trophy, Target, Calendar, Timer, Loader, ChevronDown } from 'lucide-react';
-import { useParams } from 'react-router-dom';
+import { Clock, Trophy, Target, Calendar, Timer, Loader, ChevronDown, BookOpen, Sparkles } from 'lucide-react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useImitatedStore } from '../stores/imitatedStore';
-import { QuestionResult } from '../types/types';
+import { AISummary, QuestionResult } from '../types/types';
 import PDFViewer from '../components/PdfViewer';
+import ReactMarkdown from 'react-markdown';
 
 const ImitatedResult = () => {
     const { code } = useParams();
+    const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState<'correct' | 'incorrect'>('correct');
     const [expanded, setExpanded] = useState<number | null>(null);
-    const { attemptResult, fetchAttemptResult, loading } = useImitatedStore();
+    const [aiSummary, setAiSummary] = useState<AISummary | null>(null);
+    const [aiLoading, setAiLoading] = useState(false);
+    const [aiOpen, setAiOpen] = useState(false);
+    const { attemptResult, fetchAttemptResult, fetchAttemptAISummary, loading } = useImitatedStore();
 
     useEffect(() => {
         if (code) {
@@ -45,6 +50,15 @@ const ImitatedResult = () => {
 
     const toggleAccordion = (id: number) => {
         setExpanded(prev => (prev === id ? null : id));
+    };
+
+    const handleGetAISummary = async () => {
+        if (!code) return;
+        setAiLoading(true);
+        setAiOpen(true);
+        const result = await fetchAttemptAISummary(code);
+        setAiSummary(result);
+        setAiLoading(false);
     };
 
     if (loading) return <Loader />;
@@ -135,7 +149,48 @@ const ImitatedResult = () => {
                         </div>
                     </div>
 
-                    {/* Tabs */}
+                    {/* AI Summary Button */}
+                    <div className="mb-6">
+                        <button
+                            onClick={handleGetAISummary}
+                            disabled={aiLoading}
+                            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl font-medium shadow-lg hover:from-purple-700 hover:to-indigo-700 transition-all disabled:opacity-60"
+                        >
+                            <Sparkles className="h-5 w-5" />
+                            {aiLoading ? 'AI ანალიზი მზადდება...' : 'GET AI SUMMARY'}
+                        </button>
+
+                        {aiOpen && (
+                            <div className="mt-4 bg-white border border-purple-200 rounded-xl shadow-lg p-6">
+                                <div className="flex items-center justify-between mb-4">
+                                    <h3 className="text-lg font-semibold text-purple-800 flex items-center gap-2">
+                                        <Sparkles className="h-5 w-5" />
+                                        AI სასწავლო გეგმა
+                                    </h3>
+                                    <button
+                                        onClick={() => navigate('/history')}
+                                        className="plain-text text-indigo-600 hover:underline"
+                                    >
+                                        ისტორია →
+                                    </button>
+                                </div>
+                                {aiLoading ? (
+                                    <div className="flex items-center gap-2 text-gray-500">
+                                        <Loader className="h-5 w-5 animate-spin" />
+                                        <span>Gemini ამუშავებს...</span>
+                                    </div>
+                                ) : aiSummary ? (
+                                    <div className="prose prose-sm max-w-none text-gray-800">
+                                        <ReactMarkdown>{aiSummary.content}</ReactMarkdown>
+                                    </div>
+                                ) : (
+                                    <p className="text-red-500">შეცდომა. სცადეთ თავიდან.</p>
+                                )}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Questions Tabs */}
                     <div className="bg-white rounded-xl shadow-lg border border-gray-200">
                         <div className="flex border-b border-gray-200">
                             <button
@@ -173,19 +228,32 @@ const ImitatedResult = () => {
                                             className="flex justify-between items-center p-4 cursor-pointer"
                                             onClick={() => toggleAccordion(item.order)}
                                         >
-                                            <div>
+                                            <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
                                                 <span className="font-medium">შეკითხვა {item.order}</span>
-                                                <span className="ml-4 plain-text text-gray-500">
+                                                <span className="plain-text text-gray-500">
                                                     დრო: {item.user_answer?.time_taken}s
                                                 </span>
-                                                <span className="ml-4 plain-text text-gray-500">
+                                                <span className="plain-text text-gray-500">
                                                     პასუხი: <strong>{item.user_answer?.selected_answer}</strong>
                                                 </span>
-                                                <span className="ml-4 plain-text text-dark-color">
+                                                <span className="plain-text text-dark-color">
                                                     ქულა: {item.user_answer?.score_earned}/{item.score}
                                                 </span>
+                                                {/* Topic link */}
+                                                {item.topic_id && (
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            navigate(`/topic/${item.topic_id}`);
+                                                        }}
+                                                        className="flex items-center gap-1 px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded-full plain-text hover:bg-indigo-200 transition-colors"
+                                                    >
+                                                        <BookOpen className="h-3 w-3" />
+                                                        {item.topic_name ?? 'თემა'}
+                                                    </button>
+                                                )}
                                             </div>
-                                            <span className="flex items-center plain-text text-main-color">
+                                            <span className="flex items-center plain-text text-main-color shrink-0">
                                                 დეტალურად
                                                 <ChevronDown className={`ml-1 h-4 w-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
                                             </span>
@@ -193,20 +261,16 @@ const ImitatedResult = () => {
 
                                         {isOpen && (
                                             <div className="p-4 space-y-4 border-t bg-white">
-                                                {/* Quiz PDF page */}
                                                 <div className="mt-4">
                                                     <PDFViewer fileUrl={attemptResult.quiz_file} page={item.order} />
                                                 </div>
 
-                                                {/* Explanation PDF for incorrect answers */}
                                                 {!item.user_answer?.is_correct && attemptResult.quiz_explanation && (
                                                     <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                                                         <h5 className="font-medium text-yellow-800 mb-1">განმარტება</h5>
                                                         <PDFViewer fileUrl={attemptResult.quiz_explanation} page={item.order} />
                                                     </div>
                                                 )}
-
-
                                             </div>
                                         )}
                                     </div>

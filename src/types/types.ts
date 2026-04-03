@@ -272,4 +272,27 @@ export interface QuestionResult {
     score: number;
     order: number;
     user_answer: UserAnswerResult | null;
+    topic_id: number | null;
+    topic_name: string | null;
+}
+
+export interface ImitationTopic {
+    id: number;
+    name: string;
+    description: string;
+    url: string;
+}
+
+export interface TopicAIInsights {
+    overall_info: string;
+    detailed_info: string;
+    examples: { task: string; solution: string }[];
+    useful_links: { title: string; url: string }[];
+}
+
+export interface AISummary {
+    id: number;
+    quiz_title: string;
+    content: string;
+    created_at: string;
 }

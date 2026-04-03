@@ -22,6 +22,8 @@ export const privateRoutes = {
   newsSingle: "/news/:id",
   paymentSuccess: "/payment/success",
   paymentFail: "/payment/fail",
+  topicPage: "/topic/:topicId",
+  history: "/history",
 };
 
 export const routes = {
