@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Clock, Trophy, Target, Calendar, Timer, Loader, ChevronDown, BookOpen, Sparkles } from 'lucide-react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useImitatedStore } from '../stores/imitatedStore';
-import { AISummary, QuestionResult } from '../types/types';
+import { AISummary } from '../types/types';
 import PDFViewer from '../components/PdfViewer';
 import ReactMarkdown from 'react-markdown';
 
@@ -63,8 +63,11 @@ const ImitatedResult = () => {
 
     if (loading) return <Loader />;
 
-    const correctQuestions = attemptResult?.questions?.filter((q: QuestionResult) => q.user_answer?.is_correct);
-    const incorrectQuestions = attemptResult?.questions?.filter((q: QuestionResult) => !q.user_answer?.is_correct);
+    const correctQuestions =
+        attemptResult?.questions?.filter((q) => q.user_answer?.is_correct === true) ?? [];
+
+    const incorrectQuestions =
+        attemptResult?.questions?.filter((q) => q.user_answer?.is_correct === false) ?? [];
 
     return (
         attemptResult && (
@@ -151,14 +154,23 @@ const ImitatedResult = () => {
 
                     {/* AI Summary Button */}
                     <div className="mb-6">
-                        <button
-                            onClick={handleGetAISummary}
-                            disabled={aiLoading}
-                            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl font-medium shadow-lg hover:from-purple-700 hover:to-indigo-700 transition-all disabled:opacity-60"
-                        >
-                            <Sparkles className="h-5 w-5" />
-                            {aiLoading ? 'AI ანალიზი მზადდება...' : 'GET AI SUMMARY'}
-                        </button>
+                        <div className='flex justify-between items-center'>
+                            <button
+                                onClick={handleGetAISummary}
+                                disabled={aiLoading}
+                                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl font-medium shadow-lg hover:from-purple-700 hover:to-indigo-700 transition-all disabled:opacity-60"
+                            >
+                                <Sparkles className="h-5 w-5" />
+                                {aiLoading ? 'AI ანალიზი მზადდება...' : 'GET AI SUMMARY'}
+                            </button>
+                            <button
+                                onClick={() => navigate('/history')}
+                                className="plain-text text-indigo-600 hover:underline"
+                            >
+                                ისტორია →
+                            </button>
+                        </div>
+                       
 
                         {aiOpen && (
                             <div className="mt-4 bg-white border border-purple-200 rounded-xl shadow-lg p-6">
@@ -167,12 +179,6 @@ const ImitatedResult = () => {
                                         <Sparkles className="h-5 w-5" />
                                         AI სასწავლო გეგმა
                                     </h3>
-                                    <button
-                                        onClick={() => navigate('/history')}
-                                        className="plain-text text-indigo-600 hover:underline"
-                                    >
-                                        ისტორია →
-                                    </button>
                                 </div>
                                 {aiLoading ? (
                                     <div className="flex items-center gap-2 text-gray-500">
@@ -249,7 +255,7 @@ const ImitatedResult = () => {
                                                         className="flex items-center gap-1 px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded-full plain-text hover:bg-indigo-200 transition-colors"
                                                     >
                                                         <BookOpen className="h-3 w-3" />
-                                                        {item.topic_name ?? 'თემა'}
+                                                        {item?.topic_name ?? 'თემა'}
                                                     </button>
                                                 )}
                                             </div>
