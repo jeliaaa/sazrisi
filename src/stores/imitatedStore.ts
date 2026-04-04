@@ -89,7 +89,7 @@ export const useImitatedStore = create<QuizStore>((set) => ({
 
     fetchTopicAIInsights: async (topicId: number) => {
         try {
-            const res = await apiV3.post(`quiz/topics/${topicId}/ai-insights/`);
+            const res = await apiV3.post(`quiz/topics/${topicId}/ai-insights/`, {}, { timeout: 120000 });
             return res.data as TopicAIInsights;
         } catch (error) {
             console.error("Failed to fetch topic AI insights:", error);
@@ -99,7 +99,7 @@ export const useImitatedStore = create<QuizStore>((set) => ({
 
     fetchAttemptAISummary: async (code: string) => {
         try {
-            const res = await apiV3.post(`quiz/attempts/${code}/ai-summary/`);
+            const res = await apiV3.post(`quiz/attempts/${code}/ai-summary/`, {}, { timeout: 120000 });
             const summary = res.data as AISummary;
             set((state) => ({ aiSummaries: [summary, ...state.aiSummaries] }));
             return summary;
