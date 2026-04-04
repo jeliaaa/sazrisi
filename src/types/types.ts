@@ -245,10 +245,12 @@ export interface UserAnswerResult {
 }
 
 export interface AttemptResultQuestion {
-    id: number;
-    score: number;
-    order: number;
-    user_answer: UserAnswerResult | null;
+  id: number;
+  score: number;
+  order: number;
+  user_answer: UserAnswerResult | null;
+  topic_id: number | null;
+  topic_name: string | null;
 }
 
 export interface AttemptResult {
