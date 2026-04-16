@@ -104,7 +104,7 @@ const TopicPage = () => {
                 {insightsLoading && (
                     <div className="flex items-center justify-center gap-2 text-gray-500 py-8">
                         <Loader className="h-6 w-6 animate-spin text-indigo-500" />
-                        <span>Gemini ამუშავებს...</span>
+                        <span>მუშავდება...</span>
                     </div>
                 )}
 

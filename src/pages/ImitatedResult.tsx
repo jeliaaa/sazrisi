@@ -183,7 +183,7 @@ const ImitatedResult = () => {
                                 {aiLoading ? (
                                     <div className="flex items-center gap-2 text-gray-500">
                                         <Loader className="h-5 w-5 animate-spin" />
-                                        <span>Gemini ამუშავებს...</span>
+                                        <span>მუშავდება...</span>
                                     </div>
                                 ) : aiSummary ? (
                                     <div className="prose prose-sm max-w-none text-gray-800">
