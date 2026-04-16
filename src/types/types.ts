@@ -106,12 +106,18 @@ export interface IAttempt {
 
 
 
+export interface QuizTopic {
+    id: number
+    name: string
+    url: string
+}
+
 export interface Question {
     score: number
     order: number
     id: number
     answer: string | null
-    topic: string | null
+    topic: QuizTopic | null
     user_answer: UserAnswer | null
 }
 export interface QuestionWithAnswers {
@@ -119,7 +125,7 @@ export interface QuestionWithAnswers {
     score: number
     order: number
     answer: string
-    topic: string
+    topic: QuizTopic | null
     user_answer: UserAnswer | null
 }
 
@@ -297,4 +303,18 @@ export interface AISummary {
     quiz_title: string;
     content: string;
     created_at: string;
+}
+
+export interface QuizAISummary {
+    id: number;
+    quiz_title: string;
+    content: string;
+    created_at: string;
+}
+
+export interface QuizTopicAIInsights {
+    overall_info: string;
+    detailed_info: string;
+    examples: { task: string; solution: string }[];
+    useful_links: { title: string; url: string }[];
 }

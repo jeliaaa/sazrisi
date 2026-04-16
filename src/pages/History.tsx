@@ -1,16 +1,21 @@
 import { useEffect, useState } from 'react';
 import { Sparkles, ChevronDown, Loader, Clock } from 'lucide-react';
 import { useImitatedStore } from '../stores/imitatedStore';
-import { AISummary } from '../types/types';
+import { useAttemptStore } from '../stores/attemptStore';
+import { AISummary, QuizAISummary } from '../types/types';
 import ReactMarkdown from 'react-markdown';
 
 const History = () => {
-    const { aiSummaries, fetchAISummaryHistory, loading } = useImitatedStore();
+    const { aiSummaries, fetchAISummaryHistory, loading: imitatedLoading } = useImitatedStore();
+    const { quizAiSummaries, fetchQuizAISummaryHistory, loading: quizLoading } = useAttemptStore();
+
     const [openId, setOpenId] = useState<number | null>(null);
+    const [activeTab, setActiveTab] = useState<'imitated' | 'quiz'>('imitated');
 
     useEffect(() => {
         fetchAISummaryHistory();
-    }, [fetchAISummaryHistory]);
+        fetchQuizAISummaryHistory();
+    }, [fetchAISummaryHistory, fetchQuizAISummaryHistory]);
 
     const formatDate = (iso: string) =>
         new Date(iso).toLocaleString('ka-GE', {
@@ -21,6 +26,8 @@ const History = () => {
             minute: '2-digit',
         });
 
+    const loading = imitatedLoading || quizLoading;
+
     if (loading) {
         return (
             <div className="flex items-center justify-center h-dvh">
@@ -28,6 +35,63 @@ const History = () => {
             </div>
         );
     }
+
+    const renderSummaryList = (summaries: AISummary[] | QuizAISummary[]) => {
+        if (summaries.length === 0) {
+            return (
+                <div className="bg-white rounded-2xl border border-gray-200 shadow p-12 text-center">
+                    <Sparkles className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                    <p className="text-gray-500 font-medium">AI სარეზერვო ჩანაწერები არ მოიძებნა.</p>
+                    <p className="text-gray-400 plain-text mt-1">
+                        შედეგის გვერდზე დააჭირე "GET AI SUMMARY"-ს, რომ ჩანაწერი შეიქმნას.
+                    </p>
+                </div>
+            );
+        }
+
+        return (
+            <div className="space-y-4">
+                {summaries.map((summary) => {
+                    const isOpen = openId === summary.id;
+                    return (
+                        <div
+                            key={summary.id}
+                            className="bg-white rounded-xl border border-purple-100 shadow overflow-hidden"
+                        >
+                            <button
+                                className="w-full flex items-center justify-between p-5 text-left hover:bg-purple-50 transition-colors"
+                                onClick={() => setOpenId(prev => prev === summary.id ? null : summary.id)}
+                            >
+                                <div className="flex items-start gap-3">
+                                    <div className="p-2 bg-purple-100 rounded-lg shrink-0">
+                                        <Sparkles className="h-5 w-5 text-purple-600" />
+                                    </div>
+                                    <div>
+                                        <p className="font-semibold text-gray-800">{summary.quiz_title}</p>
+                                        <p className="plain-text text-gray-400 flex items-center gap-1 mt-0.5">
+                                            <Clock className="h-3 w-3" />
+                                            {formatDate(summary.created_at)}
+                                        </p>
+                                    </div>
+                                </div>
+                                <ChevronDown
+                                    className={`h-5 w-5 text-purple-400 transition-transform shrink-0 ml-4 ${isOpen ? 'rotate-180' : ''}`}
+                                />
+                            </button>
+
+                            {isOpen && (
+                                <div className="border-t border-purple-100 p-6 bg-purple-50/30">
+                                    <div className="prose prose-sm max-w-none text-gray-800">
+                                        <ReactMarkdown>{summary.content}</ReactMarkdown>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    );
+                })}
+            </div>
+        );
+    };
 
     return (
         <div className="min-h-dvh bg-gradient-to-br from-indigo-50 via-white to-purple-50 p-4 overflow-y-auto">
@@ -42,58 +106,32 @@ const History = () => {
                     <p className="text-gray-500 plain-text">გამოცდის შემდეგ გენერირებული სასწავლო გეგმები</p>
                 </div>
 
-                {aiSummaries.length === 0 ? (
-                    <div className="bg-white rounded-2xl border border-gray-200 shadow p-12 text-center">
-                        <Sparkles className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                        <p className="text-gray-500 font-medium">AI სარეზერვო ჩანაწერები არ მოიძებნა.</p>
-                        <p className="text-gray-400 plain-text mt-1">
-                            შედეგის გვერდზე დააჭირე "GET AI SUMMARY"-ს, რომ ჩანაწერი შეიქმნას.
-                        </p>
-                    </div>
-                ) : (
-                    <div className="space-y-4">
-                        {aiSummaries.map((summary: AISummary) => {
-                            const isOpen = openId === summary.id;
-                            return (
-                                <div
-                                    key={summary.id}
-                                    className="bg-white rounded-xl border border-purple-100 shadow overflow-hidden"
-                                >
-                                    {/* Card header */}
-                                    <button
-                                        className="w-full flex items-center justify-between p-5 text-left hover:bg-purple-50 transition-colors"
-                                        onClick={() => setOpenId(prev => prev === summary.id ? null : summary.id)}
-                                    >
-                                        <div className="flex items-start gap-3">
-                                            <div className="p-2 bg-purple-100 rounded-lg shrink-0">
-                                                <Sparkles className="h-5 w-5 text-purple-600" />
-                                            </div>
-                                            <div>
-                                                <p className="font-semibold text-gray-800">{summary.quiz_title}</p>
-                                                <p className="plain-text text-gray-400 flex items-center gap-1 mt-0.5">
-                                                    <Clock className="h-3 w-3" />
-                                                    {formatDate(summary.created_at)}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <ChevronDown
-                                            className={`h-5 w-5 text-purple-400 transition-transform shrink-0 ml-4 ${isOpen ? 'rotate-180' : ''}`}
-                                        />
-                                    </button>
+                {/* Tabs */}
+                <div className="flex border-b border-gray-200 mb-6">
+                    <button
+                        onClick={() => { setActiveTab('imitated'); setOpenId(null); }}
+                        className={`px-6 py-3 plain-text font-medium transition-colors ${activeTab === 'imitated'
+                            ? 'border-b-2 border-purple-500 text-purple-600 bg-purple-50'
+                            : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
+                            }`}
+                    >
+                        იმიტირებული ({aiSummaries.length})
+                    </button>
+                    <button
+                        onClick={() => { setActiveTab('quiz'); setOpenId(null); }}
+                        className={`px-6 py-3 plain-text font-medium transition-colors ${activeTab === 'quiz'
+                            ? 'border-b-2 border-indigo-500 text-indigo-600 bg-indigo-50'
+                            : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
+                            }`}
+                    >
+                        ტესტები ({quizAiSummaries.length})
+                    </button>
+                </div>
 
-                                    {/* Card body */}
-                                    {isOpen && (
-                                        <div className="border-t border-purple-100 p-6 bg-purple-50/30">
-                                            <div className="prose prose-sm max-w-none text-gray-800">
-                                                <ReactMarkdown>{summary.content}</ReactMarkdown>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            );
-                        })}
-                    </div>
-                )}
+                {activeTab === 'imitated'
+                    ? renderSummaryList(aiSummaries)
+                    : renderSummaryList(quizAiSummaries)
+                }
             </div>
         </div>
     );

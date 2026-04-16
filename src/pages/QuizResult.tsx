@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Clock, Trophy, Target, Calendar, Timer, Loader, ChevronDown, Sparkles } from 'lucide-react';
-import { useParams } from 'react-router-dom';
+import { Clock, Trophy, Target, Calendar, Timer, Loader, ChevronDown, Sparkles, BookOpen } from 'lucide-react';
+import { useParams, useNavigate } from 'react-router-dom';
 import CkeditorContentViewer from '../components/CkEditorContentViewer';
 import { useAttemptStore } from '../stores/attemptStore';
-import { Question } from '../types/types';
+import { Question, QuizAISummary } from '../types/types';
 import PDFViewer from '../components/PdfViewer';
 import { apiV4 } from '../utils/axios';
+import ReactMarkdown from 'react-markdown';
 
 interface QuizAIFeedback {
     performance_summary: string;
@@ -18,14 +19,19 @@ interface QuizAIFeedback {
 
 const QuizResultPage = () => {
     const { attemptId } = useParams();
+    const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState<'correct' | 'incorrect'>('correct');
     const [expanded, setExpanded] = useState<number | null>(null);
-    const { attempt, fetchResult, loading } = useAttemptStore();
+    const { attempt, fetchResult, loading, fetchQuizAISummary } = useAttemptStore();
 
     const [aiFeedback, setAiFeedback]   = useState<QuizAIFeedback | null>(null);
     const [aiLoading, setAiLoading]     = useState(false);
     const [aiError, setAiError]         = useState(false);
     const [aiVisible, setAiVisible]     = useState(false);
+
+    const [aiSummary, setAiSummary]         = useState<QuizAISummary | null>(null);
+    const [summaryLoading, setSummaryLoading] = useState(false);
+    const [summaryOpen, setSummaryOpen]       = useState(false);
 
     useEffect(() => {
         if (attemptId) {
@@ -80,6 +86,15 @@ const QuizResultPage = () => {
         } finally {
             setAiLoading(false);
         }
+    };
+
+    const handleGetAISummary = async () => {
+        if (!attemptId) return;
+        setSummaryLoading(true);
+        setSummaryOpen(true);
+        const result = await fetchQuizAISummary(parseInt(attemptId));
+        setAiSummary(result);
+        setSummaryLoading(false);
     };
 
     if (loading) return <Loader />;
@@ -294,6 +309,49 @@ const QuizResultPage = () => {
                         </div>
                     )}
 
+                    {/* AI Summary Section */}
+                    <div className="mb-6">
+                        <div className="flex justify-between items-center">
+                            <button
+                                onClick={handleGetAISummary}
+                                disabled={summaryLoading}
+                                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl font-medium shadow-lg hover:from-purple-700 hover:to-indigo-700 transition-all disabled:opacity-60"
+                            >
+                                <Sparkles className="h-5 w-5" />
+                                {summaryLoading ? 'AI სასწავლო გეგმა მზადდება...' : 'GET AI SUMMARY'}
+                            </button>
+                            <button
+                                onClick={() => navigate('/history')}
+                                className="plain-text text-indigo-600 hover:underline"
+                            >
+                                ისტორია →
+                            </button>
+                        </div>
+
+                        {summaryOpen && (
+                            <div className="mt-4 bg-white border border-purple-200 rounded-xl shadow-lg p-6">
+                                <div className="flex items-center justify-between mb-4">
+                                    <h3 className="text-lg font-semibold text-purple-800 flex items-center gap-2">
+                                        <Sparkles className="h-5 w-5" />
+                                        AI სასწავლო გეგმა
+                                    </h3>
+                                </div>
+                                {summaryLoading ? (
+                                    <div className="flex items-center gap-2 text-gray-500">
+                                        <Loader className="h-5 w-5 animate-spin" />
+                                        <span>Gemini ამუშავებს...</span>
+                                    </div>
+                                ) : aiSummary ? (
+                                    <div className="prose prose-sm max-w-none text-gray-800">
+                                        <ReactMarkdown>{aiSummary.content}</ReactMarkdown>
+                                    </div>
+                                ) : (
+                                    <p className="text-red-500">შეცდომა. სცადეთ თავიდან.</p>
+                                )}
+                            </div>
+                        )}
+                    </div>
+
                     {/* Tabs */}
                     <div className="bg-white rounded-xl shadow-lg border border-gray-200">
                         <div className="flex border-b border-gray-200">
@@ -328,16 +386,28 @@ const QuizResultPage = () => {
                                             }`}
                                     >
                                         <div className="flex justify-between items-center p-4 cursor-pointer" onClick={() => toggleAccordion(item.order)}>
-                                            <div>
+                                            <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
                                                 <span className="font-medium">შეკითხვა {item.order}</span>
-                                                <span className="ml-4 plain-text text-gray-500">
+                                                <span className="plain-text text-gray-500">
                                                     დრო: {item.user_answer?.time_taken}s
                                                 </span>
-                                                <span className="ml-4 plain-text text-dark-color">
+                                                <span className="plain-text text-dark-color">
                                                     სწორი პასუხი: {item.answer}
                                                 </span>
+                                                {item.topic && (
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            navigate(`/topic/quiz/${item.topic!.id}`);
+                                                        }}
+                                                        className="flex items-center gap-1 px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded-full plain-text hover:bg-indigo-200 transition-colors"
+                                                    >
+                                                        <BookOpen className="h-3 w-3" />
+                                                        {item.topic.name}
+                                                    </button>
+                                                )}
                                             </div>
-                                            <span className="flex items-center plain-text text-main-color">
+                                            <span className="flex items-center plain-text text-main-color shrink-0">
                                                 დეტალურად
                                                 <ChevronDown className={`ml-1 h-4 w-4 transition-transform ${isOpen ? "rotate-180" : ""}`} />
                                             </span>

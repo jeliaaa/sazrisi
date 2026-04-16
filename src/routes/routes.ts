@@ -23,6 +23,7 @@ export const privateRoutes = {
   paymentSuccess: "/payment/success",
   paymentFail: "/payment/fail",
   topicPage: "/topic/:topicId",
+  quizTopicPage: "/topic/quiz/:topicId",
   history: "/history",
 };
 

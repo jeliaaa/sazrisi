@@ -20,6 +20,7 @@ const Test           = lazy(() => import("../pages/TopicWritingPage"));
 const PaymentSuccess = lazy(() => import("../pages/PaymentSuccess"));
 const PaymentFail    = lazy(() => import("../pages/PaymentFail"));
 const TopicPage      = lazy(() => import("../pages/TopicPage"));
+const QuizTopicPage  = lazy(() => import("../pages/QuizTopicPage"));
 const HistoryPage    = lazy(() => import("../pages/History"));
 
 
@@ -118,6 +119,11 @@ export const privateRoutes = [
     title: "topicPage",
     path: routes.topicPage,
     component: TopicPage,
+  },
+  {
+    title: "quizTopicPage",
+    path: routes.quizTopicPage,
+    component: QuizTopicPage,
   },
   {
     title: "history",
