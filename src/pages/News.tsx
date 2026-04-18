@@ -3,7 +3,7 @@ import { useNewsStore } from "../stores/newsStore"
 import Loader from "../components/reusables/Loader";
 import { Link } from "react-router-dom";
 import { INews } from "../types/types";
-import logo from "../assets/logo.png";
+// import logo from "../assets/logo.png";
 
 function shortenText(text: string, wordLimit: number): string {
     const words = text.split(" ");
@@ -41,12 +41,9 @@ const News = () => {
                 {filteredNews.map((news) => (
                     <Link to={`/news/${news.id}`} key={news.id} className="flex flex-col shadow-md w-[320px]">
                         <span>{new Date(news.created_at).toISOString().split("T")[0]}</span>
-                        <img src="https://picsum.photos/350/200" className="w-full" />
+                        {/* <img src="https://picsum.photos/350/200" className="w-full" /> */}
                         <div className="p-3 flex flex-col gap-y-3">
                             <span className="title text-dark-color">{news.title}</span>
-                            <span className="plain-text text-dark-color">
-                                {shortenText(news.description, 10)}
-                            </span>
                             <span className="text-main-color flex  justify-end hover:underline">იხ. სრულად</span>
                         </div>
                     </Link>
@@ -86,11 +83,10 @@ export const MainNewsComponent = () => {
             {news.slice(0, 4).map((news) => (
                 <Link to={`/news/${news.id}`} key={news.id} className="flex flex-col shadow-md w-[320px]">
                     <span>{new Date(news.created_at).toISOString().split("T")[0]}</span>
-                    <img src={logo} className="w-full" />
+                    {/* <img src={logo} className="w-full" /> */}
                     <div className="p-3 flex flex-col gap-y-3">
                         <span className="title text-dark-color">{news.title}</span>
-                        <span className="plain-text text-dark-color">
-                            {shortenText(news.description, 10)}
+                        <span className="plain-text text-dark-color" dangerouslySetInnerHTML={{ __html: shortenText(news.description, 10) }}>
                         </span>
                         <span className="text-main-color flex  justify-end hover:underline">იხ. სრულად</span>
                     </div>
